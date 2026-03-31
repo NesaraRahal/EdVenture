@@ -6,6 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		037BA76E2F7BA3960087C670 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 037BA76D2F7BA3960087C670 /* FirebaseAuth */; };
+		037BA7702F7BA3A40087C670 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 037BA76F2F7BA3A40087C670 /* FirebaseCore */; };
+		037BA7722F7BA3B00087C670 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 037BA7712F7BA3B00087C670 /* FirebaseFirestore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		037BA73D2F7B8FB10087C670 /* EdVenture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EdVenture.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +29,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				037BA7702F7BA3A40087C670 /* FirebaseCore in Frameworks */,
+				037BA76E2F7BA3960087C670 /* FirebaseAuth in Frameworks */,
+				037BA7722F7BA3B00087C670 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -33,6 +42,7 @@
 			isa = PBXGroup;
 			children = (
 				037BA73F2F7B8FB10087C670 /* EdVenture */,
+				037BA76C2F7BA3960087C670 /* Frameworks */,
 				037BA73E2F7B8FB10087C670 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -43,6 +53,13 @@
 				037BA73D2F7B8FB10087C670 /* EdVenture.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		037BA76C2F7BA3960087C670 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -65,6 +82,9 @@
 			);
 			name = EdVenture;
 			packageProductDependencies = (
+				037BA76D2F7BA3960087C670 /* FirebaseAuth */,
+				037BA76F2F7BA3A40087C670 /* FirebaseCore */,
+				037BA7712F7BA3B00087C670 /* FirebaseFirestore */,
 			);
 			productName = EdVenture;
 			productReference = 037BA73D2F7B8FB10087C670 /* EdVenture.app */;
@@ -77,6 +97,9 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
+				KnownAssetTags = (
+					New,
+				);
 				LastSwiftUpdateCheck = 2620;
 				LastUpgradeCheck = 2620;
 				TargetAttributes = {
@@ -94,6 +117,9 @@
 			);
 			mainGroup = 037BA7342F7B8FB10087C670;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				037BA7682F7B9F650087C670 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 037BA73E2F7B8FB10087C670 /* Products */;
 			projectDirPath = "";
@@ -328,6 +354,35 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		037BA7682F7B9F650087C670 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.11.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		037BA76D2F7BA3960087C670 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 037BA7682F7B9F650087C670 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		037BA76F2F7BA3A40087C670 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 037BA7682F7B9F650087C670 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		037BA7712F7BA3B00087C670 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 037BA7682F7B9F650087C670 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 037BA7352F7B8FB10087C670 /* Project object */;
 }
