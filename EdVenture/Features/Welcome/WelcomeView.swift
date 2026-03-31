@@ -44,27 +44,10 @@ struct WelcomeView: View {
 
                 Spacer().frame(height: 44)
 
-                // ── Hero illustration ───────────────────────────────────────
-                // When your asset is ready, replace the ZStack below with:
-                //   Image("welcome_tree")
-                //       .resizable()
-                //       .scaledToFit()
-                //       .frame(width: 220, height: 220)
-                ZStack {
-                    Circle()
-                        .fill(Color.evPrimary.opacity(0.08))
-                        .frame(width: 240, height: 240)
-
-                    Circle()
-                        .fill(Color.evPrimary.opacity(0.05))
-                        .frame(width: 190, height: 190)
-
-                    Image(systemName: "brain.head.profile")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 100, height: 100)
-                        .foregroundColor(.evPrimary)
-                }
+                Image("EdVentureLogo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 220, height: 220)
                 .scaleEffect(appeared ? 1 : 0.85)
                 .opacity(appeared ? 1 : 0)
                 .animation(
