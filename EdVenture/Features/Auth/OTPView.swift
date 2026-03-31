@@ -2,149 +2,168 @@
 //  OTPView.swift
 //  EdVenture
 //
-//  Created by COBSCCOMP24.2p-053 on 2026-03-31.
-//
+//  Features/Auth/OTPView.swift
 
 import SwiftUI
+import FirebaseAuth
 
-// MARK: - OTPView
-// Features/Auth/OTPView.swift
-
+// MARK: - OTPView  (Polls Firebase every 3s — auto-redirects on verification)
 struct OTPView: View {
 
-    @StateObject private var vm = AuthViewModel()
+    @State private var appeared   = false
+    @State private var resendSent = false
+    @StateObject private var vm   = AuthViewModel()
 
-    // The 6 OTP digit boxes
-    @State private var digits: [String] = Array(repeating: "", count: 6)
-    @FocusState private var focusedIndex: Int?
-    @State private var appeared  = false
-    @State private var shaking   = false
+    // Timer that polls Firebase every 3 seconds
+    @State private var pollingTimer: Timer? = nil
 
-    // Masked phone/email shown in subtitle — pass from caller
-    var maskedContact: String = "0761566534"
+    // Email passed in from RegisterView via ContentView
+    var email: String = ""
 
-    // Navigation callback
+    // Navigation callback — fires automatically once verified
     var onVerified: (() -> Void)?
+
+    // MARK: - Mask helper  →  joh****@gmail.com
+    private var maskedEmail: String {
+        guard let atIndex = email.firstIndex(of: "@") else { return email }
+        let local   = String(email[email.startIndex..<atIndex])
+        let domain  = String(email[atIndex...])
+        let visible = local.prefix(3)
+        let stars   = String(repeating: "*", count: max(local.count - 3, 4))
+        return "\(visible)\(stars)\(domain)"
+    }
 
     var body: some View {
         ZStack {
-            Color.evBackground.ignoresSafeArea()
+            Color(hex: "0A0F0D").ignoresSafeArea()
 
             VStack(spacing: 0) {
 
                 Spacer()
 
-                // ── Badge icon ────────────────────────────────────────
+                // ── Envelope icon ─────────────────────────────────────
                 ZStack {
-                    // Outer ring
                     Circle()
-                        .fill(Color.evPrimary.opacity(0.15))
-                        .frame(width: 110, height: 110)
-                    // Inner fill
+                        .fill(Color(hex: "0EB060").opacity(0.12))
+                        .frame(width: 130, height: 130)
                     Circle()
-                        .fill(Color.evPrimary)
-                        .frame(width: 86, height: 86)
-                    Image(systemName: "checkmark")
-                        .font(.system(size: 36, weight: .bold))
-                        .foregroundColor(Color.evBackground)
+                        .fill(Color(hex: "0EB060").opacity(0.2))
+                        .frame(width: 100, height: 100)
+                    Circle()
+                        .fill(Color(hex: "0EB060"))
+                        .frame(width: 76, height: 76)
+                    Image(systemName: "envelope.open.fill")
+                        .font(.system(size: 30, weight: .semibold))
+                        .foregroundColor(Color(hex: "0A0F0D"))
                 }
-                .scaleEffect(appeared ? 1 : 0.7)
+                .scaleEffect(appeared ? 1 : 0.6)
                 .opacity(appeared ? 1 : 0)
-                .animation(.spring(response: 0.55, dampingFraction: 0.65).delay(0.05), value: appeared)
+                .animation(.spring(response: 0.6, dampingFraction: 0.65).delay(0.05), value: appeared)
 
                 // ── Title ─────────────────────────────────────────────
-                Text("Verification Code")
-                    .font(.system(size: 24, weight: .bold, design: .rounded))
+                Text("Check Your Inbox")
+                    .font(.system(size: 26, weight: .bold, design: .rounded))
                     .foregroundColor(.white)
-                    .padding(.top, 28)
+                    .padding(.top, 32)
                     .opacity(appeared ? 1 : 0)
-                    .animation(.easeOut(duration: 0.4).delay(0.18), value: appeared)
+                    .animation(.easeOut(duration: 0.4).delay(0.2), value: appeared)
 
-                Text("We sent a 6digit code to")
-                    .font(.system(size: 14, design: .rounded))
-                    .foregroundColor(.evTextMuted)
-                    .padding(.top, 8)
-                    .opacity(appeared ? 1 : 0)
-                    .animation(.easeOut(duration: 0.4).delay(0.22), value: appeared)
+                // ── Subtitle ──────────────────────────────────────────
+                VStack(spacing: 6) {
+                    Text("We sent a verification link to")
+                        .font(.system(size: 15, design: .rounded))
+                        .foregroundColor(.white.opacity(0.45))
 
-                Text(maskedContact)
-                    .font(.system(size: 14, weight: .semibold, design: .rounded))
-                    .foregroundColor(.evPrimary)
-                    .opacity(appeared ? 1 : 0)
-                    .animation(.easeOut(duration: 0.4).delay(0.25), value: appeared)
+                    Text(maskedEmail)
+                        .font(.system(size: 15, weight: .semibold, design: .rounded))
+                        .foregroundColor(Color(hex: "0EB060"))
 
-                // ── OTP boxes ─────────────────────────────────────────
-                HStack(spacing: 10) {
-                    ForEach(0..<6, id: \.self) { i in
-                        OTPBox(
-                            digit: $digits[i],
-                            isFocused: focusedIndex == i
-                        )
-                        .focused($focusedIndex, equals: i)
-                        .onChange(of: digits[i]) { newVal in
-                            handleInput(newVal, at: i)
-                        }
-                    }
-                }
-                .padding(.horizontal, 24)
-                .padding(.top, 36)
-                .offset(x: shaking ? -8 : 0)
-                .animation(shaking ? .default.repeatCount(4, autoreverses: true).speed(6) : .default, value: shaking)
-                .opacity(appeared ? 1 : 0)
-                .animation(.easeOut(duration: 0.4).delay(0.3), value: appeared)
-
-                // ── Error ─────────────────────────────────────────────
-                if let error = vm.errorMessage {
-                    Text(error)
-                        .font(.system(size: 13, design: .rounded))
-                        .foregroundColor(.red)
+                    Text("Click the link in your email.\nYou'll be redirected automatically.")
+                        .font(.system(size: 14, design: .rounded))
+                        .foregroundColor(.white.opacity(0.35))
                         .multilineTextAlignment(.center)
-                        .padding(.horizontal, 28)
-                        .padding(.top, 12)
+                        .lineSpacing(4)
+                        .padding(.top, 4)
                 }
+                .padding(.top, 12)
+                .opacity(appeared ? 1 : 0)
+                .animation(.easeOut(duration: 0.4).delay(0.26), value: appeared)
 
-                // ── Resend ────────────────────────────────────────────
-                Button {
-                    Task { await vm.resendVerificationEmail() }
-                } label: {
-                    Text("Resend Code")
-                        .font(.system(size: 14, weight: .medium, design: .rounded))
-                        .foregroundColor(.evPrimary)
-                        .frame(minHeight: 44)   // HIG touch target
+                // ── Steps card ────────────────────────────────────────
+                VStack(alignment: .leading, spacing: 16) {
+                    StepRow(number: "1", text: "Open your email app")
+                    StepRow(number: "2", text: "Find the email from EdVenture")
+                    StepRow(number: "3", text: "Tap the verification link")
                 }
-                .padding(.top, 8)
+                .padding(20)
+                .background(Color.white.opacity(0.05))
+                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        .stroke(Color.white.opacity(0.08), lineWidth: 0.5)
+                )
+                .padding(.horizontal, 24)
+                .padding(.top, 32)
+                .opacity(appeared ? 1 : 0)
+                .offset(y: appeared ? 0 : 16)
+                .animation(.easeOut(duration: 0.45).delay(0.32), value: appeared)
+
+                // ── Waiting indicator ─────────────────────────────────
+                HStack(spacing: 8) {
+                    ProgressView()
+                        .tint(Color(hex: "0EB060"))
+                        .scaleEffect(0.8)
+                    Text("Waiting for verification...")
+                        .font(.system(size: 13, design: .rounded))
+                        .foregroundColor(.white.opacity(0.35))
+                }
+                .padding(.top, 28)
                 .opacity(appeared ? 1 : 0)
                 .animation(.easeOut(duration: 0.4).delay(0.36), value: appeared)
 
-                // ── Verify button ─────────────────────────────────────
-                EVPrimaryButton(
-                    title: "Verify & Continue",
-                    isLoading: vm.isLoading
-                ) {
+                // ── Resend ────────────────────────────────────────────
+                Button {
                     Task {
-                        await vm.verifyOTP()
-                        if vm.isAuthenticated {
-                            onVerified?()
-                        } else {
-                            triggerShake()
+                        await vm.resendVerificationEmail()
+                        resendSent = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                            resendSent = false
                         }
                     }
+                } label: {
+                    HStack(spacing: 6) {
+                        if resendSent {
+                            Image(systemName: "checkmark.circle.fill")
+                                .font(.system(size: 13))
+                                .foregroundColor(Color(hex: "0EB060"))
+                            Text("Email sent!")
+                                .font(.system(size: 14, weight: .medium, design: .rounded))
+                                .foregroundColor(Color(hex: "0EB060"))
+                        } else {
+                            Text("Didn't receive it?")
+                                .foregroundColor(.white.opacity(0.4))
+                            Text("Resend Email")
+                                .foregroundColor(Color(hex: "0EB060"))
+                        }
+                    }
+                    .font(.system(size: 14, weight: .medium, design: .rounded))
+                    .frame(minHeight: 44)
                 }
-                .padding(.horizontal, 24)
-                .padding(.top, 24)
+                .padding(.top, 12)
+                .animation(.easeInOut(duration: 0.2), value: resendSent)
                 .opacity(appeared ? 1 : 0)
-                .animation(.easeOut(duration: 0.4).delay(0.4), value: appeared)
+                .animation(.easeOut(duration: 0.4).delay(0.40), value: appeared)
 
                 // ── Security note ─────────────────────────────────────
                 HStack(spacing: 5) {
                     Image(systemName: "lock.fill")
                         .font(.system(size: 11))
-                    Text("Secure with end-to-end encryption")
+                    Text("Secured with end-to-end encryption")
                         .font(.system(size: 12, design: .rounded))
                 }
-                .foregroundColor(.evTextMuted)
-                .padding(.top, 16)
-                .padding(.bottom, 40)
+                .foregroundColor(.white.opacity(0.2))
+                .padding(.top, 20)
+                .padding(.bottom, 48)
                 .opacity(appeared ? 1 : 0)
                 .animation(.easeOut(duration: 0.4).delay(0.44), value: appeared)
 
@@ -154,77 +173,56 @@ struct OTPView: View {
         .navigationBarHidden(true)
         .onAppear {
             appeared = true
-            // Auto-focus first box
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                focusedIndex = 0
+            startPolling()
+        }
+        .onDisappear {
+            stopPolling()
+        }
+    }
+
+    // MARK: - Polling
+    // Reloads the Firebase user every 3 seconds.
+    // The moment isEmailVerified flips to true, we stop and navigate.
+    private func startPolling() {
+        pollingTimer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
+            Task { @MainActor in
+                try? await Auth.auth().currentUser?.reload()
+                if Auth.auth().currentUser?.isEmailVerified == true {
+                    stopPolling()
+                    onVerified?()
+                }
             }
         }
     }
 
-    // MARK: - OTP input logic
-    private func handleInput(_ value: String, at index: Int) {
-        // Allow only single digit
-        if value.count > 1 {
-            digits[index] = String(value.last ?? Character(""))
-        }
-        // Strip non-numerics
-        digits[index] = digits[index].filter { $0.isNumber }
-
-        // Auto-advance focus
-        if !digits[index].isEmpty && index < 5 {
-            focusedIndex = index + 1
-        }
-        // Auto-retreat on delete
-        if digits[index].isEmpty && index > 0 {
-            focusedIndex = index - 1
-        }
-    }
-
-    private func triggerShake() {
-        shaking = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-            shaking = false
-        }
+    private func stopPolling() {
+        pollingTimer?.invalidate()
+        pollingTimer = nil
     }
 }
 
-// MARK: - Single OTP digit box
-private struct OTPBox: View {
-    @Binding var digit: String
-    var isFocused: Bool
+// MARK: - Step row
+private struct StepRow: View {
+    var number: String
+    var text: String
 
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(Color.white.opacity(0.07))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .stroke(
-                            isFocused ? Color.evPrimary : Color.white.opacity(0.15),
-                            lineWidth: isFocused ? 2 : 1
-                        )
-                )
-                .frame(width: 46, height: 54)
-
-            // Hidden TextField for keyboard input
-            TextField("", text: $digit)
-                .keyboardType(.numberPad)
-                .textContentType(.oneTimeCode)
-                .multilineTextAlignment(.center)
-                .font(.system(size: 22, weight: .bold, design: .rounded))
-                .foregroundColor(.white)
-                .frame(width: 46, height: 54)
-                .opacity(digit.isEmpty ? 0 : 1)
-
-            if digit.isEmpty {
+        HStack(spacing: 14) {
+            ZStack {
                 Circle()
-                    .fill(Color.white.opacity(isFocused ? 0.5 : 0.2))
-                    .frame(width: 8, height: 8)
+                    .fill(Color(hex: "0EB060").opacity(0.15))
+                    .frame(width: 30, height: 30)
+                Text(number)
+                    .font(.system(size: 13, weight: .bold, design: .rounded))
+                    .foregroundColor(Color(hex: "0EB060"))
             }
+            Text(text)
+                .font(.system(size: 14, design: .rounded))
+                .foregroundColor(.white.opacity(0.7))
         }
     }
 }
 
 #Preview {
-    OTPView()
+    OTPView(email: "johndoe@gmail.com")
 }

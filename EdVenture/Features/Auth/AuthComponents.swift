@@ -1,19 +1,10 @@
-//
-//  AuthComponents.swift.swift
-//  EdVenture
-//
-//  Created by COBSCCOMP24.2p-053 on 2026-03-31.
-//
-
 import SwiftUI
 
 // MARK: - AuthComponents.swift
 // Features/Auth/AuthComponents.swift
-// Shared UI building blocks used across all Auth screens.
 
 // ─────────────────────────────────────────────────────────────
 // MARK: EVTextField
-// Standard text input with optional leading icon
 // ─────────────────────────────────────────────────────────────
 struct EVTextField: View {
     var icon: String?
@@ -26,30 +17,39 @@ struct EVTextField: View {
             if let icon {
                 Image(systemName: icon)
                     .font(.system(size: 15, weight: .medium))
-                    .foregroundColor(.evTextMuted)
+                    .foregroundColor(Color(hex: "8A9E93"))
                     .frame(width: 20)
             }
-            TextField(placeholder, text: $text)
-                .font(.system(size: 15, design: .rounded))
-                .foregroundColor(.white)
-                .keyboardType(keyboardType)
-                .autocapitalization(.none)
-                .autocorrectionDisabled()
+
+            ZStack(alignment: .leading) {
+                if text.isEmpty {
+                    Text(placeholder)
+                        .font(.system(size: 15, design: .rounded))
+                        .foregroundColor(Color.white.opacity(0.35))
+                }
+                TextField("", text: $text)
+                    .font(.system(size: 15, design: .rounded))
+                    .foregroundColor(.white)
+                    .keyboardType(keyboardType)
+                    .autocapitalization(.none)
+                    .autocorrectionDisabled()
+                    // Hide system placeholder (we draw our own above)
+                    .tint(Color(hex: "0EB060"))
+            }
         }
         .padding(.horizontal, 16)
-        .frame(height: 52)                       // HIG: comfortable tap area
+        .frame(height: 52)
         .background(Color.white.opacity(0.08))
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .stroke(Color.white.opacity(0.12), lineWidth: 0.5)
+                .stroke(Color.white.opacity(0.15), lineWidth: 0.5)
         )
     }
 }
 
 // ─────────────────────────────────────────────────────────────
 // MARK: EVSecureField
-// Password input with show/hide toggle
 // ─────────────────────────────────────────────────────────────
 struct EVSecureField: View {
     var icon: String
@@ -61,28 +61,37 @@ struct EVSecureField: View {
         HStack(spacing: 12) {
             Image(systemName: icon)
                 .font(.system(size: 15, weight: .medium))
-                .foregroundColor(.evTextMuted)
+                .foregroundColor(Color(hex: "8A9E93"))
                 .frame(width: 20)
 
-            Group {
-                if isVisible {
-                    TextField(placeholder, text: $text)
-                } else {
-                    SecureField(placeholder, text: $text)
+            ZStack(alignment: .leading) {
+                // Visible placeholder
+                if text.isEmpty {
+                    Text(placeholder)
+                        .font(.system(size: 15, design: .rounded))
+                        .foregroundColor(Color.white.opacity(0.35))
                 }
+                Group {
+                    if isVisible {
+                        TextField("", text: $text)
+                    } else {
+                        SecureField("", text: $text)
+                    }
+                }
+                .font(.system(size: 15, design: .rounded))
+                .foregroundColor(.white)
+                .autocapitalization(.none)
+                .autocorrectionDisabled()
+                .tint(Color(hex: "0EB060"))
             }
-            .font(.system(size: 15, design: .rounded))
-            .foregroundColor(.white)
-            .autocapitalization(.none)
-            .autocorrectionDisabled()
 
-            // HIG: 44pt touch target for toggle
+            // Show/hide toggle — 44pt HIG touch target
             Button {
                 isVisible.toggle()
             } label: {
                 Image(systemName: isVisible ? "eye.slash" : "eye")
                     .font(.system(size: 15))
-                    .foregroundColor(.evTextMuted)
+                    .foregroundColor(Color.white.opacity(0.4))
                     .frame(width: 44, height: 44)
             }
         }
@@ -92,14 +101,13 @@ struct EVSecureField: View {
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .stroke(Color.white.opacity(0.12), lineWidth: 0.5)
+                .stroke(Color.white.opacity(0.15), lineWidth: 0.5)
         )
     }
 }
 
 // ─────────────────────────────────────────────────────────────
 // MARK: EVPrimaryButton
-// Full-width capsule CTA — iOS HIG primary action style
 // ─────────────────────────────────────────────────────────────
 struct EVPrimaryButton: View {
     var title: String
@@ -111,16 +119,16 @@ struct EVPrimaryButton: View {
             ZStack {
                 if isLoading {
                     ProgressView()
-                        .tint(Color.evBackground)
+                        .tint(Color(hex: "0A0F0D"))
                 } else {
                     Text(title)
                         .font(.system(size: 17, weight: .semibold, design: .rounded))
-                        .foregroundColor(Color.evBackground)
+                        .foregroundColor(Color(hex: "0A0F0D"))
                 }
             }
             .frame(maxWidth: .infinity)
             .frame(height: 56)
-            .background(Color.evPrimary)
+            .background(Color(hex: "0EB060"))
             .clipShape(Capsule())
         }
         .disabled(isLoading)
@@ -130,7 +138,6 @@ struct EVPrimaryButton: View {
 
 // ─────────────────────────────────────────────────────────────
 // MARK: EVSocialButton
-// Apple / Google social sign-in button
 // ─────────────────────────────────────────────────────────────
 struct EVSocialButton: View {
     var icon: String
@@ -142,7 +149,6 @@ struct EVSocialButton: View {
         Button(action: action) {
             HStack(spacing: 10) {
                 if isGoogle {
-                    // Google "G" placeholder — replace with Image("google_logo")
                     Text("G")
                         .font(.system(size: 16, weight: .bold))
                         .foregroundColor(Color(hex: "4285F4"))
@@ -168,7 +174,6 @@ struct EVSocialButton: View {
 
 // ─────────────────────────────────────────────────────────────
 // MARK: EVDivider
-// "or" divider line used between primary and social buttons
 // ─────────────────────────────────────────────────────────────
 struct EVDivider: View {
     var body: some View {
@@ -178,7 +183,7 @@ struct EVDivider: View {
                 .frame(height: 0.5)
             Text("or")
                 .font(.system(size: 13, design: .rounded))
-                .foregroundColor(.evTextMuted)
+                .foregroundColor(Color.white.opacity(0.35))
             Rectangle()
                 .fill(Color.white.opacity(0.12))
                 .frame(height: 0.5)
@@ -188,7 +193,6 @@ struct EVDivider: View {
 
 // ─────────────────────────────────────────────────────────────
 // MARK: ScaleButtonStyle
-// Subtle press-down feedback — iOS HIG standard interaction
 // ─────────────────────────────────────────────────────────────
 struct ScaleButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {

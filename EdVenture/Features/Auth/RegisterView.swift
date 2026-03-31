@@ -5,10 +5,13 @@
 //  Created by COBSCCOMP24.2p-053 on 2026-03-31.
 //
 
-import SwiftUI
+//
+//  RegisterView.swift
+//  EdVenture
+//
+//  Features/Auth/RegisterView.swift
 
-// MARK: - RegisterView
-// Features/Auth/RegisterView.swift
+import SwiftUI
 
 struct RegisterView: View {
 
@@ -22,21 +25,21 @@ struct RegisterView: View {
     @State private var showConfirm     = false
     @State private var appeared        = false
 
-    // Navigation callbacks — wired by AppCoordinator
-    var onSignIn: (() -> Void)?        // → LoginView
-    var onRegistered: (() -> Void)?    // → OTPView
+    var onSignIn: (() -> Void)?
+    // ← Now passes the email back to ContentView
+    var onRegistered: ((String) -> Void)?
 
     var body: some View {
         ZStack {
-            Color.evBackground.ignoresSafeArea()
+            Color(hex: "0A0F0D").ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 0) {
 
-                    // ── Logo ─────────────────────────────────────────
+                    // ── Logo ──────────────────────────────────────────
                     Text("EdVenture")
                         .font(.system(size: 32, weight: .bold, design: .rounded))
-                        .foregroundColor(.evPrimary)
+                        .foregroundColor(Color(hex: "0EB060"))
                         .padding(.top, 56)
                         .opacity(appeared ? 1 : 0)
                         .animation(.easeOut(duration: 0.4).delay(0.05), value: appeared)
@@ -53,29 +56,10 @@ struct RegisterView: View {
 
                     // ── Fields ────────────────────────────────────────
                     VStack(spacing: 14) {
-                        EVTextField(
-                            icon: "person",
-                            placeholder: "Username",
-                            text: $username
-                        )
-                        EVTextField(
-                            icon: "envelope",
-                            placeholder: "Email Address",
-                            text: $email,
-                            keyboardType: .emailAddress
-                        )
-                        EVSecureField(
-                            icon: "lock",
-                            placeholder: "Password",
-                            text: $password,
-                            isVisible: $showPassword
-                        )
-                        EVSecureField(
-                            icon: "lock",
-                            placeholder: "Confirm Password",
-                            text: $confirmPassword,
-                            isVisible: $showConfirm
-                        )
+                        EVTextField(icon: "person",   placeholder: "Username",        text: $username)
+                        EVTextField(icon: "envelope", placeholder: "Email Address",   text: $email, keyboardType: .emailAddress)
+                        EVSecureField(icon: "lock",   placeholder: "Password",        text: $password,        isVisible: $showPassword)
+                        EVSecureField(icon: "lock",   placeholder: "Confirm Password",text: $confirmPassword, isVisible: $showConfirm)
                     }
                     .padding(.horizontal, 24)
                     .padding(.top, 32)
@@ -94,10 +78,7 @@ struct RegisterView: View {
                     }
 
                     // ── Continue button ───────────────────────────────
-                    EVPrimaryButton(
-                        title: "Continue",
-                        isLoading: vm.isLoading
-                    ) {
+                    EVPrimaryButton(title: "Continue", isLoading: vm.isLoading) {
                         Task {
                             await vm.register(
                                 username: username,
@@ -105,7 +86,8 @@ struct RegisterView: View {
                                 password: password,
                                 confirmPassword: confirmPassword
                             )
-                            if vm.otpSent { onRegistered?() }
+                            // Pass email up so OTPView can display it masked
+                            if vm.otpSent { onRegistered?(email) }
                         }
                     }
                     .padding(.horizontal, 24)
@@ -121,7 +103,7 @@ struct RegisterView: View {
                     // ── Social buttons ────────────────────────────────
                     VStack(spacing: 12) {
                         EVSocialButton(icon: "applelogo", title: "Continue with Apple") {}
-                        EVSocialButton(icon: "g.circle", title: "Continue with Google", isGoogle: true) {}
+                        EVSocialButton(icon: "g.circle",  title: "Continue with Google", isGoogle: true) {}
                     }
                     .padding(.horizontal, 24)
                     .padding(.top, 16)
@@ -131,9 +113,9 @@ struct RegisterView: View {
                     // ── Footer ────────────────────────────────────────
                     HStack(spacing: 4) {
                         Text("Already have an Account?")
-                            .foregroundColor(.evTextMuted)
+                            .foregroundColor(.white.opacity(0.45))
                         Button("Sign In") { onSignIn?() }
-                            .foregroundColor(.evPrimary)
+                            .foregroundColor(Color(hex: "0EB060"))
                     }
                     .font(.system(size: 14, weight: .medium, design: .rounded))
                     .padding(.top, 24)
