@@ -9,7 +9,9 @@ struct HomeView: View {
     @State private var selectedTab   = 0
     @State private var challengePage = 0
 
-    var onSettings: (() -> Void)?
+    // ── Navigation callbacks ─────────────────────────────────────────
+    var onLessons:   (() -> Void)?
+    var onSettings:  (() -> Void)?
 
     // MARK: - Data
     let stats: [StatItem] = [
@@ -102,10 +104,7 @@ struct HomeView: View {
                         .foregroundColor(.white)
                         .frame(width: 44, height: 44)
                 }
-                // Avatar — tapping goes to Settings
-                Button {
-                    onSettings?()
-                } label: {
+                Button { onSettings?() } label: {
                     Circle()
                         .fill(Color.white.opacity(0.12))
                         .frame(width: 38, height: 38)
@@ -114,6 +113,7 @@ struct HomeView: View {
                                 .font(.system(size: 15))
                                 .foregroundColor(.white.opacity(0.6))
                         )
+                        .overlay(Circle().stroke(Color.white.opacity(0.1), lineWidth: 0.5))
                 }
             }
         }
@@ -189,7 +189,7 @@ struct HomeView: View {
                     .font(.system(size: 20, weight: .bold, design: .rounded))
                     .foregroundColor(.white)
                 Spacer()
-                Button("SEE ALL") {}
+                Button("SEE ALL") { onLessons?() }
                     .font(.system(size: 13, weight: .semibold, design: .rounded))
                     .foregroundColor(Color(hex: "0EB060"))
                     .frame(minHeight: 44)
@@ -201,7 +201,7 @@ struct HomeView: View {
                 spacing: 14
             ) {
                 ForEach(Array(lessons.enumerated()), id: \.element.id) { i, lesson in
-                    LessonCard(lesson: lesson)
+                    HomeLessonCard(lesson: lesson)
                         .opacity(appeared ? 1 : 0)
                         .offset(y: appeared ? 0 : 20)
                         .animation(.easeOut(duration: 0.45).delay(0.34 + Double(i) * 0.07), value: appeared)
@@ -217,32 +217,32 @@ struct HomeView: View {
             ForEach(Array(tabItems.enumerated()), id: \.offset) { i, item in
                 Button {
                     selectedTab = i
-                    // Settings tab
-                    if i == 4 { onSettings?() }
+                    switch i {
+                    case 1: onLessons?()
+                    case 4: onSettings?()
+                    default: break
+                    }
                 } label: {
                     VStack(spacing: 4) {
-                        if i == 0 && selectedTab == 0 {
+                        // Home tab active pill
+                        if i == 0 {
                             ZStack {
                                 Capsule()
                                     .fill(Color(hex: "0EB060"))
-                                    .frame(width: 52, height: 36)
+                                    .frame(width: 52, height: 32)
                                 Image(systemName: item.icon)
-                                    .font(.system(size: 15, weight: .semibold))
+                                    .font(.system(size: 14, weight: .semibold))
                                     .foregroundColor(Color(hex: "0A0F0D"))
                             }
                         } else {
                             Image(systemName: item.icon)
                                 .font(.system(size: 18))
-                                .foregroundColor(selectedTab == i ? .white : .white.opacity(0.35))
-                                .frame(height: 36)
+                                .foregroundColor(.white.opacity(0.32))
+                                .frame(height: 32)
                         }
                         Text(item.label)
                             .font(.system(size: 9, weight: .semibold, design: .rounded))
-                            .foregroundColor(
-                                i == 0 && selectedTab == 0
-                                    ? Color(hex: "0EB060")
-                                    : (selectedTab == i ? .white : .white.opacity(0.3))
-                            )
+                            .foregroundColor(i == 0 ? Color(hex: "0EB060") : .white.opacity(0.28))
                             .tracking(0.5)
                     }
                     .frame(maxWidth: .infinity)
@@ -250,8 +250,8 @@ struct HomeView: View {
                 }
             }
         }
-        .padding(.top, 12)
-        .padding(.bottom, 30)
+        .padding(.top, 10)
+        .padding(.bottom, 28)
         .padding(.horizontal, 8)
         .background(
             ZStack {
@@ -264,7 +264,7 @@ struct HomeView: View {
             }
         )
         .padding(.horizontal, 16)
-        .shadow(color: .black.opacity(0.6), radius: 24, y: -6)
+        .shadow(color: .black.opacity(0.55), radius: 24, y: -6)
         .opacity(appeared ? 1 : 0)
         .animation(.easeOut(duration: 0.4).delay(0.2), value: appeared)
     }
@@ -278,7 +278,7 @@ struct HomeView: View {
     ]
 }
 
-// MARK: - Models (shared, place in Core/Models if preferred)
+// MARK: - Supporting models
 struct StatItem: Identifiable {
     let id = UUID()
     let icon: String
@@ -399,8 +399,8 @@ private struct ChallengeCard: View {
     }
 }
 
-// MARK: - LessonCard
-private struct LessonCard: View {
+// MARK: - HomeLessonCard (grid card on home screen)
+private struct HomeLessonCard: View {
     let lesson: Lesson
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
