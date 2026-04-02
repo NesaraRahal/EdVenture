@@ -1,52 +1,17 @@
-//
-//  HomeView.swift
-//  EdVenture
-//
-//  Created by COBSCCOMP24.2p-053 on 2026-03-31.
-//
-
-
-//
-//  HomeView.swift
-//  EdVenture
-//
-//  Features/Home/HomeView.swift
-
 import SwiftUI
 
-// MARK: - Models
-struct StatItem: Identifiable {
-    let id = UUID()
-    let icon: String
-    let label: String
-    let value: String
-    var isHighlighted: Bool = false
-}
-
-struct Challenge: Identifiable {
-    let id = UUID()
-    let tag: String
-    let title: String
-    let description: String
-    let gradient: [Color]
-}
-
-struct Lesson: Identifiable {
-    let id = UUID()
-    let icon: String
-    let iconBg: Color
-    let title: String
-    let subtitle: String
-    let progress: Double
-}
-
 // MARK: - HomeView
+// Features/Home/HomeView.swift
+
 struct HomeView: View {
 
     @State private var appeared      = false
     @State private var selectedTab   = 0
     @State private var challengePage = 0
 
+    var onSettings: (() -> Void)?
+
+    // MARK: - Data
     let stats: [StatItem] = [
         StatItem(icon: "timer",       label: "PLAY TIME", value: "2 Hours"),
         StatItem(icon: "person.fill", label: "RANK",      value: "Polymath", isHighlighted: true),
@@ -75,12 +40,13 @@ struct HomeView: View {
     ]
 
     let lessons: [Lesson] = [
-        Lesson(icon: "airplane",          iconBg: Color(hex: "0EB060").opacity(0.2), title: "Astronomy",  subtitle: "Stellar Evolution", progress: 0.72),
-        Lesson(icon: "book.fill",         iconBg: Color.white.opacity(0.08),         title: "Philosophy", subtitle: "Stoic Principles",  progress: 0.35),
-        Lesson(icon: "square.grid.2x2",   iconBg: Color.white.opacity(0.08),         title: "Computing",  subtitle: "Quantum Logic",     progress: 0.18),
-        Lesson(icon: "staroflife.fill",   iconBg: Color.white.opacity(0.08),         title: "Biology",    subtitle: "Helix Mapping",     progress: 0.28),
+        Lesson(icon: "airplane",        iconBg: Color(hex: "0EB060").opacity(0.2), title: "Astronomy",  subtitle: "Stellar Evolution", progress: 0.72),
+        Lesson(icon: "book.fill",       iconBg: Color.white.opacity(0.08),         title: "Philosophy", subtitle: "Stoic Principles",  progress: 0.35),
+        Lesson(icon: "square.grid.2x2", iconBg: Color.white.opacity(0.08),         title: "Computing",  subtitle: "Quantum Logic",     progress: 0.18),
+        Lesson(icon: "staroflife.fill", iconBg: Color.white.opacity(0.08),         title: "Biology",    subtitle: "Helix Mapping",     progress: 0.28),
     ]
 
+    // MARK: - Body
     var body: some View {
         ZStack(alignment: .bottom) {
             Color(hex: "0A0F0D").ignoresSafeArea()
@@ -136,14 +102,19 @@ struct HomeView: View {
                         .foregroundColor(.white)
                         .frame(width: 44, height: 44)
                 }
-                Circle()
-                    .fill(Color.white.opacity(0.12))
-                    .frame(width: 38, height: 38)
-                    .overlay(
-                        Image(systemName: "person.fill")
-                            .font(.system(size: 15))
-                            .foregroundColor(.white.opacity(0.6))
-                    )
+                // Avatar — tapping goes to Settings
+                Button {
+                    onSettings?()
+                } label: {
+                    Circle()
+                        .fill(Color.white.opacity(0.12))
+                        .frame(width: 38, height: 38)
+                        .overlay(
+                            Image(systemName: "person.fill")
+                                .font(.system(size: 15))
+                                .foregroundColor(.white.opacity(0.6))
+                        )
+                }
             }
         }
         .opacity(appeared ? 1 : 0)
@@ -244,9 +215,13 @@ struct HomeView: View {
     private var tabBar: some View {
         HStack(spacing: 0) {
             ForEach(Array(tabItems.enumerated()), id: \.offset) { i, item in
-                Button { selectedTab = i } label: {
+                Button {
+                    selectedTab = i
+                    // Settings tab
+                    if i == 4 { onSettings?() }
+                } label: {
                     VStack(spacing: 4) {
-                        if i == 0 {
+                        if i == 0 && selectedTab == 0 {
                             ZStack {
                                 Capsule()
                                     .fill(Color(hex: "0EB060"))
@@ -264,13 +239,14 @@ struct HomeView: View {
                         Text(item.label)
                             .font(.system(size: 9, weight: .semibold, design: .rounded))
                             .foregroundColor(
-                                i == 0
+                                i == 0 && selectedTab == 0
                                     ? Color(hex: "0EB060")
                                     : (selectedTab == i ? .white : .white.opacity(0.3))
                             )
                             .tracking(0.5)
                     }
                     .frame(maxWidth: .infinity)
+                    .frame(minHeight: 44)
                 }
             }
         }
@@ -278,15 +254,19 @@ struct HomeView: View {
         .padding(.bottom, 30)
         .padding(.horizontal, 8)
         .background(
-            RoundedRectangle(cornerRadius: 30, style: .continuous)
-                .fill(Color(hex: "111714"))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 30, style: .continuous)
-                        .stroke(Color.white.opacity(0.07), lineWidth: 0.5)
-                )
-                .shadow(color: .black.opacity(0.6), radius: 24, y: -6)
+            ZStack {
+                RoundedRectangle(cornerRadius: 30, style: .continuous)
+                    .fill(.ultraThinMaterial)
+                RoundedRectangle(cornerRadius: 30, style: .continuous)
+                    .fill(Color(hex: "111714").opacity(0.75))
+                RoundedRectangle(cornerRadius: 30, style: .continuous)
+                    .stroke(Color.white.opacity(0.07), lineWidth: 0.5)
+            }
         )
         .padding(.horizontal, 16)
+        .shadow(color: .black.opacity(0.6), radius: 24, y: -6)
+        .opacity(appeared ? 1 : 0)
+        .animation(.easeOut(duration: 0.4).delay(0.2), value: appeared)
     }
 
     private let tabItems: [(icon: String, label: String)] = [
@@ -298,10 +278,35 @@ struct HomeView: View {
     ]
 }
 
+// MARK: - Models (shared, place in Core/Models if preferred)
+struct StatItem: Identifiable {
+    let id = UUID()
+    let icon: String
+    let label: String
+    let value: String
+    var isHighlighted: Bool = false
+}
+
+struct Challenge: Identifiable {
+    let id = UUID()
+    let tag: String
+    let title: String
+    let description: String
+    let gradient: [Color]
+}
+
+struct Lesson: Identifiable {
+    let id = UUID()
+    let icon: String
+    let iconBg: Color
+    let title: String
+    let subtitle: String
+    let progress: Double
+}
+
 // MARK: - StatCard
 private struct StatCard: View {
     let stat: StatItem
-
     var body: some View {
         VStack(spacing: 8) {
             Image(systemName: stat.icon)
@@ -314,12 +319,10 @@ private struct StatCard: View {
                               ? Color(hex: "0EB060").opacity(0.18)
                               : Color.white.opacity(0.07))
                 )
-
             Text(stat.label)
                 .font(.system(size: 9, weight: .semibold, design: .rounded))
                 .foregroundColor(.white.opacity(0.35))
                 .tracking(0.8)
-
             Text(stat.value)
                 .font(.system(size: 14, weight: .bold, design: .rounded))
                 .foregroundColor(.white)
@@ -345,7 +348,6 @@ private struct StatCard: View {
 // MARK: - ChallengeCard
 private struct ChallengeCard: View {
     let challenge: Challenge
-
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             LinearGradient(
@@ -353,15 +355,11 @@ private struct ChallengeCard: View {
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
-
-            // Decorative watermark
             Image(systemName: "brain.head.profile")
                 .font(.system(size: 120))
                 .foregroundColor(.white.opacity(0.07))
                 .offset(x: 130, y: -8)
-
             VStack(alignment: .leading, spacing: 0) {
-                // Tag
                 Text(challenge.tag)
                     .font(.system(size: 10, weight: .semibold, design: .rounded))
                     .foregroundColor(.white.opacity(0.9))
@@ -370,16 +368,13 @@ private struct ChallengeCard: View {
                     .padding(.vertical, 5)
                     .background(Color.white.opacity(0.2))
                     .clipShape(Capsule())
-
                 Spacer()
-
                 HStack(alignment: .bottom, spacing: 12) {
                     VStack(alignment: .leading, spacing: 6) {
                         Text(challenge.title)
                             .font(.system(size: 22, weight: .heavy, design: .rounded))
                             .foregroundColor(.white)
                             .lineSpacing(2)
-
                         Text(challenge.description)
                             .font(.system(size: 11, design: .rounded))
                             .foregroundColor(.white.opacity(0.8))
@@ -387,7 +382,6 @@ private struct ChallengeCard: View {
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
-
                     Button("Join Now") {}
                         .font(.system(size: 13, weight: .bold, design: .rounded))
                         .foregroundColor(.black)
@@ -408,7 +402,6 @@ private struct ChallengeCard: View {
 // MARK: - LessonCard
 private struct LessonCard: View {
     let lesson: Lesson
-
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Image(systemName: lesson.icon)
@@ -417,20 +410,15 @@ private struct LessonCard: View {
                 .frame(width: 42, height: 42)
                 .background(lesson.iconBg)
                 .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-
             Spacer()
-
             VStack(alignment: .leading, spacing: 3) {
                 Text(lesson.title)
                     .font(.system(size: 15, weight: .bold, design: .rounded))
                     .foregroundColor(.white)
-
                 Text(lesson.subtitle)
                     .font(.system(size: 12, design: .rounded))
                     .foregroundColor(.white.opacity(0.38))
             }
-
-            // Progress bar
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: 4)

@@ -1,69 +1,61 @@
-//
-//  ContentView.swift
-//  EdVenture
-//
-//  Created by COBSCCOMP24.2p-053 on 2026-03-31.
-//
-
-//
-//  ContentView.swift
-//  EdVenture
-
 import SwiftUI
-
-// MARK: - Nav routes
-enum AppRoute: Hashable {
-    case login
-    case register
-    case forgot
-    case otp(email: String)   // ← carries the email through
-    case home
-}
 
 struct ContentView: View {
 
-    @State private var path = NavigationPath()
+    @State private var path          = NavigationPath()
+    @State private var registeredEmail = ""
 
     var body: some View {
         NavigationStack(path: $path) {
             WelcomeView {
-                path.append(AppRoute.login)
+                path.append("login")
             }
-            .navigationDestination(for: AppRoute.self) { route in
-                switch route {
-
-                case .login:
-                    LoginView(
-                        onAuthenticated: { path.append(AppRoute.home) },
-                        onCreateAccount: { path.append(AppRoute.register) },
-                        onForgotPassword: { path.append(AppRoute.forgot) }
-                    )
-
-                case .register:
-                    RegisterView(
-                        onSignIn: { path.removeLast() },
-                        onRegistered: { email in
-                            // ← email is passed up from RegisterView
-                            path.append(AppRoute.otp(email: email))
-                        }
-                    )
-
-                case .forgot:
-                    ForgotPasswordView(
-                        onCreateAccount: { path.append(AppRoute.register) }
-                    )
-
-                case .otp(let email):
-                    OTPView(
-                        email: email,
-                        onVerified: { path.append(AppRoute.home) }
-                    )
-
-                case .home:
-                    HomeView()
+            .navigationDestination(for: String.self) { route in
+                Group {
+                    switch route {
+                    case "login":
+                        LoginView(
+                            onAuthenticated: { path.append("home") },
+                            onCreateAccount: { path.append("register") },
+                            onForgotPassword: { path.append("forgot") }
+                        )
+                    case "register":
+                        RegisterView(
+                            onSignIn: { path.removeLast() },
+                            // email is passed from RegisterView — store it, then navigate
+                            onRegistered: { email in
+                                registeredEmail = email
+                                path.append("otp")
+                            }
+                        )
+                    case "forgot":
+                        ForgotPasswordView(
+                            onCreateAccount: { path.append("register") }
+                        )
+                    case "otp":
+                        OTPView(
+                            email: registeredEmail,
+                            onVerified: { path.append("home") }
+                        )
+                    case "home":
+                        HomeView(
+                            onSettings: { path.append("settings") }
+                        )
+                    case "settings":
+                        SettingsView(
+                            onSignOut: { path = NavigationPath() },
+                            onHome:    { path.removeLast() }
+                        )
+                    default:
+                        EmptyView()
+                    }
                 }
             }
             .navigationBarHidden(true)
         }
     }
+}
+
+#Preview {
+    ContentView()
 }
