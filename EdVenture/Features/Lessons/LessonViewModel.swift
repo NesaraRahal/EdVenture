@@ -54,16 +54,28 @@ final class LessonsViewModel: ObservableObject {
         errorMessage = nil
 
         do {
-            let snapshot = try await db
-                .collection("lessons")
-                .order(by: "order")
-                .getDocuments()
+            // Upsert the default catalog each load so missing/partial documents are repaired.
+            try await seedDefaultLessons()
 
-            lessons = snapshot.documents.compactMap { doc in
+            let snapshot = try await db.collection("lessons").getDocuments()
+
+            let parsed = snapshot.documents.compactMap { doc in
                 LessonModel(id: doc.documentID, data: doc.data())
+            }
+
+            lessons = parsed.sorted { $0.order < $1.order }
+
+            if lessons.isEmpty {
+                lessons = localFallbackLessons().sorted { $0.order < $1.order }
+            }
+
+            if !filterChips.contains(selectedFilter) {
+                selectedFilter = "All"
             }
         } catch {
             errorMessage = error.localizedDescription
+            lessons = localFallbackLessons().sorted { $0.order < $1.order }
+            selectedFilter = "All"
         }
 
         isLoading = false
@@ -83,5 +95,104 @@ final class LessonsViewModel: ObservableObject {
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+
+    // MARK: - Default lesson catalog seed
+    // Seeds lesson metadata only (cards/progression config), not question bank.
+    private func seedDefaultLessons() async throws {
+        for lesson in defaultLessonPayloads() {
+            try await db.collection("lessons").document(lesson.id).setData(lesson.data, merge: true)
+        }
+    }
+
+    private func localFallbackLessons() -> [LessonModel] {
+        defaultLessonPayloads().compactMap { payload in
+            LessonModel(id: payload.id, data: payload.data)
+        }
+    }
+
+    private func defaultLessonPayloads() -> [(id: String, data: [String: Any])] {
+        [
+            (
+                id: "astronomy",
+                data: [
+                    "title": "Astronomy",
+                    "description": "Master the cosmos through stellar evolution, deep-space objects, and celestial mechanics.",
+                    "icon": "rocket.fill",
+                    "color": "0EB060",
+                    "xpReward": 50,
+                    "scholars": 120,
+                    "totalLevels": 10,
+                    "questionsPerLevel": 10,
+                    "timeRangeSeconds": [60, 180],
+                    "difficultyModel": "adaptive-linear",
+                    "order": 1
+                ]
+            ),
+            (
+                id: "computer-science",
+                data: [
+                    "title": "Computer Science",
+                    "description": "Build core understanding of algorithms, systems thinking, and computational problem solving.",
+                    "icon": "desktopcomputer",
+                    "color": "4FD2FF",
+                    "xpReward": 55,
+                    "scholars": 135,
+                    "totalLevels": 10,
+                    "questionsPerLevel": 10,
+                    "timeRangeSeconds": [60, 180],
+                    "difficultyModel": "adaptive-linear",
+                    "order": 2
+                ]
+            ),
+            (
+                id: "philosophy",
+                data: [
+                    "title": "Philosophy",
+                    "description": "Explore logic, ethics, and major schools of thought through concise reasoning challenges.",
+                    "icon": "brain.head.profile",
+                    "color": "75DFFF",
+                    "xpReward": 50,
+                    "scholars": 128,
+                    "totalLevels": 10,
+                    "questionsPerLevel": 10,
+                    "timeRangeSeconds": [60, 180],
+                    "difficultyModel": "adaptive-linear",
+                    "order": 3
+                ]
+            ),
+            (
+                id: "mathematics",
+                data: [
+                    "title": "Mathematics",
+                    "description": "Strengthen number sense, algebra, and quantitative logic with progressive timed MCQs.",
+                    "icon": "sum",
+                    "color": "F9C74F",
+                    "xpReward": 60,
+                    "scholars": 142,
+                    "totalLevels": 10,
+                    "questionsPerLevel": 10,
+                    "timeRangeSeconds": [60, 180],
+                    "difficultyModel": "adaptive-linear",
+                    "order": 4
+                ]
+            ),
+            (
+                id: "biology",
+                data: [
+                    "title": "Biology",
+                    "description": "Understand life systems from cells to ecosystems with escalating difficulty levels.",
+                    "icon": "leaf.fill",
+                    "color": "7EF5A8",
+                    "xpReward": 52,
+                    "scholars": 126,
+                    "totalLevels": 10,
+                    "questionsPerLevel": 10,
+                    "timeRangeSeconds": [60, 180],
+                    "difficultyModel": "adaptive-linear",
+                    "order": 5
+                ]
+            )
+        ]
     }
 }

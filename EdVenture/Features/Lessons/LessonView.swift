@@ -273,6 +273,14 @@ private struct LessonCard: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.bottom, 16)
 
+            // ── Structure metadata ───────────────────────────────────
+            HStack(spacing: 14) {
+                metaPill(icon: "flag.2.crossed", text: "\(lesson.totalLevels) Levels")
+                metaPill(icon: "list.bullet.rectangle", text: "\(lesson.questionsPerLevel) Q / Level")
+                metaPill(icon: "square.stack.3d.down.right", text: "\(lesson.totalQuestions) Total Q")
+            }
+            .padding(.bottom, 14)
+
             // ── Meta row ──────────────────────────────────────────────
             HStack(spacing: 16) {
                 // XP
@@ -352,6 +360,23 @@ private struct LessonCard: View {
                         .padding(.top, 18)
                 }
         )
+    }
+}
+
+private extension LessonCard {
+    @ViewBuilder
+    func metaPill(icon: String, text: String) -> some View {
+        HStack(spacing: 5) {
+            Image(systemName: icon)
+                .font(.system(size: 10, weight: .semibold))
+            Text(text)
+                .font(.system(size: 10, weight: .semibold, design: .rounded))
+        }
+        .foregroundColor(.white.opacity(0.62))
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+        .background(Color.white.opacity(0.06))
+        .clipShape(Capsule())
     }
 }
 

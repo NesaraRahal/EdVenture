@@ -20,7 +20,12 @@ struct LessonModel: Identifiable {
     let xpReward: Int
     let scholars: Int
     let totalLevels: Int
+    let questionsPerLevel: Int
     let order: Int           // display sort order
+
+    var totalQuestions: Int {
+        totalLevels * questionsPerLevel
+    }
 
     // MARK: - Init from Firestore document
     init?(id: String, data: [String: Any]) {
@@ -40,6 +45,7 @@ struct LessonModel: Identifiable {
         self.xpReward    = data["xpReward"]  as? Int    ?? 50
         self.scholars    = data["scholars"]  as? Int    ?? 0
         self.totalLevels = totalLevels
+        self.questionsPerLevel = data["questionsPerLevel"] as? Int ?? 10
         self.order       = order
     }
 }

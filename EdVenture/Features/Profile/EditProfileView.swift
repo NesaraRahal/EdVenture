@@ -155,17 +155,24 @@ struct EditProfileView: View {
                                 Image(uiImage: selectedImage)
                                     .resizable()
                                     .scaledToFill()
+                                    .frame(width: 130, height: 130)
+                                    .clipShape(Circle())
                             } else if !vm.profile.profileImagePath.isEmpty {
                                 EVStorageImageView(path: vm.profile.profileImagePath) {
                                     Image(systemName: "person.fill")
                                         .font(.system(size: 54, weight: .medium))
                                         .foregroundColor(.white.opacity(0.7))
                                 }
+                                .frame(width: 130, height: 130)
+                                .scaledToFill()
+                                .clipShape(Circle())
                             } else if let data = Data(base64Encoded: vm.profile.profileImageBase64),
                                       let image = UIImage(data: data) {
                                 Image(uiImage: image)
                                     .resizable()
                                     .scaledToFill()
+                                    .frame(width: 130, height: 130)
+                                    .clipShape(Circle())
                             } else if let url = URL(string: vm.profile.profileImageURL), !vm.profile.profileImageURL.isEmpty {
                                 AsyncImage(url: url) { phase in
                                     switch phase {
@@ -173,20 +180,24 @@ struct EditProfileView: View {
                                         image
                                             .resizable()
                                             .scaledToFill()
+                                            .frame(width: 130, height: 130)
+                                            .clipShape(Circle())
                                     default:
                                         Image(systemName: "person.fill")
                                             .font(.system(size: 54, weight: .medium))
                                             .foregroundColor(.white.opacity(0.7))
                                     }
                                 }
+                                .frame(width: 130, height: 130)
+                                .clipShape(Circle())
                             } else {
                                 Image(systemName: "person.fill")
                                     .font(.system(size: 54, weight: .medium))
                                     .foregroundColor(.white.opacity(0.7))
                             }
                         }
+                        .clipShape(Circle())
                     )
-                    .clipShape(Circle())
 
                 Circle()
                     .fill(Color(hex: "2BE292"))

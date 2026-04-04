@@ -194,7 +194,9 @@ final class UserProfileViewModel: ObservableObject {
             return
         }
 
-        guard let data = image.jpegData(compressionQuality: 0.8) else {
+        let preparedImage = makeCenteredSquareImage(from: image)
+
+        guard let data = preparedImage.jpegData(compressionQuality: 0.8) else {
             errorMessage = "Failed to process selected image."
             return
         }
@@ -226,7 +228,7 @@ final class UserProfileViewModel: ObservableObject {
         } catch {
             // Fallback: persist a compressed base64 avatar directly in Firestore
             // so profile photos still work if Storage is misconfigured.
-            if let fallbackData = image.jpegData(compressionQuality: 0.45) {
+            if let fallbackData = preparedImage.jpegData(compressionQuality: 0.45) {
                 let base64 = fallbackData.base64EncodedString()
                 profile.profileImageBase64 = base64
                 profile.profileImagePath = ""
@@ -249,6 +251,22 @@ final class UserProfileViewModel: ObservableObject {
         }
 
         isSaving = false
+    }
+
+    private func makeCenteredSquareImage(from image: UIImage) -> UIImage {
+        let size = image.size
+        let length = min(size.width, size.height)
+        let origin = CGPoint(
+            x: (size.width - length) * 0.5,
+            y: (size.height - length) * 0.5
+        )
+        let cropRect = CGRect(origin: origin, size: CGSize(width: length, height: length))
+
+        guard let cgImage = image.cgImage?.cropping(to: cropRect) else {
+            return image
+        }
+
+        return UIImage(cgImage: cgImage, scale: image.scale, orientation: image.imageOrientation)
     }
 
     private func uploadImageData(_ data: Data,
