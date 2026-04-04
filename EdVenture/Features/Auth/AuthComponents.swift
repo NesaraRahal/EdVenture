@@ -201,3 +201,27 @@ struct ScaleButtonStyle: ButtonStyle {
             .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
     }
 }
+
+// ─────────────────────────────────────────────────────────────
+// MARK: EVLiquidGlassIconButton
+// ─────────────────────────────────────────────────────────────
+struct EVLiquidGlassIconButton: View {
+    var systemName: String
+    var size: CGFloat = 38
+    var action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: systemName)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundColor(.white)
+                .frame(width: size, height: size)
+                .background(.ultraThinMaterial, in: Circle())
+                .overlay(Circle().stroke(Color.white.opacity(0.14), lineWidth: 0.6))
+                .shadow(color: .black.opacity(0.25), radius: 8, y: 3)
+        }
+        .frame(minWidth: 44, minHeight: 44)
+        .contentShape(Rectangle())
+        .buttonStyle(ScaleButtonStyle())
+    }
+}

@@ -6,11 +6,12 @@ import SwiftUI
 struct HomeView: View {
 
     @State private var appeared      = false
-    @State private var selectedTab   = 0
     @State private var challengePage = 0
 
     // ── Navigation callbacks ─────────────────────────────────────────
     var onLessons:   (() -> Void)?
+    var onDiscovery: (() -> Void)?
+    var onRank:      (() -> Void)?
     var onSettings:  (() -> Void)?
 
     // MARK: - Data
@@ -213,69 +214,23 @@ struct HomeView: View {
 
     // MARK: - Tab bar
     private var tabBar: some View {
-        HStack(spacing: 0) {
-            ForEach(Array(tabItems.enumerated()), id: \.offset) { i, item in
-                Button {
-                    selectedTab = i
-                    switch i {
-                    case 1: onLessons?()
-                    case 4: onSettings?()
-                    default: break
-                    }
-                } label: {
-                    VStack(spacing: 4) {
-                        // Home tab active pill
-                        if i == 0 {
-                            ZStack {
-                                Capsule()
-                                    .fill(Color(hex: "0EB060"))
-                                    .frame(width: 52, height: 32)
-                                Image(systemName: item.icon)
-                                    .font(.system(size: 14, weight: .semibold))
-                                    .foregroundColor(Color(hex: "0A0F0D"))
-                            }
-                        } else {
-                            Image(systemName: item.icon)
-                                .font(.system(size: 18))
-                                .foregroundColor(.white.opacity(0.32))
-                                .frame(height: 32)
-                        }
-                        Text(item.label)
-                            .font(.system(size: 9, weight: .semibold, design: .rounded))
-                            .foregroundColor(i == 0 ? Color(hex: "0EB060") : .white.opacity(0.28))
-                            .tracking(0.5)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .frame(minHeight: 44)
-                }
+        EVMainTabBar(activeTab: .home) { tab in
+            switch tab {
+            case .lessons:
+                onLessons?()
+            case .discovery:
+                onDiscovery?()
+            case .rank:
+                onRank?()
+            case .settings:
+                onSettings?()
+            default:
+                break
             }
         }
-        .padding(.top, 10)
-        .padding(.bottom, 28)
-        .padding(.horizontal, 8)
-        .background(
-            ZStack {
-                RoundedRectangle(cornerRadius: 30, style: .continuous)
-                    .fill(.ultraThinMaterial)
-                RoundedRectangle(cornerRadius: 30, style: .continuous)
-                    .fill(Color(hex: "111714").opacity(0.75))
-                RoundedRectangle(cornerRadius: 30, style: .continuous)
-                    .stroke(Color.white.opacity(0.07), lineWidth: 0.5)
-            }
-        )
-        .padding(.horizontal, 16)
-        .shadow(color: .black.opacity(0.55), radius: 24, y: -6)
         .opacity(appeared ? 1 : 0)
         .animation(.easeOut(duration: 0.4).delay(0.2), value: appeared)
     }
-
-    private let tabItems: [(icon: String, label: String)] = [
-        ("house.fill",     "HOME"),
-        ("book.fill",      "LESSONS"),
-        ("safari",         "DISCOVERY"),
-        ("chart.bar.fill", "RANK"),
-        ("gearshape.fill", "SETTINGS"),
-    ]
 }
 
 // MARK: - Supporting models

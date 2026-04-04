@@ -9,8 +9,11 @@ struct SettingsView: View {
     @State private var appeared           = false
     @State private var showSignOutConfirm = false
 
-    var onSignOut: (() -> Void)?
-    var onHome:    (() -> Void)?
+    var onSignOut:   (() -> Void)?
+    var onHome:      (() -> Void)?
+    var onLessons:   (() -> Void)?
+    var onDiscovery: (() -> Void)?
+    var onRank:      (() -> Void)?
 
     // MARK: - Body
     var body: some View {
@@ -30,8 +33,8 @@ struct SettingsView: View {
                             .font(.system(size: 34, weight: .bold, design: .rounded))
                             .foregroundColor(.white)
                             .padding(.horizontal, 20)
-                            .padding(.top, 24)
-                            .padding(.bottom, 24)
+                            .padding(.top, 16)
+                            .padding(.bottom, 22)
                             .opacity(appeared ? 1 : 0)
                             .offset(y: appeared ? 0 : 8)
                             .animation(.easeOut(duration: 0.35).delay(0.05), value: appeared)
@@ -76,7 +79,7 @@ struct SettingsView: View {
                             .padding(.horizontal, 20)
 
                         // Version
-                        Text("MINDPRINT V2.4.6 RELEASE")
+                        Text("MINDSPRINT VERSION 2.4.0-RELEASE")
                             .font(.system(size: 11, weight: .medium, design: .rounded))
                             .foregroundColor(.white.opacity(0.18))
                             .tracking(0.6)
@@ -118,14 +121,8 @@ struct SettingsView: View {
             }
             Spacer()
             HStack(spacing: 10) {
-                Button {} label: {
-                    Image(systemName: "bell.fill")
-                        .font(.system(size: 16))
-                        .foregroundColor(.white)
-                        .frame(width: 38, height: 38)
-                        .background(.ultraThinMaterial, in: Circle())
-                        .overlay(Circle().stroke(Color.white.opacity(0.12), lineWidth: 0.5))
-                }
+                EVLiquidGlassIconButton(systemName: "bell.fill") {}
+
                 // Avatar (active — green ring on settings page)
                 Circle()
                     .fill(Color.white.opacity(0.12))
@@ -141,18 +138,7 @@ struct SettingsView: View {
             }
         }
         .padding(.horizontal, 20)
-        .padding(.vertical, 12)
-        .background(
-            ZStack {
-                Rectangle().fill(.ultraThinMaterial)
-                Rectangle().fill(Color(hex: "0A0F0D").opacity(0.6))
-                VStack {
-                    Spacer()
-                    Rectangle().fill(Color.white.opacity(0.07)).frame(height: 0.5)
-                }
-            }
-        )
-        .padding(.top, 44)
+        .padding(.top, 52)
         .opacity(appeared ? 1 : 0)
         .animation(.easeOut(duration: 0.35), value: appeared)
     }
@@ -192,10 +178,16 @@ struct SettingsView: View {
             .padding(16)
             .background(
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(Color.white.opacity(0.05))
+                    .fill(
+                        LinearGradient(
+                            colors: [Color.white.opacity(0.045), Color(hex: "0EB060").opacity(0.02)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
                     .overlay(
                         RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .stroke(Color.white.opacity(0.09), lineWidth: 0.5)
+                            .stroke(Color.white.opacity(0.1), lineWidth: 0.6)
                     )
             )
         }
@@ -209,7 +201,7 @@ struct SettingsView: View {
     private func sectionLabel(_ text: String) -> some View {
         Text(text)
             .font(.system(size: 12, weight: .semibold, design: .rounded))
-            .foregroundColor(.white.opacity(0.38))
+            .foregroundColor(.white.opacity(0.52))
             .tracking(0.4)
             .padding(.horizontal, 20)
             .padding(.bottom, 8)
@@ -262,10 +254,16 @@ struct SettingsView: View {
         }
         .background(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(Color.white.opacity(0.05))
+                .fill(
+                    LinearGradient(
+                        colors: [Color.white.opacity(0.045), Color(hex: "0EB060").opacity(0.02)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
                 .overlay(
                     RoundedRectangle(cornerRadius: 16, style: .continuous)
-                        .stroke(Color.white.opacity(0.08), lineWidth: 0.5)
+                        .stroke(Color.white.opacity(0.08), lineWidth: 0.6)
                 )
         )
         .padding(.horizontal, 20)
@@ -289,7 +287,13 @@ struct SettingsView: View {
             .frame(height: 54)
             .background(
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(Color(hex: "FF453A").opacity(0.08))
+                    .fill(
+                        LinearGradient(
+                            colors: [Color.white.opacity(0.04), Color(hex: "FF453A").opacity(0.05)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
                     .overlay(
                         RoundedRectangle(cornerRadius: 14, style: .continuous)
                             .stroke(Color(hex: "FF453A").opacity(0.22), lineWidth: 0.5)
@@ -303,59 +307,21 @@ struct SettingsView: View {
 
     // MARK: - Tab bar (Settings tab active)
     private var tabBar: some View {
-        HStack(spacing: 0) {
-            ForEach(Array(tabItems.enumerated()), id: \.offset) { i, item in
-                Button {
-                    if i == 0 { onHome?() }
-                } label: {
-                    VStack(spacing: 4) {
-                        // Settings tab (i==4) active pill
-                        if i == 4 {
-                            ZStack {
-                                Capsule()
-                                    .fill(Color(hex: "0EB060"))
-                                    .frame(width: 52, height: 32)
-                                Image(systemName: item.icon)
-                                    .font(.system(size: 14, weight: .semibold))
-                                    .foregroundColor(Color(hex: "0A0F0D"))
-                            }
-                        } else {
-                            Image(systemName: item.icon)
-                                .font(.system(size: 18))
-                                .foregroundColor(.white.opacity(0.30))
-                                .frame(height: 32)
-                        }
-                        Text(item.label)
-                            .font(.system(size: 9, weight: .semibold, design: .rounded))
-                            .foregroundColor(i == 4 ? Color(hex: "0EB060") : .white.opacity(0.28))
-                            .tracking(0.5)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .frame(minHeight: 44)
-                }
+        EVMainTabBar(activeTab: .settings) { tab in
+            switch tab {
+            case .home:
+                onHome?()
+            case .lessons:
+                onLessons?()
+            case .discovery:
+                onDiscovery?()
+            case .rank:
+                onRank?()
+            default:
+                break
             }
         }
-        .padding(.top, 10)
-        .padding(.bottom, 28)
-        .padding(.horizontal, 8)
-        .background(
-            ZStack {
-                RoundedRectangle(cornerRadius: 30, style: .continuous).fill(.ultraThinMaterial)
-                RoundedRectangle(cornerRadius: 30, style: .continuous).fill(Color(hex: "111714").opacity(0.75))
-                RoundedRectangle(cornerRadius: 30, style: .continuous).stroke(Color.white.opacity(0.07), lineWidth: 0.5)
-            }
-        )
-        .padding(.horizontal, 16)
-        .shadow(color: .black.opacity(0.55), radius: 24, y: -6)
     }
-
-    private let tabItems: [(icon: String, label: String)] = [
-        ("house.fill",     "HOME"),
-        ("book.fill",      "LESSONS"),
-        ("safari",         "DISCOVERY"),
-        ("chart.bar.fill", "RANK"),
-        ("gearshape.fill", "SETTINGS"),
-    ]
 
     // MARK: - Sign out
     private func performSignOut() {

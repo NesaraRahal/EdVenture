@@ -17,8 +17,10 @@ struct LessonsView: View {
     @State private var appeared      = false
     @State private var addedLessons  = Set<String>()   // tracks "Add to Practice" taps locally
 
-    var onSettings: (() -> Void)?
-    var onHome:     (() -> Void)?
+    var onHome:      (() -> Void)?
+    var onDiscovery: (() -> Void)?
+    var onRank:      (() -> Void)?
+    var onSettings:  (() -> Void)?
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -28,22 +30,10 @@ struct LessonsView: View {
                 // ── Liquid glass nav ──────────────────────────────────
                 navBar
 
-                // ── Page title ────────────────────────────────────────
-                HStack {
-                    Text("Lessons")
-                        .font(.system(size: 28, weight: .bold, design: .rounded))
-                        .foregroundColor(.white)
-                    Spacer()
-                }
-                .padding(.horizontal, 20)
-                .padding(.top, 16)
-                .padding(.bottom, 12)
-                .opacity(appeared ? 1 : 0)
-                .animation(.easeOut(duration: 0.4).delay(0.05), value: appeared)
-
                 // ── Search bar ────────────────────────────────────────
                 searchBar
                     .padding(.horizontal, 20)
+                    .padding(.top, 12)
                     .padding(.bottom, 14)
                     .opacity(appeared ? 1 : 0)
                     .animation(.easeOut(duration: 0.4).delay(0.1), value: appeared)
@@ -125,14 +115,8 @@ struct LessonsView: View {
             }
             Spacer()
             HStack(spacing: 10) {
-                Button {} label: {
-                    Image(systemName: "bell.fill")
-                        .font(.system(size: 16))
-                        .foregroundColor(.white)
-                        .frame(width: 38, height: 38)
-                        .background(.ultraThinMaterial, in: Circle())
-                        .overlay(Circle().stroke(Color.white.opacity(0.12), lineWidth: 0.5))
-                }
+                EVLiquidGlassIconButton(systemName: "bell.fill") {}
+
                 Button { onSettings?() } label: {
                     Circle()
                         .fill(Color.white.opacity(0.12))
@@ -147,18 +131,7 @@ struct LessonsView: View {
             }
         }
         .padding(.horizontal, 20)
-        .padding(.vertical, 12)
-        .background(
-            ZStack {
-                Rectangle().fill(.ultraThinMaterial)
-                Rectangle().fill(Color(hex: "0A0F0D").opacity(0.6))
-                VStack {
-                    Spacer()
-                    Rectangle().fill(Color.white.opacity(0.07)).frame(height: 0.5)
-                }
-            }
-        )
-        .padding(.top, 44)
+        .padding(.top, 52)
     }
 
     // MARK: - Search bar
@@ -189,11 +162,11 @@ struct LessonsView: View {
             }
         }
         .padding(.horizontal, 14)
-        .frame(height: 46)
+        .frame(height: 56)
         .background(Color.white.opacity(0.07))
-        .clipShape(RoundedRectangle(cornerRadius: 13, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 13, style: .continuous)
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .stroke(Color.white.opacity(0.1), lineWidth: 0.5)
         )
     }
@@ -211,7 +184,7 @@ struct LessonsView: View {
                             .foregroundColor(
                                 vm.selectedFilter == chip
                                     ? Color(hex: "0A0F0D")
-                                    : .white.opacity(0.6)
+                                    : .white.opacity(0.78)
                             )
                             .padding(.horizontal, 16)
                             .padding(.vertical, 8)
@@ -220,7 +193,7 @@ struct LessonsView: View {
                                     .fill(
                                         vm.selectedFilter == chip
                                             ? Color(hex: "0EB060")
-                                            : Color.white.opacity(0.08)
+                                            : Color.white
                                     )
                             )
                             .overlay(
@@ -228,7 +201,7 @@ struct LessonsView: View {
                                     .stroke(
                                         vm.selectedFilter == chip
                                             ? Color.clear
-                                            : Color.white.opacity(0.1),
+                                            : Color.white.opacity(0.12),
                                         lineWidth: 0.5
                                     )
                             )
@@ -243,60 +216,21 @@ struct LessonsView: View {
 
     // MARK: - Tab bar
     private var tabBar: some View {
-        HStack(spacing: 0) {
-            ForEach(Array(tabItems.enumerated()), id: \.offset) { i, item in
-                Button {
-                    if i == 0 { onHome?() }
-                    if i == 4 { onSettings?() }
-                } label: {
-                    VStack(spacing: 4) {
-                        if i == 1 {
-                            // Lessons tab — active pill
-                            ZStack {
-                                Capsule()
-                                    .fill(Color(hex: "0EB060"))
-                                    .frame(width: 52, height: 32)
-                                Image(systemName: item.icon)
-                                    .font(.system(size: 14, weight: .semibold))
-                                    .foregroundColor(Color(hex: "0A0F0D"))
-                            }
-                        } else {
-                            Image(systemName: item.icon)
-                                .font(.system(size: 18))
-                                .foregroundColor(.white.opacity(0.3))
-                                .frame(height: 32)
-                        }
-                        Text(item.label)
-                            .font(.system(size: 9, weight: .semibold, design: .rounded))
-                            .foregroundColor(i == 1 ? Color(hex: "0EB060") : .white.opacity(0.28))
-                            .tracking(0.5)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .frame(minHeight: 44)
-                }
+        EVMainTabBar(activeTab: .lessons) { tab in
+            switch tab {
+            case .home:
+                onHome?()
+            case .discovery:
+                onDiscovery?()
+            case .rank:
+                onRank?()
+            case .settings:
+                onSettings?()
+            default:
+                break
             }
         }
-        .padding(.top, 10)
-        .padding(.bottom, 28)
-        .padding(.horizontal, 8)
-        .background(
-            ZStack {
-                RoundedRectangle(cornerRadius: 30, style: .continuous).fill(.ultraThinMaterial)
-                RoundedRectangle(cornerRadius: 30, style: .continuous).fill(Color(hex: "111714").opacity(0.75))
-                RoundedRectangle(cornerRadius: 30, style: .continuous).stroke(Color.white.opacity(0.07), lineWidth: 0.5)
-            }
-        )
-        .padding(.horizontal, 16)
-        .shadow(color: .black.opacity(0.5), radius: 20, y: -4)
     }
-
-    private let tabItems: [(icon: String, label: String)] = [
-        ("house.fill",     "HOME"),
-        ("book.fill",      "LESSONS"),
-        ("safari",         "DISCOVERY"),
-        ("chart.bar.fill", "RANK"),
-        ("gearshape.fill", "SETTINGS"),
-    ]
 
     // MARK: - Add to practice handler
     private func handleAddToPractice(lesson: LessonModel) {
@@ -328,7 +262,7 @@ private struct LessonCard: View {
 
             // ── Title ─────────────────────────────────────────────────
             Text(lesson.title)
-                .font(.system(size: 26, weight: .bold, design: .rounded))
+                .font(.system(size: 48, weight: .bold, design: .rounded))
                 .foregroundColor(.white)
                 .padding(.bottom, 8)
 
@@ -358,7 +292,7 @@ private struct LessonCard: View {
                         .foregroundColor(.white.opacity(0.35))
                     Text("\(lesson.scholars)+ SCHOLARS")
                         .font(.system(size: 11, weight: .semibold, design: .rounded))
-                        .foregroundColor(.white.opacity(0.35))
+                        .foregroundColor(.white.opacity(0.5))
                 }
                 Spacer()
             }
@@ -378,7 +312,7 @@ private struct LessonCard: View {
                 }
                 .foregroundColor(isAdded ? Color(hex: "0EB060") : Color(hex: "0A0F0D"))
                 .frame(maxWidth: .infinity)
-                .frame(height: 50)
+                .frame(height: 56)
                 .background(
                     isAdded
                         ? Color(hex: "0EB060").opacity(0.12)
@@ -399,12 +333,25 @@ private struct LessonCard: View {
         }
         .padding(20)
         .background(
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .fill(Color.white.opacity(0.04))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 22, style: .continuous)
-                        .stroke(Color.white.opacity(0.08), lineWidth: 0.5)
+            RoundedRectangle(cornerRadius: 28, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: [Color.white.opacity(0.045), Color(hex: "0EB060").opacity(0.02)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
                 )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 28, style: .continuous)
+                        .stroke(Color.white.opacity(0.08), lineWidth: 0.6)
+                )
+                .overlay(alignment: .topTrailing) {
+                    Image(systemName: lesson.icon)
+                        .font(.system(size: 110, weight: .light))
+                        .foregroundColor(Color(hex: lesson.color).opacity(0.08))
+                        .padding(.trailing, 24)
+                        .padding(.top, 18)
+                }
         )
     }
 }

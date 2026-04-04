@@ -9,64 +9,89 @@ struct ContentView: View {
     @State private var path            = NavigationPath()
     @State private var registeredEmail = ""
 
+    private func goToMainTab(_ route: AppRoute) {
+        path = NavigationPath()
+        path.append(route)
+    }
+
     var body: some View {
         NavigationStack(path: $path) {
             WelcomeView {
-                path.append("login")
+                path.append(AppRoute.login)
             }
-            .navigationDestination(for: String.self) { route in
+            .navigationDestination(for: AppRoute.self) { route in
                 Group {
                     switch route {
 
                     // ── Auth flow ──────────────────────────────────
-                    case "login":
+                    case .login:
                         LoginView(
-                            onAuthenticated:  { path.append("home") },
-                            onCreateAccount:  { path.append("register") },
-                            onForgotPassword: { path.append("forgot") }
+                            onAuthenticated:  { path.append(AppRoute.home) },
+                            onCreateAccount:  { path.append(AppRoute.register) },
+                            onForgotPassword: { path.append(AppRoute.forgotPassword) }
                         )
 
-                    case "register":
+                    case .register:
                         RegisterView(
                             onSignIn: { path.removeLast() },
                             onRegistered: { email in
                                 registeredEmail = email
-                                path.append("otp")
+                                path.append(AppRoute.otp)
                             }
                         )
 
-                    case "forgot":
+                    case .forgotPassword:
                         ForgotPasswordView(
-                            onCreateAccount: { path.append("register") }
+                            onCreateAccount: { path.append(AppRoute.register) }
                         )
 
-                    case "otp":
+                    case .otp:
                         OTPView(
                             email:      registeredEmail,
-                            onVerified: { path.append("home") }
+                            onVerified: { path.append(AppRoute.home) }
                         )
 
                     // ── Main app ───────────────────────────────────
-                    case "home":
+                    case .home:
                         HomeView(
-                            onLessons:  { path.append("lessons") },
-                            onSettings: { path.append("settings") }
+                            onLessons:   { goToMainTab(.lessons) },
+                            onDiscovery: { goToMainTab(.discovery) },
+                            onRank:      { goToMainTab(.rank) },
+                            onSettings:  { goToMainTab(.settings) }
                         )
 
-                    case "lessons":
+                    case .lessons:
                         LessonsView(
-                            onSettings: { path.append("settings") },
-                            onHome:     { path.removeLast() }
+                            onHome:      { goToMainTab(.home) },
+                            onDiscovery: { goToMainTab(.discovery) },
+                            onRank:      { goToMainTab(.rank) },
+                            onSettings:  { goToMainTab(.settings) }
                         )
 
-                    case "settings":
+                    case .discovery:
+                        DiscoveryView(
+                            onHome:     { goToMainTab(.home) },
+                            onLessons:  { goToMainTab(.lessons) },
+                            onRank:     { goToMainTab(.rank) },
+                            onSettings: { goToMainTab(.settings) }
+                        )
+
+                    case .rank:
+                        RankView(
+                            onHome:      { goToMainTab(.home) },
+                            onLessons:   { goToMainTab(.lessons) },
+                            onDiscovery: { goToMainTab(.discovery) },
+                            onSettings:  { goToMainTab(.settings) }
+                        )
+
+                    case .settings:
                         SettingsView(
                             onSignOut: { path = NavigationPath() },
-                            onHome:    { path.removeLast() }
+                            onHome:      { goToMainTab(.home) },
+                            onLessons:   { goToMainTab(.lessons) },
+                            onDiscovery: { goToMainTab(.discovery) },
+                            onRank:      { goToMainTab(.rank) }
                         )
-
-                    default:
-                        EmptyView()
                     }
                 }
                 // ── iOS standard slide transition ──────────────────

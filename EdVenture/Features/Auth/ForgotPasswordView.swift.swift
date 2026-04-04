@@ -27,28 +27,20 @@ struct ForgotPasswordView: View {
 
             VStack(spacing: 0) {
 
-                // ── Back button (HIG: leading, 44pt min) ─────────────
+                // ── Top bar (liquid glass) ───────────────────────────
                 HStack {
-                    Button {
-                        dismiss()
-                    } label: {
-                        HStack(spacing: 6) {
-                            Image(systemName: "chevron.left")
-                                .font(.system(size: 14, weight: .semibold))
-                            Text("Back")
-                                .font(.system(size: 15, weight: .semibold, design: .rounded))
-                        }
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 8)
-                        .background(Color.white.opacity(0.12))
-                        .clipShape(Capsule())
-                        // HIG: minimum 44pt touch target
-                        .frame(minHeight: 44)
-                    }
+                    EVLiquidGlassIconButton(systemName: "chevron.left") { dismiss() }
+
+                    Text("Forgot Password")
+                        .font(.system(size: 17, weight: .semibold, design: .rounded))
+                        .foregroundColor(.white.opacity(0.9))
+                        .frame(maxWidth: .infinity)
+
+                    Color.clear
+                        .frame(width: 44, height: 44)
                     Spacer()
                 }
-                .padding(.horizontal, 20)
+                .padding(.top, 52)
                 .padding(.top, 56)
 
                 Spacer()
