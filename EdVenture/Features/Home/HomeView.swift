@@ -13,6 +13,7 @@ struct HomeView: View {
     var onDiscovery: (() -> Void)?
     var onRank:      (() -> Void)?
     var onSettings:  (() -> Void)?
+    var onProfile:   (() -> Void)?
 
     // MARK: - Data
     let stats: [StatItem] = [
@@ -105,16 +106,14 @@ struct HomeView: View {
                         .foregroundColor(.white)
                         .frame(width: 44, height: 44)
                 }
-                Button { onSettings?() } label: {
-                    Circle()
-                        .fill(Color.white.opacity(0.12))
-                        .frame(width: 38, height: 38)
-                        .overlay(
-                            Image(systemName: "person.fill")
-                                .font(.system(size: 15))
-                                .foregroundColor(.white.opacity(0.6))
-                        )
-                        .overlay(Circle().stroke(Color.white.opacity(0.1), lineWidth: 0.5))
+                Button { onProfile?() } label: {
+                    EVProfileAvatarView(
+                        size: 38,
+                        iconSize: 15,
+                        iconOpacity: 0.6,
+                        ringColor: Color.white.opacity(0.1),
+                        ringWidth: 0.5
+                    )
                 }
             }
         }

@@ -14,6 +14,7 @@ struct SettingsView: View {
     var onLessons:   (() -> Void)?
     var onDiscovery: (() -> Void)?
     var onRank:      (() -> Void)?
+    var onProfile:   (() -> Void)?
 
     // MARK: - Body
     var body: some View {
@@ -124,17 +125,15 @@ struct SettingsView: View {
                 EVLiquidGlassIconButton(systemName: "bell.fill") {}
 
                 // Avatar (active — green ring on settings page)
-                Circle()
-                    .fill(Color.white.opacity(0.12))
-                    .frame(width: 38, height: 38)
-                    .overlay(
-                        Image(systemName: "person.fill")
-                            .font(.system(size: 15))
-                            .foregroundColor(.white.opacity(0.7))
+                Button { onProfile?() } label: {
+                    EVProfileAvatarView(
+                        size: 38,
+                        iconSize: 15,
+                        iconOpacity: 0.7,
+                        ringColor: Color(hex: "0EB060").opacity(0.7),
+                        ringWidth: 1.5
                     )
-                    .overlay(
-                        Circle().stroke(Color(hex: "0EB060").opacity(0.7), lineWidth: 1.5)
-                    )
+                }
             }
         }
         .padding(.horizontal, 20)
@@ -145,19 +144,15 @@ struct SettingsView: View {
 
     // MARK: - Profile card
     private var profileCard: some View {
-        Button {} label: {
+        Button { onProfile?() } label: {
             HStack(spacing: 14) {
                 // Avatar
-                ZStack {
-                    Circle()
-                        .fill(Color.white.opacity(0.08))
-                        .frame(width: 54, height: 54)
-                    Image(systemName: "person.fill")
-                        .font(.system(size: 22))
-                        .foregroundColor(.white.opacity(0.55))
-                }
-                .overlay(
-                    Circle().stroke(Color(hex: "0EB060").opacity(0.5), lineWidth: 1.5)
+                EVProfileAvatarView(
+                    size: 54,
+                    iconSize: 22,
+                    iconOpacity: 0.55,
+                    ringColor: Color(hex: "0EB060").opacity(0.5),
+                    ringWidth: 1.5
                 )
 
                 VStack(alignment: .leading, spacing: 4) {

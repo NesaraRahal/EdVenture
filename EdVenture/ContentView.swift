@@ -57,7 +57,8 @@ struct ContentView: View {
                             onLessons:   { goToMainTab(.lessons) },
                             onDiscovery: { goToMainTab(.discovery) },
                             onRank:      { goToMainTab(.rank) },
-                            onSettings:  { goToMainTab(.settings) }
+                            onSettings:  { goToMainTab(.settings) },
+                            onProfile:   { path.append(AppRoute.profile) }
                         )
 
                     case .lessons:
@@ -65,7 +66,8 @@ struct ContentView: View {
                             onHome:      { goToMainTab(.home) },
                             onDiscovery: { goToMainTab(.discovery) },
                             onRank:      { goToMainTab(.rank) },
-                            onSettings:  { goToMainTab(.settings) }
+                            onSettings:  { goToMainTab(.settings) },
+                            onProfile:   { path.append(AppRoute.profile) }
                         )
 
                     case .discovery:
@@ -73,7 +75,8 @@ struct ContentView: View {
                             onHome:     { goToMainTab(.home) },
                             onLessons:  { goToMainTab(.lessons) },
                             onRank:     { goToMainTab(.rank) },
-                            onSettings: { goToMainTab(.settings) }
+                            onSettings: { goToMainTab(.settings) },
+                            onProfile:  { path.append(AppRoute.profile) }
                         )
 
                     case .rank:
@@ -81,7 +84,8 @@ struct ContentView: View {
                             onHome:      { goToMainTab(.home) },
                             onLessons:   { goToMainTab(.lessons) },
                             onDiscovery: { goToMainTab(.discovery) },
-                            onSettings:  { goToMainTab(.settings) }
+                            onSettings:  { goToMainTab(.settings) },
+                            onProfile:   { path.append(AppRoute.profile) }
                         )
 
                     case .settings:
@@ -90,7 +94,27 @@ struct ContentView: View {
                             onHome:      { goToMainTab(.home) },
                             onLessons:   { goToMainTab(.lessons) },
                             onDiscovery: { goToMainTab(.discovery) },
-                            onRank:      { goToMainTab(.rank) }
+                            onRank:      { goToMainTab(.rank) },
+                            onProfile:   { path.append(AppRoute.profile) }
+                        )
+
+                    case .profile:
+                        ProfileView(
+                            onEditProfile: { path.append(AppRoute.editProfile) },
+                            onBack: {
+                                if !path.isEmpty {
+                                    path.removeLast()
+                                }
+                            }
+                        )
+
+                    case .editProfile:
+                        EditProfileView(
+                            onBack: {
+                                if !path.isEmpty {
+                                    path.removeLast()
+                                }
+                            }
                         )
                     }
                 }

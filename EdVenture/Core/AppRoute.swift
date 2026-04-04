@@ -11,4 +11,6 @@ enum AppRoute: Hashable {
     case discovery
     case rank
     case settings
+    case profile
+    case editProfile
 }
