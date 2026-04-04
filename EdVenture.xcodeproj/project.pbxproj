@@ -10,6 +10,7 @@
 		037BA76E2F7BA3960087C670 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 037BA76D2F7BA3960087C670 /* FirebaseAuth */; };
 		037BA7702F7BA3A40087C670 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 037BA76F2F7BA3A40087C670 /* FirebaseCore */; };
 		037BA7722F7BA3B00087C670 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 037BA7712F7BA3B00087C670 /* FirebaseFirestore */; };
+		58D91D7E2FB4000200ABC001 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 58D91D7D2FB4000200ABC001 /* FirebaseStorage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				58D91D7E2FB4000200ABC001 /* FirebaseStorage in Frameworks */,
 				037BA7702F7BA3A40087C670 /* FirebaseCore in Frameworks */,
 				037BA76E2F7BA3960087C670 /* FirebaseAuth in Frameworks */,
 				037BA7722F7BA3B00087C670 /* FirebaseFirestore in Frameworks */,
@@ -85,6 +87,7 @@
 				037BA76D2F7BA3960087C670 /* FirebaseAuth */,
 				037BA76F2F7BA3A40087C670 /* FirebaseCore */,
 				037BA7712F7BA3B00087C670 /* FirebaseFirestore */,
+				58D91D7D2FB4000200ABC001 /* FirebaseStorage */,
 			);
 			productName = EdVenture;
 			productReference = 037BA73D2F7B8FB10087C670 /* EdVenture.app */;
@@ -279,6 +282,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Allow camera access to capture your profile photo.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Allow photo library access to choose your profile photo.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -310,6 +315,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Allow camera access to capture your profile photo.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Allow photo library access to choose your profile photo.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -381,6 +388,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 037BA7682F7B9F650087C670 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
+		};
+		58D91D7D2FB4000200ABC001 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 037BA7682F7B9F650087C670 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

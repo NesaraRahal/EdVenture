@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FirebaseAuth
+import FirebaseFirestore
 import Combine
 
 // MARK: - AuthViewModel
@@ -22,6 +23,8 @@ final class AuthViewModel: ObservableObject {
     @Published var isAuthenticated  = false
     @Published var otpSent          = false
     @Published var resetEmailSent   = false
+
+    private let db = Firestore.firestore()
 
     // MARK: - Register
     func register(username: String,
@@ -53,6 +56,23 @@ final class AuthViewModel: ObservableObject {
             let changeRequest = result.user.createProfileChangeRequest()
             changeRequest.displayName = username
             try await changeRequest.commitChanges()
+
+            // Create initial profile document so profile/edit screens have real data.
+            try await db.collection("users").document(result.user.uid).setData([
+                "fullName": username,
+                "username": username,
+                "email": email,
+                "phone": "",
+                "bio": "",
+                "interests": ["General Knowledge"],
+                "profileImagePath": "",
+                "profileImageURL": "",
+                "profileImageBase64": "",
+                "isEmailVerified": result.user.isEmailVerified,
+                "createdAt": Timestamp(date: Date()),
+                "updatedAt": Timestamp(date: Date())
+            ], merge: true)
+
             // Send email verification (acts as OTP flow)
             try await result.user.sendEmailVerification()
             otpSent = true
