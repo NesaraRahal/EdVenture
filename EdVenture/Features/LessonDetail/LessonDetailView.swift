@@ -110,7 +110,7 @@ struct LessonDetailView: View {
 
     private func overviewCard(_ lesson: LessonDetail) -> some View {
         VStack(alignment: .leading, spacing: 18) {
-            HStack(spacing: 14) {
+            HStack(alignment: .top, spacing: 14) {
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
                     .fill(Color(hex: lesson.colorHex).opacity(0.18))
                     .frame(width: 64, height: 64)
@@ -129,6 +129,17 @@ struct LessonDetailView: View {
                     Text("\(lesson.xpReward) XP per question")
                         .font(.system(size: 14, weight: .semibold, design: .rounded))
                         .foregroundColor(Color(hex: "0EB060"))
+                }
+
+                Spacer()
+
+                NavigationLink(destination: TutorialQuestionView()) {
+                    Image(systemName: "questionmark.circle.fill")
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundColor(Color(hex: "0EB060"))
+                        .frame(width: 44, height: 44)
+                        .background(Color.white.opacity(0.1))
+                        .clipShape(Circle())
                 }
             }
 
@@ -164,29 +175,7 @@ struct LessonDetailView: View {
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 26, style: .continuous)
-                        .stroke(Color.white.opacity(0.08), lineWidth: 0.6)
-                )
-        )
-    }
-
-    private func detailStat(title: String, value: String, accent: Color) -> some View {
-        VStack(spacing: 8) {
-            Text(title)
-                .font(.system(size: 10, weight: .bold, design: .rounded))
-                .foregroundColor(.white.opacity(0.45))
-                .tracking(1)
-            Text(value)
-                .font(.system(size: 32, weight: .bold, design: .rounded))
-                .foregroundColor(accent)
-        }
-        .frame(maxWidth: .infinity)
-        .frame(height: 110)
-        .background(
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(Color.white.opacity(0.04))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 16, style: .continuous)
-                        .stroke(Color.white.opacity(0.08), lineWidth: 0.5)
+                        .stroke(Color(hex: "0EB060").opacity(0.22), lineWidth: 0.6)
                 )
         )
     }
@@ -237,6 +226,28 @@ struct LessonDetailView: View {
                 )
             }
         }
+    }
+
+    private func detailStat(title: String, value: String, accent: Color) -> some View {
+        VStack(spacing: 10) {
+            Text(title)
+                .font(.system(size: 12, weight: .bold, design: .rounded))
+                .foregroundColor(.white.opacity(0.35))
+                .tracking(2)
+            Text(value)
+                .font(.system(size: 40, weight: .bold, design: .rounded))
+                .foregroundColor(accent)
+        }
+        .frame(maxWidth: .infinity)
+        .frame(minHeight: 150)
+        .background(
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .fill(Color.white.opacity(0.04))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .stroke(Color.white.opacity(0.05), lineWidth: 0.6)
+                )
+        )
     }
 }
 

@@ -90,6 +90,25 @@ struct ContentView: View {
                             }
                         )
 
+                    case .question(let lessonId, let questionIndex):
+                        QuestionView(
+                            lessonId: lessonId,
+                            questionIndex: questionIndex,
+                            onBack: {
+                                if !path.isEmpty {
+                                    path.removeLast()
+                                }
+                            }
+                        )
+
+                        case .tutorialQuestion:
+                            TutorialQuestionView(
+                                onBack: {
+                                    if !path.isEmpty {
+                                        path.removeLast()
+                                    }
+                                }
+                            )
                     case .discovery:
                         DiscoveryView(
                             onHome:     { goToMainTab(.home) },
