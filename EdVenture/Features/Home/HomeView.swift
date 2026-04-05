@@ -1,10 +1,15 @@
 import SwiftUI
+import FirebaseAuth
+import FirebaseFirestore
+import UIKit
+import Combine
 
 // MARK: - HomeView
 // Features/Home/HomeView.swift
 
 struct HomeView: View {
 
+    @StateObject private var vm      = HomeViewModel()
     @State private var appeared      = false
     @State private var challengePage = 0
 
@@ -13,6 +18,7 @@ struct HomeView: View {
     var onDiscovery: (() -> Void)?
     var onRank:      (() -> Void)?
     var onSettings:  (() -> Void)?
+    var onOpenLesson: ((String) -> Void)?
     var onProfile:   (() -> Void)?
 
     // MARK: - Data
@@ -41,13 +47,6 @@ struct HomeView: View {
             description: "60 seconds. 20 questions. How fast can your brain fire?",
             gradient: [Color(hex: "10B981"), Color(hex: "059669"), Color(hex: "0EB060")]
         ),
-    ]
-
-    let lessons: [Lesson] = [
-        Lesson(icon: "airplane",        iconBg: Color(hex: "0EB060").opacity(0.2), title: "Astronomy",  subtitle: "Stellar Evolution", progress: 0.72),
-        Lesson(icon: "book.fill",       iconBg: Color.white.opacity(0.08),         title: "Philosophy", subtitle: "Stoic Principles",  progress: 0.35),
-        Lesson(icon: "square.grid.2x2", iconBg: Color.white.opacity(0.08),         title: "Computing",  subtitle: "Quantum Logic",     progress: 0.18),
-        Lesson(icon: "staroflife.fill", iconBg: Color.white.opacity(0.08),         title: "Biology",    subtitle: "Helix Mapping",     progress: 0.28),
     ]
 
     // MARK: - Body
@@ -83,6 +82,10 @@ struct HomeView: View {
         .navigationBarHidden(true)
         .onAppear {
             withAnimation { appeared = true }
+
+            Task {
+                await vm.fetchActiveLessonsForCurrentUser()
+            }
         }
     }
 
@@ -196,18 +199,61 @@ struct HomeView: View {
             }
             .padding(.horizontal, 20)
 
-            LazyVGrid(
-                columns: [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)],
-                spacing: 14
-            ) {
-                ForEach(Array(lessons.enumerated()), id: \.element.id) { i, lesson in
-                    HomeLessonCard(lesson: lesson)
+            if vm.isLoadingActiveLessons {
+                ProgressView()
+                    .tint(Color(hex: "0EB060"))
+                    .frame(maxWidth: .infinity, minHeight: 120)
+                    .background(
+                        RoundedRectangle(cornerRadius: 20, style: .continuous)
+                            .fill(Color.white.opacity(0.04))
+                    )
+                    .padding(.horizontal, 20)
+            } else if vm.activeLessons.isEmpty {
+                VStack(spacing: 10) {
+                    Image(systemName: "book.closed")
+                        .font(.system(size: 24, weight: .medium))
+                        .foregroundColor(.white.opacity(0.5))
+
+                    Text("No active lessons yet")
+                        .font(.system(size: 16, weight: .semibold, design: .rounded))
+                        .foregroundColor(.white.opacity(0.85))
+
+                    Text("Add lessons to practice from the Lessons tab.")
+                        .font(.system(size: 13, design: .rounded))
+                        .foregroundColor(.white.opacity(0.45))
+                        .multilineTextAlignment(.center)
+                }
+                .padding(.vertical, 22)
+                .padding(.horizontal, 16)
+                .frame(maxWidth: .infinity)
+                .background(
+                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        .fill(Color.white.opacity(0.04))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                                .stroke(Color.white.opacity(0.08), lineWidth: 0.5)
+                        )
+                )
+                .padding(.horizontal, 20)
+            } else {
+                LazyVGrid(
+                    columns: [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)],
+                    spacing: 14
+                ) {
+                    ForEach(Array(vm.activeLessons.enumerated()), id: \.element.id) { i, lesson in
+                        Button {
+                            onOpenLesson?(lesson.id)
+                        } label: {
+                            HomeLessonCard(lesson: lesson)
+                        }
+                        .buttonStyle(ScaleButtonStyle())
                         .opacity(appeared ? 1 : 0)
                         .offset(y: appeared ? 0 : 20)
                         .animation(.easeOut(duration: 0.45).delay(0.34 + Double(i) * 0.07), value: appeared)
+                    }
                 }
+                .padding(.horizontal, 20)
             }
-            .padding(.horizontal, 20)
         }
     }
 
@@ -249,13 +295,87 @@ struct Challenge: Identifiable {
     let gradient: [Color]
 }
 
-struct Lesson: Identifiable {
-    let id = UUID()
+struct HomeActiveLesson: Identifiable {
+    let id: String
     let icon: String
     let iconBg: Color
     let title: String
     let subtitle: String
     let progress: Double
+}
+
+@MainActor
+final class HomeViewModel: ObservableObject {
+    @Published var activeLessons: [HomeActiveLesson] = []
+    @Published var isLoadingActiveLessons = false
+
+    private let db = Firestore.firestore()
+
+    func fetchActiveLessonsForCurrentUser() async {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            activeLessons = []
+            return
+        }
+
+        isLoadingActiveLessons = true
+        defer { isLoadingActiveLessons = false }
+
+        do {
+            let activeSnapshot = try await db
+                .collection("users")
+                .document(uid)
+                .collection("activeLessons")
+                .order(by: "addedAt", descending: true)
+                .getDocuments()
+
+            var mapped: [HomeActiveLesson] = []
+
+            for doc in activeSnapshot.documents {
+                let lessonId = doc.documentID
+                let progress = min(max((doc.data()["progress"] as? Double) ?? 0.0, 0.0), 1.0)
+
+                let lessonDoc = try await db.collection("lessons").document(lessonId).getDocument()
+                guard let data = lessonDoc.data() else { continue }
+
+                let title = (data["title"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
+                let description = (data["description"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
+                let subtitle = (data["subtitle"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
+                let icon = (data["icon"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
+                let colorHex = (data["color"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
+
+                let resolvedIcon = resolveIcon(icon)
+
+                mapped.append(
+                    HomeActiveLesson(
+                        id: lessonId,
+                        icon: resolvedIcon,
+                        iconBg: Color(hex: (colorHex?.isEmpty == false ? colorHex! : "0EB060")).opacity(0.2),
+                        title: (title?.isEmpty == false ? title! : "Untitled"),
+                        subtitle: (subtitle?.isEmpty == false ? subtitle! : shortSubtitle(from: description)),
+                        progress: progress
+                    )
+                )
+            }
+
+            activeLessons = mapped
+        } catch {
+            activeLessons = []
+        }
+    }
+
+    private func resolveIcon(_ icon: String?) -> String {
+        let candidate = (icon?.isEmpty == false ? icon! : "book.fill")
+        return UIImage(systemName: candidate) == nil ? "book.fill" : candidate
+    }
+
+    private func shortSubtitle(from description: String?) -> String {
+        guard let text = description, !text.isEmpty else { return "Start learning" }
+        if let firstPart = text.components(separatedBy: ".").first,
+           !firstPart.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return firstPart.trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        return text
+    }
 }
 
 // MARK: - StatCard
@@ -355,7 +475,7 @@ private struct ChallengeCard: View {
 
 // MARK: - HomeLessonCard (grid card on home screen)
 private struct HomeLessonCard: View {
-    let lesson: Lesson
+    let lesson: HomeActiveLesson
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Image(systemName: lesson.icon)

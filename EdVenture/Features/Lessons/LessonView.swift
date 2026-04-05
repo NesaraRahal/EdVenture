@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FirebaseAuth
+import UIKit
 
 // MARK: - LessonsView
 // Features/Lessons/LessonsView.swift
@@ -15,7 +16,10 @@ struct LessonsView: View {
 
     @StateObject private var vm      = LessonsViewModel()
     @State private var appeared      = false
-    @State private var addedLessons  = Set<String>()   // tracks "Add to Practice" taps locally
+    @State private var didApplyInitialFilter = false
+
+    var initialLessonId: String? = nil
+    var initialSelectedFilter: String? = nil
 
     var onHome:      (() -> Void)?
     var onDiscovery: (() -> Void)?
@@ -73,7 +77,8 @@ struct LessonsView: View {
                             ForEach(Array(vm.filteredLessons.enumerated()), id: \.element.id) { i, lesson in
                                 LessonCard(
                                     lesson:   lesson,
-                                    isAdded:  addedLessons.contains(lesson.id)
+                                    isAdded:  vm.activePracticeLessonIDs.contains(lesson.id),
+                                    isLoading: vm.processingLessonIDs.contains(lesson.id)
                                 ) {
                                     handleAddToPractice(lesson: lesson)
                                 }
@@ -98,7 +103,33 @@ struct LessonsView: View {
         .navigationBarHidden(true)
         .onAppear {
             appeared = true
-            Task { await vm.fetchLessons() }
+            Task {
+                await vm.fetchLessons()
+
+                if !didApplyInitialFilter {
+                    if let initialLessonId,
+                       let matchedLesson = vm.lessons.first(where: { $0.id == initialLessonId }) {
+                        vm.selectedFilter = matchedLesson.title.trimmingCharacters(in: .whitespacesAndNewlines)
+                        didApplyInitialFilter = true
+                    } else if let initialSelectedFilter {
+                        let normalized = initialSelectedFilter.trimmingCharacters(in: .whitespacesAndNewlines)
+
+                        if let chip = vm.filterChips.first(where: {
+                            $0.caseInsensitiveCompare(normalized) == .orderedSame
+                        }) {
+                            vm.selectedFilter = chip
+                            didApplyInitialFilter = true
+                        } else if !normalized.isEmpty {
+                            vm.searchText = normalized
+                            didApplyInitialFilter = true
+                        }
+                    }
+                }
+
+                if let uid = Auth.auth().currentUser?.uid {
+                    await vm.fetchActivePracticeLessons(userId: uid)
+                }
+            }
         }
     }
 
@@ -183,16 +214,19 @@ struct LessonsView: View {
                             .foregroundColor(
                                 vm.selectedFilter == chip
                                     ? Color(hex: "0A0F0D")
-                                    : .white.opacity(0.78)
+                                    : .white.opacity(0.82)
                             )
-                            .padding(.horizontal, 16)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.9)
+                            .padding(.horizontal, 18)
                             .padding(.vertical, 8)
+                            .frame(minHeight: 44)
                             .background(
                                 Capsule()
                                     .fill(
                                         vm.selectedFilter == chip
                                             ? Color(hex: "0EB060")
-                                            : Color.white
+                                            : Color.white.opacity(0.08)
                                     )
                             )
                             .overlay(
@@ -200,7 +234,7 @@ struct LessonsView: View {
                                     .stroke(
                                         vm.selectedFilter == chip
                                             ? Color.clear
-                                            : Color.white.opacity(0.12),
+                                            : Color.white.opacity(0.16),
                                         lineWidth: 0.5
                                     )
                             )
@@ -233,9 +267,14 @@ struct LessonsView: View {
 
     // MARK: - Add to practice handler
     private func handleAddToPractice(lesson: LessonModel) {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        addedLessons.insert(lesson.id)
-        Task { await vm.addToPractice(lessonId: lesson.id, userId: uid) }
+        guard let uid = Auth.auth().currentUser?.uid else {
+            vm.errorMessage = "Please sign in to add lessons to practice."
+            return
+        }
+
+        Task {
+            await vm.addToPractice(lessonId: lesson.id, userId: uid)
+        }
     }
 }
 
@@ -243,6 +282,7 @@ struct LessonsView: View {
 private struct LessonCard: View {
     let lesson:  LessonModel
     let isAdded: Bool
+    let isLoading: Bool
     let onAdd:   () -> Void
 
     var body: some View {
@@ -253,7 +293,7 @@ private struct LessonCard: View {
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
                     .fill(Color(hex: lesson.color).opacity(0.15))
                     .frame(width: 52, height: 52)
-                Image(systemName: lesson.icon)
+                Image(systemName: resolvedIconName)
                     .font(.system(size: 22, weight: .medium))
                     .foregroundColor(Color(hex: lesson.color))
             }
@@ -299,14 +339,17 @@ private struct LessonCard: View {
 
             // ── Add to Practice button ────────────────────────────────
             Button {
-                if !isAdded { onAdd() }
+                if !isAdded && !isLoading { onAdd() }
             } label: {
                 HStack(spacing: 8) {
-                    if isAdded {
+                    if isLoading {
+                        ProgressView()
+                            .tint(Color(hex: "0A0F0D"))
+                    } else if isAdded {
                         Image(systemName: "checkmark")
                             .font(.system(size: 14, weight: .bold))
                     }
-                    Text(isAdded ? "Added to Practice" : "Add to Practice")
+                    Text(isLoading ? "Adding..." : (isAdded ? "Added to Practice" : "Add to Practice"))
                         .font(.system(size: 15, weight: .semibold, design: .rounded))
                 }
                 .foregroundColor(isAdded ? Color(hex: "0EB060") : Color(hex: "0A0F0D"))
@@ -328,7 +371,7 @@ private struct LessonCard: View {
             }
             .buttonStyle(ScaleButtonStyle())
             .animation(.easeInOut(duration: 0.2), value: isAdded)
-            .disabled(isAdded)
+            .disabled(isAdded || isLoading)
         }
         .padding(20)
         .background(
@@ -345,13 +388,17 @@ private struct LessonCard: View {
                         .stroke(Color.white.opacity(0.08), lineWidth: 0.6)
                 )
                 .overlay(alignment: .topTrailing) {
-                    Image(systemName: lesson.icon)
+                    Image(systemName: resolvedIconName)
                         .font(.system(size: 110, weight: .light))
                         .foregroundColor(Color(hex: lesson.color).opacity(0.08))
                         .padding(.trailing, 24)
                         .padding(.top, 18)
                 }
         )
+    }
+
+    private var resolvedIconName: String {
+        UIImage(systemName: lesson.icon) == nil ? "book.fill" : lesson.icon
     }
 }
 
