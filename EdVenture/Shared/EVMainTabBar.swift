@@ -36,6 +36,7 @@ struct EVMainTabBar: View {
         HStack(spacing: 0) {
             ForEach(EVMainTab.allCases, id: \.self) { tab in
                 Button {
+                    EVAccessibilitySupport.playSound(.click)
                     onSelect(tab)
                 } label: {
                     VStack(spacing: 6) {

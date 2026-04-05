@@ -12,9 +12,10 @@ enum AppRoute: Hashable {
     case rank
     case settings
     case biometricsSettings
+    case accessibilitySettings
     case lessonDetail(String)
     case question(lessonId: String, questionIndex: Int)
-        case tutorialQuestion
+    case tutorialQuestion
     case profile
     case editProfile
 }

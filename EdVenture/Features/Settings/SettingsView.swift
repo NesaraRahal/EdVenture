@@ -14,6 +14,7 @@ struct SettingsView: View {
     var onLessons:   (() -> Void)?
     var onDiscovery: (() -> Void)?
     var onRank:      (() -> Void)?
+    var onAccessibility: (() -> Void)?
     var onBiometricsAndPassword: (() -> Void)?
     var onProfile:   (() -> Void)?
 
@@ -56,7 +57,7 @@ struct SettingsView: View {
                         // Accessibility
                         sectionLabel("Accessibility")
                         settingsGroup([
-                            RowConfig(icon: "figure.stand",  label: "Accessibility", action: nil),
+                            RowConfig(icon: "figure.stand",  label: "Accessibility", action: onAccessibility),
                         ])
                         .padding(.bottom, 24)
 

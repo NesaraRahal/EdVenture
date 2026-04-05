@@ -199,6 +199,11 @@ struct ScaleButtonStyle: ButtonStyle {
         configuration.label
             .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
             .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
+            .onChange(of: configuration.isPressed) { pressed in
+                if pressed {
+                    EVAccessibilitySupport.playTapFeedback()
+                }
+            }
     }
 }
 

@@ -200,6 +200,7 @@ struct QuestionView: View {
     private func answerButton(_ text: String, isSelected: Bool) -> some View {
         Button {
             selectedAnswer = text.lowercased().split(separator: " ").first.map(String.init)
+            EVAccessibilitySupport.playSound(.click)
         } label: {
             Text(text)
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
@@ -220,6 +221,11 @@ struct QuestionView: View {
     private var hintButton: some View {
         Button {
             showHint.toggle()
+            if showHint {
+                EVAccessibilitySupport.playSound(.hint)
+            } else {
+                EVAccessibilitySupport.playSound(.click)
+            }
         } label: {
             HStack(spacing: 8) {
                 Image(systemName: "lightbulb.fill")
@@ -244,6 +250,7 @@ struct QuestionView: View {
     private var nextButton: some View {
         Button {
             // Handle next question
+            EVAccessibilitySupport.playSound(.next)
         } label: {
             Text("Next Question")
                 .font(.system(size: 16, weight: .semibold, design: .rounded))

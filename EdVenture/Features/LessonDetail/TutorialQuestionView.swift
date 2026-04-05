@@ -130,6 +130,9 @@ struct TutorialQuestionView: View {
                 showHint.toggle()
                 if showHint {
                     demoStatus = .showingHint
+                    EVAccessibilitySupport.playSound(.hint)
+                } else {
+                    EVAccessibilitySupport.playSound(.click)
                 }
             } label: {
                 HStack(spacing: 8) {
@@ -149,6 +152,7 @@ struct TutorialQuestionView: View {
                 guard selectedAnswer != nil else { return }
                 showCompletion = true
                 demoStatus = .complete
+                EVAccessibilitySupport.playSound(.next)
             } label: {
                 Text(selectedAnswer == nil ? "Select an answer" : "Next Question")
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
@@ -241,6 +245,7 @@ struct TutorialQuestionView: View {
             selectedAnswer = answer
             demoStatus = isCorrect ? .correctSelected : .wrongSelected
             showCompletion = false
+            EVAccessibilitySupport.playSound(isCorrect ? .correct : .wrong)
         } label: {
             Text(text)
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
@@ -420,6 +425,7 @@ struct TutorialQuestionView: View {
         guard await pauseAndValidate(runID, seconds: 1.5) else { return }
         selectedAnswer = "George Orwell"
         demoStatus = .wrongSelected
+        EVAccessibilitySupport.playSound(.wrong)
 
         guard await pauseAndValidate(runID, seconds: 1.8) else { return }
         demoStatus = .wrongFeedback
@@ -427,14 +433,17 @@ struct TutorialQuestionView: View {
         guard await pauseAndValidate(runID, seconds: 1.8) else { return }
         showHint = true
         demoStatus = .showingHint
+        EVAccessibilitySupport.playSound(.hint)
 
         guard await pauseAndValidate(runID, seconds: 2.0) else { return }
         selectedAnswer = correctAnswer
         demoStatus = .correctSelected
+        EVAccessibilitySupport.playSound(.correct)
 
         guard await pauseAndValidate(runID, seconds: 1.8) else { return }
         showCompletion = true
         demoStatus = .complete
+        EVAccessibilitySupport.playSound(.next)
         isAutoPlaying = false
     }
 
