@@ -52,6 +52,8 @@ struct RankView: View {
                                             .foregroundColor(index == 0 ? Color(hex: "F6CC2E") : Color.white.opacity(0.7))
                                             .frame(width: 30)
 
+                                        leaderboardAvatar(for: entry)
+
                                         VStack(alignment: .leading, spacing: 2) {
                                             Text(entry.displayName)
                                                 .font(.system(size: 16, weight: .semibold, design: .rounded))
@@ -141,6 +143,54 @@ struct RankView: View {
         }
         .padding(.horizontal, 20)
         .padding(.top, 52)
+    }
+
+    private func leaderboardAvatar(for entry: EVLeaderboardEntry) -> some View {
+        Group {
+            if let base64 = entry.profileImageBase64,
+               let data = Data(base64Encoded: base64),
+               let image = UIImage(data: data) {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+                    .clipShape(Circle())
+            } else if let path = entry.profileImageUrl, !path.isEmpty {
+                if path.lowercased().hasPrefix("http"), let url = URL(string: path) {
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .scaledToFill()
+                        default:
+                            Image(systemName: "person.fill")
+                                .font(.system(size: 12, weight: .semibold))
+                                .foregroundColor(.white.opacity(0.7))
+                        }
+                    }
+                    .clipShape(Circle())
+                } else {
+                    EVStorageImageView(path: path) {
+                        Image(systemName: "person.fill")
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundColor(.white.opacity(0.7))
+                    }
+                    .clipShape(Circle())
+                }
+            } else {
+                Image(systemName: "person.fill")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(.white.opacity(0.7))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.white.opacity(0.08))
+                    .clipShape(Circle())
+            }
+        }
+        .frame(width: 34, height: 34)
+        .overlay(
+            Circle()
+                .stroke(Color.white.opacity(0.14), lineWidth: 0.8)
+        )
     }
 }
 
