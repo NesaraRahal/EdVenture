@@ -1,0 +1,2402 @@
+[
+  {
+    "id": "biology_L01_Q01",
+    "lessonId": "biology",
+    "level": 1,
+    "order": 1,
+    "difficulty": 1,
+    "xpMin": 10,
+    "xpMax": 16,
+    "xpSuggested": 13,
+    "prompt": "Which concept matches this description: It carries hereditary genetic information.",
+    "choices": [
+      "RNA",
+      "Meiosis",
+      "Mitosis",
+      "DNA"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: DNA. It carries hereditary genetic information.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500237+00:00"
+  },
+  {
+    "id": "biology_L01_Q02",
+    "lessonId": "biology",
+    "level": 1,
+    "order": 2,
+    "difficulty": 2,
+    "xpMin": 11,
+    "xpMax": 17,
+    "xpSuggested": 14,
+    "prompt": "Which concept matches this description: It is produced by immune cells to bind specific antigens.",
+    "choices": [
+      "Antibody",
+      "Nucleus",
+      "Mitochondria",
+      "Ribosome"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Antibody. It is produced by immune cells to bind specific antigens.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500276+00:00"
+  },
+  {
+    "id": "biology_L01_Q03",
+    "lessonId": "biology",
+    "level": 1,
+    "order": 3,
+    "difficulty": 3,
+    "xpMin": 11,
+    "xpMax": 17,
+    "xpSuggested": 14,
+    "prompt": "Which concept matches this description: It produces two genetically identical daughter cells.",
+    "choices": [
+      "Natural Selection",
+      "Mutation",
+      "Mitosis",
+      "Meiosis"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Mitosis. It produces two genetically identical daughter cells.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500312+00:00"
+  },
+  {
+    "id": "biology_L01_Q04",
+    "lessonId": "biology",
+    "level": 1,
+    "order": 4,
+    "difficulty": 4,
+    "xpMin": 12,
+    "xpMax": 18,
+    "xpSuggested": 15,
+    "prompt": "Which concept matches this description: It is known for ATP production through cellular respiration.",
+    "choices": [
+      "Mitochondria",
+      "Osmosis",
+      "Cell Membrane",
+      "Ribosome"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Mitochondria. It is known for ATP production through cellular respiration.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500347+00:00"
+  },
+  {
+    "id": "biology_L01_Q05",
+    "lessonId": "biology",
+    "level": 1,
+    "order": 5,
+    "difficulty": 5,
+    "xpMin": 12,
+    "xpMax": 18,
+    "xpSuggested": 15,
+    "prompt": "Which concept matches this description: It favors traits that improve survival and reproduction.",
+    "choices": [
+      "Natural Selection",
+      "Ecosystem",
+      "Mutation",
+      "Homeostasis"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Natural Selection. It favors traits that improve survival and reproduction.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500382+00:00"
+  },
+  {
+    "id": "biology_L01_Q06",
+    "lessonId": "biology",
+    "level": 1,
+    "order": 6,
+    "difficulty": 6,
+    "xpMin": 13,
+    "xpMax": 19,
+    "xpSuggested": 16,
+    "prompt": "Which concept matches this description: It regulates what enters and leaves the cell.",
+    "choices": [
+      "Photosynthesis",
+      "Diffusion",
+      "Cell Membrane",
+      "Osmosis"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Cell Membrane. It regulates what enters and leaves the cell.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500416+00:00"
+  },
+  {
+    "id": "biology_L01_Q07",
+    "lessonId": "biology",
+    "level": 1,
+    "order": 7,
+    "difficulty": 7,
+    "xpMin": 13,
+    "xpMax": 19,
+    "xpSuggested": 16,
+    "prompt": "Which concept matches this description: It includes organisms and their physical environment interactions.",
+    "choices": [
+      "Ecosystem",
+      "Hormone",
+      "Enzyme",
+      "Homeostasis"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Ecosystem. It includes organisms and their physical environment interactions.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500450+00:00"
+  },
+  {
+    "id": "biology_L01_Q08",
+    "lessonId": "biology",
+    "level": 1,
+    "order": 8,
+    "difficulty": 8,
+    "xpMin": 14,
+    "xpMax": 20,
+    "xpSuggested": 17,
+    "prompt": "Which concept matches this description: It is movement from higher to lower concentration.",
+    "choices": [
+      "DNA",
+      "Photosynthesis",
+      "Diffusion",
+      "Cellular Respiration"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Diffusion. It is movement from higher to lower concentration.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500486+00:00"
+  },
+  {
+    "id": "biology_L01_Q09",
+    "lessonId": "biology",
+    "level": 1,
+    "order": 9,
+    "difficulty": 9,
+    "xpMin": 14,
+    "xpMax": 20,
+    "xpSuggested": 17,
+    "prompt": "Which concept matches this description: It speeds up biochemical reactions by lowering activation energy.",
+    "choices": [
+      "Enzyme",
+      "Antibody",
+      "Neuron",
+      "Hormone"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Enzyme. It speeds up biochemical reactions by lowering activation energy.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500519+00:00"
+  },
+  {
+    "id": "biology_L01_Q10",
+    "lessonId": "biology",
+    "level": 1,
+    "order": 10,
+    "difficulty": 10,
+    "xpMin": 15,
+    "xpMax": 21,
+    "xpSuggested": 18,
+    "prompt": "Which concept matches this description: It releases energy from glucose for ATP production.",
+    "choices": [
+      "Mitosis",
+      "DNA",
+      "Cellular Respiration",
+      "RNA"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Cellular Respiration. It releases energy from glucose for ATP production.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500553+00:00"
+  },
+  {
+    "id": "biology_L02_Q01",
+    "lessonId": "biology",
+    "level": 2,
+    "order": 1,
+    "difficulty": 11,
+    "xpMin": 12,
+    "xpMax": 18,
+    "xpSuggested": 15,
+    "prompt": "Which concept matches this description: It is movement from higher to lower concentration.",
+    "choices": [
+      "Photosynthesis",
+      "Cellular Respiration",
+      "DNA",
+      "Diffusion"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Diffusion. It is movement from higher to lower concentration.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500586+00:00"
+  },
+  {
+    "id": "biology_L02_Q02",
+    "lessonId": "biology",
+    "level": 2,
+    "order": 2,
+    "difficulty": 12,
+    "xpMin": 13,
+    "xpMax": 19,
+    "xpSuggested": 16,
+    "prompt": "Which concept matches this description: It speeds up biochemical reactions by lowering activation energy.",
+    "choices": [
+      "Neuron",
+      "Hormone",
+      "Enzyme",
+      "Antibody"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Enzyme. It speeds up biochemical reactions by lowering activation energy.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500617+00:00"
+  },
+  {
+    "id": "biology_L02_Q03",
+    "lessonId": "biology",
+    "level": 2,
+    "order": 3,
+    "difficulty": 13,
+    "xpMin": 13,
+    "xpMax": 19,
+    "xpSuggested": 16,
+    "prompt": "Which concept matches this description: It releases energy from glucose for ATP production.",
+    "choices": [
+      "RNA",
+      "DNA",
+      "Mitosis",
+      "Cellular Respiration"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Cellular Respiration. It releases energy from glucose for ATP production.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500648+00:00"
+  },
+  {
+    "id": "biology_L02_Q04",
+    "lessonId": "biology",
+    "level": 2,
+    "order": 4,
+    "difficulty": 14,
+    "xpMin": 14,
+    "xpMax": 20,
+    "xpSuggested": 17,
+    "prompt": "Which concept matches this description: It transmits electrical and chemical signals in nervous systems.",
+    "choices": [
+      "Neuron",
+      "Mitochondria",
+      "Antibody",
+      "Nucleus"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Neuron. It transmits electrical and chemical signals in nervous systems.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500679+00:00"
+  },
+  {
+    "id": "biology_L02_Q05",
+    "lessonId": "biology",
+    "level": 2,
+    "order": 5,
+    "difficulty": 15,
+    "xpMin": 14,
+    "xpMax": 20,
+    "xpSuggested": 17,
+    "prompt": "Which concept matches this description: It helps express genetic information, including during translation.",
+    "choices": [
+      "Natural Selection",
+      "Mitosis",
+      "RNA",
+      "Meiosis"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: RNA. It helps express genetic information, including during translation.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500711+00:00"
+  },
+  {
+    "id": "biology_L02_Q06",
+    "lessonId": "biology",
+    "level": 2,
+    "order": 6,
+    "difficulty": 16,
+    "xpMin": 15,
+    "xpMax": 21,
+    "xpSuggested": 18,
+    "prompt": "Which concept matches this description: It stores most genetic material in eukaryotic cells.",
+    "choices": [
+      "Ribosome",
+      "Cell Membrane",
+      "Mitochondria",
+      "Nucleus"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Nucleus. It stores most genetic material in eukaryotic cells.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500743+00:00"
+  },
+  {
+    "id": "biology_L02_Q07",
+    "lessonId": "biology",
+    "level": 2,
+    "order": 7,
+    "difficulty": 17,
+    "xpMin": 15,
+    "xpMax": 21,
+    "xpSuggested": 18,
+    "prompt": "Which concept matches this description: It produces gametes with half the chromosome number.",
+    "choices": [
+      "Natural Selection",
+      "Mutation",
+      "Ecosystem",
+      "Meiosis"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Meiosis. It produces gametes with half the chromosome number.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500807+00:00"
+  },
+  {
+    "id": "biology_L02_Q08",
+    "lessonId": "biology",
+    "level": 2,
+    "order": 8,
+    "difficulty": 18,
+    "xpMin": 16,
+    "xpMax": 22,
+    "xpSuggested": 19,
+    "prompt": "Which concept matches this description: It is the molecular machine that synthesizes proteins.",
+    "choices": [
+      "Ribosome",
+      "Cell Membrane",
+      "Osmosis",
+      "Diffusion"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Ribosome. It is the molecular machine that synthesizes proteins.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500839+00:00"
+  },
+  {
+    "id": "biology_L02_Q09",
+    "lessonId": "biology",
+    "level": 2,
+    "order": 9,
+    "difficulty": 19,
+    "xpMin": 16,
+    "xpMax": 22,
+    "xpSuggested": 19,
+    "prompt": "Which concept matches this description: It is a change in DNA sequence.",
+    "choices": [
+      "Ecosystem",
+      "Enzyme",
+      "Homeostasis",
+      "Mutation"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Mutation. It is a change in DNA sequence.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500871+00:00"
+  },
+  {
+    "id": "biology_L02_Q10",
+    "lessonId": "biology",
+    "level": 2,
+    "order": 10,
+    "difficulty": 20,
+    "xpMin": 17,
+    "xpMax": 23,
+    "xpSuggested": 20,
+    "prompt": "Which concept matches this description: It is the diffusion of water across a selectively permeable membrane.",
+    "choices": [
+      "Photosynthesis",
+      "Diffusion",
+      "Cellular Respiration",
+      "Osmosis"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Osmosis. It is the diffusion of water across a selectively permeable membrane.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500902+00:00"
+  },
+  {
+    "id": "biology_L03_Q01",
+    "lessonId": "biology",
+    "level": 3,
+    "order": 1,
+    "difficulty": 21,
+    "xpMin": 14,
+    "xpMax": 20,
+    "xpSuggested": 17,
+    "prompt": "Which concept matches this description: It is the molecular machine that synthesizes proteins.",
+    "choices": [
+      "Cell Membrane",
+      "Ribosome",
+      "Diffusion",
+      "Osmosis"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Ribosome. It is the molecular machine that synthesizes proteins.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500934+00:00"
+  },
+  {
+    "id": "biology_L03_Q02",
+    "lessonId": "biology",
+    "level": 3,
+    "order": 2,
+    "difficulty": 22,
+    "xpMin": 15,
+    "xpMax": 21,
+    "xpSuggested": 18,
+    "prompt": "Which concept matches this description: It is a change in DNA sequence.",
+    "choices": [
+      "Homeostasis",
+      "Enzyme",
+      "Ecosystem",
+      "Mutation"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Mutation. It is a change in DNA sequence.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500965+00:00"
+  },
+  {
+    "id": "biology_L03_Q03",
+    "lessonId": "biology",
+    "level": 3,
+    "order": 3,
+    "difficulty": 23,
+    "xpMin": 15,
+    "xpMax": 21,
+    "xpSuggested": 18,
+    "prompt": "Which concept matches this description: It is the diffusion of water across a selectively permeable membrane.",
+    "choices": [
+      "Cellular Respiration",
+      "Diffusion",
+      "Photosynthesis",
+      "Osmosis"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Osmosis. It is the diffusion of water across a selectively permeable membrane.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500996+00:00"
+  },
+  {
+    "id": "biology_L03_Q04",
+    "lessonId": "biology",
+    "level": 3,
+    "order": 4,
+    "difficulty": 24,
+    "xpMin": 16,
+    "xpMax": 22,
+    "xpSuggested": 19,
+    "prompt": "Which concept matches this description: It maintains stable internal conditions in an organism.",
+    "choices": [
+      "Homeostasis",
+      "Enzyme",
+      "Neuron",
+      "Hormone"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Homeostasis. It maintains stable internal conditions in an organism.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501028+00:00"
+  },
+  {
+    "id": "biology_L03_Q05",
+    "lessonId": "biology",
+    "level": 3,
+    "order": 5,
+    "difficulty": 25,
+    "xpMin": 16,
+    "xpMax": 22,
+    "xpSuggested": 19,
+    "prompt": "Which concept matches this description: It converts light energy into chemical energy in plants.",
+    "choices": [
+      "DNA",
+      "RNA",
+      "Photosynthesis",
+      "Cellular Respiration"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Photosynthesis. It converts light energy into chemical energy in plants.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501059+00:00"
+  },
+  {
+    "id": "biology_L03_Q06",
+    "lessonId": "biology",
+    "level": 3,
+    "order": 6,
+    "difficulty": 26,
+    "xpMin": 17,
+    "xpMax": 23,
+    "xpSuggested": 20,
+    "prompt": "Which concept matches this description: It is a signaling molecule often transported via bloodstream.",
+    "choices": [
+      "Neuron",
+      "Antibody",
+      "Nucleus",
+      "Hormone"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Hormone. It is a signaling molecule often transported via bloodstream.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501090+00:00"
+  },
+  {
+    "id": "biology_L03_Q07",
+    "lessonId": "biology",
+    "level": 3,
+    "order": 7,
+    "difficulty": 27,
+    "xpMin": 17,
+    "xpMax": 23,
+    "xpSuggested": 20,
+    "prompt": "Which concept matches this description: It carries hereditary genetic information.",
+    "choices": [
+      "Meiosis",
+      "DNA",
+      "RNA",
+      "Mitosis"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: DNA. It carries hereditary genetic information.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501122+00:00"
+  },
+  {
+    "id": "biology_L03_Q08",
+    "lessonId": "biology",
+    "level": 3,
+    "order": 8,
+    "difficulty": 28,
+    "xpMin": 18,
+    "xpMax": 24,
+    "xpSuggested": 21,
+    "prompt": "Which concept matches this description: It is produced by immune cells to bind specific antigens.",
+    "choices": [
+      "Mitochondria",
+      "Ribosome",
+      "Nucleus",
+      "Antibody"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Antibody. It is produced by immune cells to bind specific antigens.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501153+00:00"
+  },
+  {
+    "id": "biology_L03_Q09",
+    "lessonId": "biology",
+    "level": 3,
+    "order": 9,
+    "difficulty": 29,
+    "xpMin": 18,
+    "xpMax": 24,
+    "xpSuggested": 21,
+    "prompt": "Which concept matches this description: It produces two genetically identical daughter cells.",
+    "choices": [
+      "Natural Selection",
+      "Mutation",
+      "Mitosis",
+      "Meiosis"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Mitosis. It produces two genetically identical daughter cells.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501184+00:00"
+  },
+  {
+    "id": "biology_L03_Q10",
+    "lessonId": "biology",
+    "level": 3,
+    "order": 10,
+    "difficulty": 30,
+    "xpMin": 19,
+    "xpMax": 26,
+    "xpSuggested": 22,
+    "prompt": "Which concept matches this description: It is known for ATP production through cellular respiration.",
+    "choices": [
+      "Ribosome",
+      "Cell Membrane",
+      "Osmosis",
+      "Mitochondria"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Mitochondria. It is known for ATP production through cellular respiration.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501215+00:00"
+  },
+  {
+    "id": "biology_L04_Q01",
+    "lessonId": "biology",
+    "level": 4,
+    "order": 1,
+    "difficulty": 31,
+    "xpMin": 16,
+    "xpMax": 23,
+    "xpSuggested": 19,
+    "prompt": "Which concept matches this description: It is produced by immune cells to bind specific antigens.",
+    "choices": [
+      "Antibody",
+      "Nucleus",
+      "Ribosome",
+      "Mitochondria"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Antibody. It is produced by immune cells to bind specific antigens.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501246+00:00"
+  },
+  {
+    "id": "biology_L04_Q02",
+    "lessonId": "biology",
+    "level": 4,
+    "order": 2,
+    "difficulty": 32,
+    "xpMin": 17,
+    "xpMax": 24,
+    "xpSuggested": 20,
+    "prompt": "Which concept matches this description: It produces two genetically identical daughter cells.",
+    "choices": [
+      "Meiosis",
+      "Natural Selection",
+      "Mitosis",
+      "Mutation"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Mitosis. It produces two genetically identical daughter cells.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501277+00:00"
+  },
+  {
+    "id": "biology_L04_Q03",
+    "lessonId": "biology",
+    "level": 4,
+    "order": 3,
+    "difficulty": 33,
+    "xpMin": 17,
+    "xpMax": 24,
+    "xpSuggested": 20,
+    "prompt": "Which concept matches this description: It is known for ATP production through cellular respiration.",
+    "choices": [
+      "Mitochondria",
+      "Ribosome",
+      "Cell Membrane",
+      "Osmosis"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Mitochondria. It is known for ATP production through cellular respiration.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501309+00:00"
+  },
+  {
+    "id": "biology_L04_Q04",
+    "lessonId": "biology",
+    "level": 4,
+    "order": 4,
+    "difficulty": 34,
+    "xpMin": 18,
+    "xpMax": 25,
+    "xpSuggested": 21,
+    "prompt": "Which concept matches this description: It favors traits that improve survival and reproduction.",
+    "choices": [
+      "Homeostasis",
+      "Natural Selection",
+      "Mutation",
+      "Ecosystem"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Natural Selection. It favors traits that improve survival and reproduction.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501340+00:00"
+  },
+  {
+    "id": "biology_L04_Q05",
+    "lessonId": "biology",
+    "level": 4,
+    "order": 5,
+    "difficulty": 35,
+    "xpMin": 18,
+    "xpMax": 25,
+    "xpSuggested": 21,
+    "prompt": "Which concept matches this description: It regulates what enters and leaves the cell.",
+    "choices": [
+      "Diffusion",
+      "Cell Membrane",
+      "Osmosis",
+      "Photosynthesis"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Cell Membrane. It regulates what enters and leaves the cell.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501372+00:00"
+  },
+  {
+    "id": "biology_L04_Q06",
+    "lessonId": "biology",
+    "level": 4,
+    "order": 6,
+    "difficulty": 36,
+    "xpMin": 19,
+    "xpMax": 26,
+    "xpSuggested": 22,
+    "prompt": "Identify the most accurate term for this statement: It includes organisms and their physical environment interactions.",
+    "choices": [
+      "Hormone",
+      "Ecosystem",
+      "Homeostasis",
+      "Enzyme"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Ecosystem. It includes organisms and their physical environment interactions.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501404+00:00"
+  },
+  {
+    "id": "biology_L04_Q07",
+    "lessonId": "biology",
+    "level": 4,
+    "order": 7,
+    "difficulty": 37,
+    "xpMin": 19,
+    "xpMax": 26,
+    "xpSuggested": 22,
+    "prompt": "Identify the most accurate term for this statement: It is movement from higher to lower concentration.",
+    "choices": [
+      "Cellular Respiration",
+      "Diffusion",
+      "DNA",
+      "Photosynthesis"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Diffusion. It is movement from higher to lower concentration.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501435+00:00"
+  },
+  {
+    "id": "biology_L04_Q08",
+    "lessonId": "biology",
+    "level": 4,
+    "order": 8,
+    "difficulty": 38,
+    "xpMin": 20,
+    "xpMax": 27,
+    "xpSuggested": 23,
+    "prompt": "Identify the most accurate term for this statement: It speeds up biochemical reactions by lowering activation energy.",
+    "choices": [
+      "Neuron",
+      "Antibody",
+      "Enzyme",
+      "Hormone"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Enzyme. It speeds up biochemical reactions by lowering activation energy.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501467+00:00"
+  },
+  {
+    "id": "biology_L04_Q09",
+    "lessonId": "biology",
+    "level": 4,
+    "order": 9,
+    "difficulty": 39,
+    "xpMin": 20,
+    "xpMax": 27,
+    "xpSuggested": 23,
+    "prompt": "Identify the most accurate term for this statement: It releases energy from glucose for ATP production.",
+    "choices": [
+      "DNA",
+      "Cellular Respiration",
+      "RNA",
+      "Mitosis"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Cellular Respiration. It releases energy from glucose for ATP production.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501498+00:00"
+  },
+  {
+    "id": "biology_L04_Q10",
+    "lessonId": "biology",
+    "level": 4,
+    "order": 10,
+    "difficulty": 40,
+    "xpMin": 21,
+    "xpMax": 28,
+    "xpSuggested": 24,
+    "prompt": "Identify the most accurate term for this statement: It transmits electrical and chemical signals in nervous systems.",
+    "choices": [
+      "Mitochondria",
+      "Neuron",
+      "Nucleus",
+      "Antibody"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Neuron. It transmits electrical and chemical signals in nervous systems.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501530+00:00"
+  },
+  {
+    "id": "biology_L05_Q01",
+    "lessonId": "biology",
+    "level": 5,
+    "order": 1,
+    "difficulty": 41,
+    "xpMin": 18,
+    "xpMax": 25,
+    "xpSuggested": 21,
+    "prompt": "Identify the most accurate term for this statement: It speeds up biochemical reactions by lowering activation energy.",
+    "choices": [
+      "Hormone",
+      "Antibody",
+      "Neuron",
+      "Enzyme"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Enzyme. It speeds up biochemical reactions by lowering activation energy.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501563+00:00"
+  },
+  {
+    "id": "biology_L05_Q02",
+    "lessonId": "biology",
+    "level": 5,
+    "order": 2,
+    "difficulty": 42,
+    "xpMin": 19,
+    "xpMax": 26,
+    "xpSuggested": 22,
+    "prompt": "Identify the most accurate term for this statement: It releases energy from glucose for ATP production.",
+    "choices": [
+      "DNA",
+      "Cellular Respiration",
+      "RNA",
+      "Mitosis"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Cellular Respiration. It releases energy from glucose for ATP production.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501597+00:00"
+  },
+  {
+    "id": "biology_L05_Q03",
+    "lessonId": "biology",
+    "level": 5,
+    "order": 3,
+    "difficulty": 43,
+    "xpMin": 19,
+    "xpMax": 26,
+    "xpSuggested": 22,
+    "prompt": "Identify the most accurate term for this statement: It transmits electrical and chemical signals in nervous systems.",
+    "choices": [
+      "Antibody",
+      "Mitochondria",
+      "Neuron",
+      "Nucleus"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Neuron. It transmits electrical and chemical signals in nervous systems.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501634+00:00"
+  },
+  {
+    "id": "biology_L05_Q04",
+    "lessonId": "biology",
+    "level": 5,
+    "order": 4,
+    "difficulty": 44,
+    "xpMin": 20,
+    "xpMax": 27,
+    "xpSuggested": 23,
+    "prompt": "Identify the most accurate term for this statement: It helps express genetic information, including during translation.",
+    "choices": [
+      "Mitosis",
+      "Meiosis",
+      "Natural Selection",
+      "RNA"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: RNA. It helps express genetic information, including during translation.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501671+00:00"
+  },
+  {
+    "id": "biology_L05_Q05",
+    "lessonId": "biology",
+    "level": 5,
+    "order": 5,
+    "difficulty": 45,
+    "xpMin": 20,
+    "xpMax": 28,
+    "xpSuggested": 24,
+    "prompt": "Identify the most accurate term for this statement: It stores most genetic material in eukaryotic cells.",
+    "choices": [
+      "Cell Membrane",
+      "Ribosome",
+      "Nucleus",
+      "Mitochondria"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Nucleus. It stores most genetic material in eukaryotic cells.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501706+00:00"
+  },
+  {
+    "id": "biology_L05_Q06",
+    "lessonId": "biology",
+    "level": 5,
+    "order": 6,
+    "difficulty": 46,
+    "xpMin": 21,
+    "xpMax": 29,
+    "xpSuggested": 25,
+    "prompt": "Identify the most accurate term for this statement: It produces gametes with half the chromosome number.",
+    "choices": [
+      "Mutation",
+      "Ecosystem",
+      "Meiosis",
+      "Natural Selection"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Meiosis. It produces gametes with half the chromosome number.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501742+00:00"
+  },
+  {
+    "id": "biology_L05_Q07",
+    "lessonId": "biology",
+    "level": 5,
+    "order": 7,
+    "difficulty": 47,
+    "xpMin": 21,
+    "xpMax": 29,
+    "xpSuggested": 25,
+    "prompt": "Identify the most accurate term for this statement: It is the molecular machine that synthesizes proteins.",
+    "choices": [
+      "Osmosis",
+      "Ribosome",
+      "Diffusion",
+      "Cell Membrane"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Ribosome. It is the molecular machine that synthesizes proteins.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501777+00:00"
+  },
+  {
+    "id": "biology_L05_Q08",
+    "lessonId": "biology",
+    "level": 5,
+    "order": 8,
+    "difficulty": 48,
+    "xpMin": 22,
+    "xpMax": 30,
+    "xpSuggested": 26,
+    "prompt": "Identify the most accurate term for this statement: It is a change in DNA sequence.",
+    "choices": [
+      "Enzyme",
+      "Ecosystem",
+      "Mutation",
+      "Homeostasis"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Mutation. It is a change in DNA sequence.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501812+00:00"
+  },
+  {
+    "id": "biology_L05_Q09",
+    "lessonId": "biology",
+    "level": 5,
+    "order": 9,
+    "difficulty": 49,
+    "xpMin": 22,
+    "xpMax": 30,
+    "xpSuggested": 26,
+    "prompt": "Identify the most accurate term for this statement: It is the diffusion of water across a selectively permeable membrane.",
+    "choices": [
+      "Photosynthesis",
+      "Cellular Respiration",
+      "Diffusion",
+      "Osmosis"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Osmosis. It is the diffusion of water across a selectively permeable membrane.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501847+00:00"
+  },
+  {
+    "id": "biology_L05_Q10",
+    "lessonId": "biology",
+    "level": 5,
+    "order": 10,
+    "difficulty": 50,
+    "xpMin": 23,
+    "xpMax": 31,
+    "xpSuggested": 27,
+    "prompt": "Identify the most accurate term for this statement: It maintains stable internal conditions in an organism.",
+    "choices": [
+      "Homeostasis",
+      "Hormone",
+      "Neuron",
+      "Enzyme"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Homeostasis. It maintains stable internal conditions in an organism.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501882+00:00"
+  },
+  {
+    "id": "biology_L06_Q01",
+    "lessonId": "biology",
+    "level": 6,
+    "order": 1,
+    "difficulty": 51,
+    "xpMin": 20,
+    "xpMax": 28,
+    "xpSuggested": 24,
+    "prompt": "Identify the most accurate term for this statement: It is a change in DNA sequence.",
+    "choices": [
+      "Ecosystem",
+      "Enzyme",
+      "Homeostasis",
+      "Mutation"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Mutation. It is a change in DNA sequence.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501917+00:00"
+  },
+  {
+    "id": "biology_L06_Q02",
+    "lessonId": "biology",
+    "level": 6,
+    "order": 2,
+    "difficulty": 52,
+    "xpMin": 21,
+    "xpMax": 29,
+    "xpSuggested": 25,
+    "prompt": "Identify the most accurate term for this statement: It is the diffusion of water across a selectively permeable membrane.",
+    "choices": [
+      "Photosynthesis",
+      "Diffusion",
+      "Cellular Respiration",
+      "Osmosis"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Osmosis. It is the diffusion of water across a selectively permeable membrane.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501971+00:00"
+  },
+  {
+    "id": "biology_L06_Q03",
+    "lessonId": "biology",
+    "level": 6,
+    "order": 3,
+    "difficulty": 53,
+    "xpMin": 21,
+    "xpMax": 29,
+    "xpSuggested": 25,
+    "prompt": "Identify the most accurate term for this statement: It maintains stable internal conditions in an organism.",
+    "choices": [
+      "Enzyme",
+      "Hormone",
+      "Neuron",
+      "Homeostasis"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Homeostasis. It maintains stable internal conditions in an organism.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502006+00:00"
+  },
+  {
+    "id": "biology_L06_Q04",
+    "lessonId": "biology",
+    "level": 6,
+    "order": 4,
+    "difficulty": 54,
+    "xpMin": 22,
+    "xpMax": 30,
+    "xpSuggested": 26,
+    "prompt": "Identify the most accurate term for this statement: It converts light energy into chemical energy in plants.",
+    "choices": [
+      "RNA",
+      "DNA",
+      "Photosynthesis",
+      "Cellular Respiration"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Photosynthesis. It converts light energy into chemical energy in plants.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502040+00:00"
+  },
+  {
+    "id": "biology_L06_Q05",
+    "lessonId": "biology",
+    "level": 6,
+    "order": 5,
+    "difficulty": 55,
+    "xpMin": 22,
+    "xpMax": 30,
+    "xpSuggested": 26,
+    "prompt": "Identify the most accurate term for this statement: It is a signaling molecule often transported via bloodstream.",
+    "choices": [
+      "Nucleus",
+      "Neuron",
+      "Hormone",
+      "Antibody"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Hormone. It is a signaling molecule often transported via bloodstream.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502074+00:00"
+  },
+  {
+    "id": "biology_L06_Q06",
+    "lessonId": "biology",
+    "level": 6,
+    "order": 6,
+    "difficulty": 56,
+    "xpMin": 23,
+    "xpMax": 31,
+    "xpSuggested": 27,
+    "prompt": "Identify the most accurate term for this statement: It carries hereditary genetic information.",
+    "choices": [
+      "DNA",
+      "Meiosis",
+      "RNA",
+      "Mitosis"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: DNA. It carries hereditary genetic information.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502108+00:00"
+  },
+  {
+    "id": "biology_L06_Q07",
+    "lessonId": "biology",
+    "level": 6,
+    "order": 7,
+    "difficulty": 57,
+    "xpMin": 23,
+    "xpMax": 31,
+    "xpSuggested": 27,
+    "prompt": "Identify the most accurate term for this statement: It is produced by immune cells to bind specific antigens.",
+    "choices": [
+      "Antibody",
+      "Ribosome",
+      "Mitochondria",
+      "Nucleus"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Antibody. It is produced by immune cells to bind specific antigens.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502141+00:00"
+  },
+  {
+    "id": "biology_L06_Q08",
+    "lessonId": "biology",
+    "level": 6,
+    "order": 8,
+    "difficulty": 58,
+    "xpMin": 24,
+    "xpMax": 32,
+    "xpSuggested": 28,
+    "prompt": "Identify the most accurate term for this statement: It produces two genetically identical daughter cells.",
+    "choices": [
+      "Mitosis",
+      "Mutation",
+      "Meiosis",
+      "Natural Selection"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Mitosis. It produces two genetically identical daughter cells.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502176+00:00"
+  },
+  {
+    "id": "biology_L06_Q09",
+    "lessonId": "biology",
+    "level": 6,
+    "order": 9,
+    "difficulty": 59,
+    "xpMin": 24,
+    "xpMax": 32,
+    "xpSuggested": 28,
+    "prompt": "Identify the most accurate term for this statement: It is known for ATP production through cellular respiration.",
+    "choices": [
+      "Osmosis",
+      "Mitochondria",
+      "Ribosome",
+      "Cell Membrane"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Mitochondria. It is known for ATP production through cellular respiration.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502209+00:00"
+  },
+  {
+    "id": "biology_L06_Q10",
+    "lessonId": "biology",
+    "level": 6,
+    "order": 10,
+    "difficulty": 60,
+    "xpMin": 25,
+    "xpMax": 34,
+    "xpSuggested": 29,
+    "prompt": "Identify the most accurate term for this statement: It favors traits that improve survival and reproduction.",
+    "choices": [
+      "Homeostasis",
+      "Ecosystem",
+      "Mutation",
+      "Natural Selection"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Natural Selection. It favors traits that improve survival and reproduction.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502243+00:00"
+  },
+  {
+    "id": "biology_L07_Q01",
+    "lessonId": "biology",
+    "level": 7,
+    "order": 1,
+    "difficulty": 61,
+    "xpMin": 22,
+    "xpMax": 31,
+    "xpSuggested": 26,
+    "prompt": "Identify the most accurate term for this statement: It produces two genetically identical daughter cells.",
+    "choices": [
+      "Meiosis",
+      "Mitosis",
+      "Mutation",
+      "Natural Selection"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Mitosis. It produces two genetically identical daughter cells.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502277+00:00"
+  },
+  {
+    "id": "biology_L07_Q02",
+    "lessonId": "biology",
+    "level": 7,
+    "order": 2,
+    "difficulty": 62,
+    "xpMin": 23,
+    "xpMax": 32,
+    "xpSuggested": 27,
+    "prompt": "Identify the most accurate term for this statement: It is known for ATP production through cellular respiration.",
+    "choices": [
+      "Mitochondria",
+      "Cell Membrane",
+      "Ribosome",
+      "Osmosis"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Mitochondria. It is known for ATP production through cellular respiration.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502310+00:00"
+  },
+  {
+    "id": "biology_L07_Q03",
+    "lessonId": "biology",
+    "level": 7,
+    "order": 3,
+    "difficulty": 63,
+    "xpMin": 23,
+    "xpMax": 32,
+    "xpSuggested": 27,
+    "prompt": "Identify the most accurate term for this statement: It favors traits that improve survival and reproduction.",
+    "choices": [
+      "Ecosystem",
+      "Homeostasis",
+      "Mutation",
+      "Natural Selection"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Natural Selection. It favors traits that improve survival and reproduction.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502344+00:00"
+  },
+  {
+    "id": "biology_L07_Q04",
+    "lessonId": "biology",
+    "level": 7,
+    "order": 4,
+    "difficulty": 64,
+    "xpMin": 24,
+    "xpMax": 33,
+    "xpSuggested": 28,
+    "prompt": "Identify the most accurate term for this statement: It regulates what enters and leaves the cell.",
+    "choices": [
+      "Photosynthesis",
+      "Diffusion",
+      "Osmosis",
+      "Cell Membrane"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Cell Membrane. It regulates what enters and leaves the cell.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502377+00:00"
+  },
+  {
+    "id": "biology_L07_Q05",
+    "lessonId": "biology",
+    "level": 7,
+    "order": 5,
+    "difficulty": 65,
+    "xpMin": 24,
+    "xpMax": 33,
+    "xpSuggested": 28,
+    "prompt": "Identify the most accurate term for this statement: It includes organisms and their physical environment interactions.",
+    "choices": [
+      "Enzyme",
+      "Homeostasis",
+      "Ecosystem",
+      "Hormone"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Ecosystem. It includes organisms and their physical environment interactions.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502410+00:00"
+  },
+  {
+    "id": "biology_L07_Q06",
+    "lessonId": "biology",
+    "level": 7,
+    "order": 6,
+    "difficulty": 66,
+    "xpMin": 25,
+    "xpMax": 34,
+    "xpSuggested": 29,
+    "prompt": "Identify the most accurate term for this statement: It is movement from higher to lower concentration.",
+    "choices": [
+      "Cellular Respiration",
+      "Diffusion",
+      "Photosynthesis",
+      "DNA"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Diffusion. It is movement from higher to lower concentration.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502443+00:00"
+  },
+  {
+    "id": "biology_L07_Q07",
+    "lessonId": "biology",
+    "level": 7,
+    "order": 7,
+    "difficulty": 67,
+    "xpMin": 25,
+    "xpMax": 34,
+    "xpSuggested": 29,
+    "prompt": "Identify the most accurate term for this statement: It speeds up biochemical reactions by lowering activation energy.",
+    "choices": [
+      "Antibody",
+      "Enzyme",
+      "Neuron",
+      "Hormone"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Enzyme. It speeds up biochemical reactions by lowering activation energy.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502476+00:00"
+  },
+  {
+    "id": "biology_L07_Q08",
+    "lessonId": "biology",
+    "level": 7,
+    "order": 8,
+    "difficulty": 68,
+    "xpMin": 26,
+    "xpMax": 35,
+    "xpSuggested": 30,
+    "prompt": "Identify the most accurate term for this statement: It releases energy from glucose for ATP production.",
+    "choices": [
+      "Cellular Respiration",
+      "Mitosis",
+      "RNA",
+      "DNA"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Cellular Respiration. It releases energy from glucose for ATP production.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502509+00:00"
+  },
+  {
+    "id": "biology_L07_Q09",
+    "lessonId": "biology",
+    "level": 7,
+    "order": 9,
+    "difficulty": 69,
+    "xpMin": 26,
+    "xpMax": 35,
+    "xpSuggested": 30,
+    "prompt": "Identify the most accurate term for this statement: It transmits electrical and chemical signals in nervous systems.",
+    "choices": [
+      "Neuron",
+      "Mitochondria",
+      "Antibody",
+      "Nucleus"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Neuron. It transmits electrical and chemical signals in nervous systems.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502542+00:00"
+  },
+  {
+    "id": "biology_L07_Q10",
+    "lessonId": "biology",
+    "level": 7,
+    "order": 10,
+    "difficulty": 70,
+    "xpMin": 27,
+    "xpMax": 36,
+    "xpSuggested": 31,
+    "prompt": "Identify the most accurate term for this statement: It helps express genetic information, including during translation.",
+    "choices": [
+      "RNA",
+      "Meiosis",
+      "Natural Selection",
+      "Mitosis"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: RNA. It helps express genetic information, including during translation.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502575+00:00"
+  },
+  {
+    "id": "biology_L08_Q01",
+    "lessonId": "biology",
+    "level": 8,
+    "order": 1,
+    "difficulty": 71,
+    "xpMin": 24,
+    "xpMax": 33,
+    "xpSuggested": 28,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It releases energy from glucose for ATP production.",
+    "choices": [
+      "RNA",
+      "Mitosis",
+      "DNA",
+      "Cellular Respiration"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Cellular Respiration. It releases energy from glucose for ATP production.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502608+00:00"
+  },
+  {
+    "id": "biology_L08_Q02",
+    "lessonId": "biology",
+    "level": 8,
+    "order": 2,
+    "difficulty": 72,
+    "xpMin": 25,
+    "xpMax": 34,
+    "xpSuggested": 29,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It transmits electrical and chemical signals in nervous systems.",
+    "choices": [
+      "Mitochondria",
+      "Antibody",
+      "Neuron",
+      "Nucleus"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Neuron. It transmits electrical and chemical signals in nervous systems.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502642+00:00"
+  },
+  {
+    "id": "biology_L08_Q03",
+    "lessonId": "biology",
+    "level": 8,
+    "order": 3,
+    "difficulty": 73,
+    "xpMin": 25,
+    "xpMax": 34,
+    "xpSuggested": 29,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It helps express genetic information, including during translation.",
+    "choices": [
+      "Mitosis",
+      "RNA",
+      "Meiosis",
+      "Natural Selection"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: RNA. It helps express genetic information, including during translation.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502675+00:00"
+  },
+  {
+    "id": "biology_L08_Q04",
+    "lessonId": "biology",
+    "level": 8,
+    "order": 4,
+    "difficulty": 74,
+    "xpMin": 26,
+    "xpMax": 35,
+    "xpSuggested": 30,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It stores most genetic material in eukaryotic cells.",
+    "choices": [
+      "Ribosome",
+      "Cell Membrane",
+      "Nucleus",
+      "Mitochondria"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Nucleus. It stores most genetic material in eukaryotic cells.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502708+00:00"
+  },
+  {
+    "id": "biology_L08_Q05",
+    "lessonId": "biology",
+    "level": 8,
+    "order": 5,
+    "difficulty": 75,
+    "xpMin": 26,
+    "xpMax": 36,
+    "xpSuggested": 31,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It produces gametes with half the chromosome number.",
+    "choices": [
+      "Natural Selection",
+      "Mutation",
+      "Meiosis",
+      "Ecosystem"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Meiosis. It produces gametes with half the chromosome number.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502741+00:00"
+  },
+  {
+    "id": "biology_L08_Q06",
+    "lessonId": "biology",
+    "level": 8,
+    "order": 6,
+    "difficulty": 76,
+    "xpMin": 27,
+    "xpMax": 37,
+    "xpSuggested": 32,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is the molecular machine that synthesizes proteins.",
+    "choices": [
+      "Ribosome",
+      "Cell Membrane",
+      "Diffusion",
+      "Osmosis"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Ribosome. It is the molecular machine that synthesizes proteins.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502775+00:00"
+  },
+  {
+    "id": "biology_L08_Q07",
+    "lessonId": "biology",
+    "level": 8,
+    "order": 7,
+    "difficulty": 77,
+    "xpMin": 27,
+    "xpMax": 37,
+    "xpSuggested": 32,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is a change in DNA sequence.",
+    "choices": [
+      "Mutation",
+      "Homeostasis",
+      "Ecosystem",
+      "Enzyme"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Mutation. It is a change in DNA sequence.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502808+00:00"
+  },
+  {
+    "id": "biology_L08_Q08",
+    "lessonId": "biology",
+    "level": 8,
+    "order": 8,
+    "difficulty": 78,
+    "xpMin": 28,
+    "xpMax": 38,
+    "xpSuggested": 33,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is the diffusion of water across a selectively permeable membrane.",
+    "choices": [
+      "Photosynthesis",
+      "Cellular Respiration",
+      "Osmosis",
+      "Diffusion"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Osmosis. It is the diffusion of water across a selectively permeable membrane.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502841+00:00"
+  },
+  {
+    "id": "biology_L08_Q09",
+    "lessonId": "biology",
+    "level": 8,
+    "order": 9,
+    "difficulty": 79,
+    "xpMin": 28,
+    "xpMax": 38,
+    "xpSuggested": 33,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It maintains stable internal conditions in an organism.",
+    "choices": [
+      "Enzyme",
+      "Neuron",
+      "Homeostasis",
+      "Hormone"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Homeostasis. It maintains stable internal conditions in an organism.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502874+00:00"
+  },
+  {
+    "id": "biology_L08_Q10",
+    "lessonId": "biology",
+    "level": 8,
+    "order": 10,
+    "difficulty": 80,
+    "xpMin": 29,
+    "xpMax": 39,
+    "xpSuggested": 34,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It converts light energy into chemical energy in plants.",
+    "choices": [
+      "Photosynthesis",
+      "Cellular Respiration",
+      "DNA",
+      "RNA"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Photosynthesis. It converts light energy into chemical energy in plants.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502907+00:00"
+  },
+  {
+    "id": "biology_L09_Q01",
+    "lessonId": "biology",
+    "level": 9,
+    "order": 1,
+    "difficulty": 81,
+    "xpMin": 26,
+    "xpMax": 36,
+    "xpSuggested": 31,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is the diffusion of water across a selectively permeable membrane.",
+    "choices": [
+      "Diffusion",
+      "Cellular Respiration",
+      "Osmosis",
+      "Photosynthesis"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Osmosis. It is the diffusion of water across a selectively permeable membrane.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502940+00:00"
+  },
+  {
+    "id": "biology_L09_Q02",
+    "lessonId": "biology",
+    "level": 9,
+    "order": 2,
+    "difficulty": 82,
+    "xpMin": 27,
+    "xpMax": 37,
+    "xpSuggested": 32,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It maintains stable internal conditions in an organism.",
+    "choices": [
+      "Homeostasis",
+      "Enzyme",
+      "Hormone",
+      "Neuron"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Homeostasis. It maintains stable internal conditions in an organism.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502973+00:00"
+  },
+  {
+    "id": "biology_L09_Q03",
+    "lessonId": "biology",
+    "level": 9,
+    "order": 3,
+    "difficulty": 83,
+    "xpMin": 27,
+    "xpMax": 37,
+    "xpSuggested": 32,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It converts light energy into chemical energy in plants.",
+    "choices": [
+      "Photosynthesis",
+      "DNA",
+      "RNA",
+      "Cellular Respiration"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Photosynthesis. It converts light energy into chemical energy in plants.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503007+00:00"
+  },
+  {
+    "id": "biology_L09_Q04",
+    "lessonId": "biology",
+    "level": 9,
+    "order": 4,
+    "difficulty": 84,
+    "xpMin": 28,
+    "xpMax": 38,
+    "xpSuggested": 33,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is a signaling molecule often transported via bloodstream.",
+    "choices": [
+      "Hormone",
+      "Antibody",
+      "Nucleus",
+      "Neuron"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Hormone. It is a signaling molecule often transported via bloodstream.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503040+00:00"
+  },
+  {
+    "id": "biology_L09_Q05",
+    "lessonId": "biology",
+    "level": 9,
+    "order": 5,
+    "difficulty": 85,
+    "xpMin": 28,
+    "xpMax": 38,
+    "xpSuggested": 33,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It carries hereditary genetic information.",
+    "choices": [
+      "DNA",
+      "Meiosis",
+      "RNA",
+      "Mitosis"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: DNA. It carries hereditary genetic information.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503073+00:00"
+  },
+  {
+    "id": "biology_L09_Q06",
+    "lessonId": "biology",
+    "level": 9,
+    "order": 6,
+    "difficulty": 86,
+    "xpMin": 29,
+    "xpMax": 39,
+    "xpSuggested": 34,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is produced by immune cells to bind specific antigens.",
+    "choices": [
+      "Nucleus",
+      "Ribosome",
+      "Mitochondria",
+      "Antibody"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Antibody. It is produced by immune cells to bind specific antigens.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503106+00:00"
+  },
+  {
+    "id": "biology_L09_Q07",
+    "lessonId": "biology",
+    "level": 9,
+    "order": 7,
+    "difficulty": 87,
+    "xpMin": 29,
+    "xpMax": 39,
+    "xpSuggested": 34,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It produces two genetically identical daughter cells.",
+    "choices": [
+      "Natural Selection",
+      "Meiosis",
+      "Mitosis",
+      "Mutation"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Mitosis. It produces two genetically identical daughter cells.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503160+00:00"
+  },
+  {
+    "id": "biology_L09_Q08",
+    "lessonId": "biology",
+    "level": 9,
+    "order": 8,
+    "difficulty": 88,
+    "xpMin": 30,
+    "xpMax": 40,
+    "xpSuggested": 35,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is known for ATP production through cellular respiration.",
+    "choices": [
+      "Osmosis",
+      "Cell Membrane",
+      "Ribosome",
+      "Mitochondria"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Mitochondria. It is known for ATP production through cellular respiration.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503194+00:00"
+  },
+  {
+    "id": "biology_L09_Q09",
+    "lessonId": "biology",
+    "level": 9,
+    "order": 9,
+    "difficulty": 89,
+    "xpMin": 30,
+    "xpMax": 40,
+    "xpSuggested": 35,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It favors traits that improve survival and reproduction.",
+    "choices": [
+      "Mutation",
+      "Homeostasis",
+      "Natural Selection",
+      "Ecosystem"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Natural Selection. It favors traits that improve survival and reproduction.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503227+00:00"
+  },
+  {
+    "id": "biology_L09_Q10",
+    "lessonId": "biology",
+    "level": 9,
+    "order": 10,
+    "difficulty": 90,
+    "xpMin": 31,
+    "xpMax": 42,
+    "xpSuggested": 36,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It regulates what enters and leaves the cell.",
+    "choices": [
+      "Diffusion",
+      "Cell Membrane",
+      "Photosynthesis",
+      "Osmosis"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Cell Membrane. It regulates what enters and leaves the cell.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503261+00:00"
+  },
+  {
+    "id": "biology_L10_Q01",
+    "lessonId": "biology",
+    "level": 10,
+    "order": 1,
+    "difficulty": 91,
+    "xpMin": 28,
+    "xpMax": 39,
+    "xpSuggested": 33,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is known for ATP production through cellular respiration.",
+    "choices": [
+      "Osmosis",
+      "Mitochondria",
+      "Ribosome",
+      "Cell Membrane"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Mitochondria. It is known for ATP production through cellular respiration.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503294+00:00"
+  },
+  {
+    "id": "biology_L10_Q02",
+    "lessonId": "biology",
+    "level": 10,
+    "order": 2,
+    "difficulty": 92,
+    "xpMin": 29,
+    "xpMax": 40,
+    "xpSuggested": 34,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It favors traits that improve survival and reproduction.",
+    "choices": [
+      "Ecosystem",
+      "Natural Selection",
+      "Homeostasis",
+      "Mutation"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Natural Selection. It favors traits that improve survival and reproduction.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503327+00:00"
+  },
+  {
+    "id": "biology_L10_Q03",
+    "lessonId": "biology",
+    "level": 10,
+    "order": 3,
+    "difficulty": 93,
+    "xpMin": 29,
+    "xpMax": 40,
+    "xpSuggested": 34,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It regulates what enters and leaves the cell.",
+    "choices": [
+      "Osmosis",
+      "Cell Membrane",
+      "Diffusion",
+      "Photosynthesis"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Cell Membrane. It regulates what enters and leaves the cell.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503361+00:00"
+  },
+  {
+    "id": "biology_L10_Q04",
+    "lessonId": "biology",
+    "level": 10,
+    "order": 4,
+    "difficulty": 94,
+    "xpMin": 30,
+    "xpMax": 41,
+    "xpSuggested": 35,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It includes organisms and their physical environment interactions.",
+    "choices": [
+      "Enzyme",
+      "Ecosystem",
+      "Hormone",
+      "Homeostasis"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Ecosystem. It includes organisms and their physical environment interactions.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503394+00:00"
+  },
+  {
+    "id": "biology_L10_Q05",
+    "lessonId": "biology",
+    "level": 10,
+    "order": 5,
+    "difficulty": 95,
+    "xpMin": 30,
+    "xpMax": 41,
+    "xpSuggested": 35,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is movement from higher to lower concentration.",
+    "choices": [
+      "Photosynthesis",
+      "DNA",
+      "Cellular Respiration",
+      "Diffusion"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Diffusion. It is movement from higher to lower concentration.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503429+00:00"
+  },
+  {
+    "id": "biology_L10_Q06",
+    "lessonId": "biology",
+    "level": 10,
+    "order": 6,
+    "difficulty": 96,
+    "xpMin": 31,
+    "xpMax": 42,
+    "xpSuggested": 36,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It speeds up biochemical reactions by lowering activation energy.",
+    "choices": [
+      "Hormone",
+      "Neuron",
+      "Antibody",
+      "Enzyme"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Enzyme. It speeds up biochemical reactions by lowering activation energy.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503462+00:00"
+  },
+  {
+    "id": "biology_L10_Q07",
+    "lessonId": "biology",
+    "level": 10,
+    "order": 7,
+    "difficulty": 97,
+    "xpMin": 31,
+    "xpMax": 42,
+    "xpSuggested": 36,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It releases energy from glucose for ATP production.",
+    "choices": [
+      "RNA",
+      "DNA",
+      "Cellular Respiration",
+      "Mitosis"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Cellular Respiration. It releases energy from glucose for ATP production.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503495+00:00"
+  },
+  {
+    "id": "biology_L10_Q08",
+    "lessonId": "biology",
+    "level": 10,
+    "order": 8,
+    "difficulty": 98,
+    "xpMin": 32,
+    "xpMax": 43,
+    "xpSuggested": 37,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It transmits electrical and chemical signals in nervous systems.",
+    "choices": [
+      "Antibody",
+      "Neuron",
+      "Nucleus",
+      "Mitochondria"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Neuron. It transmits electrical and chemical signals in nervous systems.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503529+00:00"
+  },
+  {
+    "id": "biology_L10_Q09",
+    "lessonId": "biology",
+    "level": 10,
+    "order": 9,
+    "difficulty": 99,
+    "xpMin": 32,
+    "xpMax": 43,
+    "xpSuggested": 37,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It helps express genetic information, including during translation.",
+    "choices": [
+      "RNA",
+      "Mitosis",
+      "Natural Selection",
+      "Meiosis"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: RNA. It helps express genetic information, including during translation.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503562+00:00"
+  },
+  {
+    "id": "biology_L10_Q10",
+    "lessonId": "biology",
+    "level": 10,
+    "order": 10,
+    "difficulty": 100,
+    "xpMin": 33,
+    "xpMax": 44,
+    "xpSuggested": 38,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It stores most genetic material in eukaryotic cells.",
+    "choices": [
+      "Ribosome",
+      "Cell Membrane",
+      "Nucleus",
+      "Mitochondria"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Nucleus. It stores most genetic material in eukaryotic cells.",
+    "tags": [
+      "life_science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503596+00:00"
+  }
+]

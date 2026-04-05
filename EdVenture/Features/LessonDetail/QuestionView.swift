@@ -1,6 +1,6 @@
 import SwiftUI
-import FirebaseAuth
 import FirebaseFirestore
+import UIKit
 import Combine
 
 struct QuestionView: View {
@@ -8,10 +8,8 @@ struct QuestionView: View {
     let questionIndex: Int
     var onBack: (() -> Void)?
 
-        @State private var navigateToTutorial = false
-    @State private var showTutorial = false
-    @State private var currentTutorialStep = 0
-    @State private var selectedAnswer: String?
+    @State private var selectedAnswerIndex: Int?
+    @State private var didSubmit = false
     @State private var showHint = false
     @State private var timeRemaining = 3599 // 1 hour in seconds
     @State private var timerActive = true
@@ -25,7 +23,6 @@ struct QuestionView: View {
             Color(hex: "0A0F0D").ignoresSafeArea()
 
             VStack(spacing: 0) {
-                // Header
                 HStack {
                     Button {
                         onBack?()
@@ -46,10 +43,7 @@ struct QuestionView: View {
 
                     Spacer()
 
-                    // Help button
-                        NavigationLink(destination: TutorialQuestionView(onBack: {
-                            navigateToTutorial = false
-                        })) {
+                    NavigationLink(destination: TutorialQuestionView()) {
                         Image(systemName: "questionmark.circle.fill")
                             .font(.system(size: 18, weight: .semibold))
                             .foregroundColor(Color(hex: "0EB060"))
@@ -62,54 +56,71 @@ struct QuestionView: View {
                 .padding(.top, 16)
                 .padding(.bottom, 20)
 
-                ScrollView(showsIndicators: false) {
-                    VStack(spacing: 20) {
-                        // Timer
-                        timerCard
+                if vm.isLoading {
+                    Spacer()
+                    ProgressView()
+                        .tint(Color(hex: "0EB060"))
+                        .scaleEffect(1.2)
+                    Spacer()
+                } else if let error = vm.errorMessage {
+                    Spacer()
+                    VStack(spacing: 12) {
+                        Image(systemName: "exclamationmark.triangle")
+                            .font(.system(size: 24, weight: .semibold))
+                            .foregroundColor(.white.opacity(0.65))
+                        Text(error)
+                            .font(.system(size: 14, design: .rounded))
+                            .foregroundColor(.white.opacity(0.75))
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 24)
+                    }
+                    Spacer()
+                } else if let question = vm.question {
+                    ScrollView(showsIndicators: false) {
+                        VStack(spacing: 20) {
+                            timerCard
+                                .padding(.horizontal, 20)
+
+                            questionContentCard
+                                .padding(.horizontal, 20)
+
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text(question.prompt)
+                                    .font(.system(size: 24, weight: .bold, design: .rounded))
+                                    .foregroundColor(.white)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal, 20)
 
-                        // Question Image/Content
-                        questionContentCard
-                            .padding(.horizontal, 20)
+                            answersGrid(question)
+                                .padding(.horizontal, 20)
 
-                        // Question Text
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Can you name the author of this book?")
-                                .font(.system(size: 18, weight: .semibold, design: .rounded))
-                                .foregroundColor(.white)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.horizontal, 20)
+                            hintButton
+                                .padding(.horizontal, 20)
 
-                        // Answer Options
-                        answersGrid
-                            .padding(.horizontal, 20)
+                            if showHint {
+                                hintSection(question)
+                                    .padding(.horizontal, 20)
+                            }
 
-                        // Hint Button
-                        hintButton
-                            .padding(.horizontal, 20)
+                            if didSubmit {
+                                resultCard(question)
+                                    .padding(.horizontal, 20)
+                            }
 
-                        // Next Question Button
-                        nextButton
-                            .padding(.horizontal, 20)
-                            .padding(.bottom, 20)
-
-                        // Hint Section
-                        if showHint {
-                            hintSection
+                            nextButton
                                 .padding(.horizontal, 20)
                                 .padding(.bottom, 20)
                         }
                     }
                 }
             }
-
-            // Interactive Tutorial with Spotlight
-            if showTutorial {
-                spotlightTutorialOverlay
-            }
         }
         .navigationBarHidden(true)
+        .task(id: lessonId) {
+            await vm.loadFirstRoundQuestion(lessonId: lessonId)
+            resetRoundState()
+        }
         .onReceive(timer) { _ in
             if timerActive && timeRemaining > 0 {
                 timeRemaining -= 1
@@ -117,7 +128,13 @@ struct QuestionView: View {
         }
     }
 
-    // MARK: - Subviews
+    private func resetRoundState() {
+        selectedAnswerIndex = nil
+        didSubmit = false
+        showHint = false
+        timeRemaining = 3599
+        timerActive = true
+    }
 
     private var timerCard: some View {
         HStack(spacing: 16) {
@@ -168,58 +185,97 @@ struct QuestionView: View {
     }
 
     private var questionContentCard: some View {
-        Image("EdVentureLogo")
-            .resizable()
-            .scaledToFit()
-            .frame(height: 200)
-            .padding(20)
-            .frame(maxWidth: .infinity)
-            .background(
+        RoundedRectangle(cornerRadius: 16, style: .continuous)
+            .fill(
+                LinearGradient(
+                    colors: [Color.white.opacity(0.05), Color(hex: "0EB060").opacity(0.08)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
+            .frame(height: 230)
+            .overlay {
+                VStack(spacing: 10) {
+                    Image(systemName: lessonSymbol)
+                        .font(.system(size: 52, weight: .semibold))
+                        .foregroundColor(Color(hex: "0EB060"))
+                    Text(lessonId.replacingOccurrences(of: "_", with: " ").capitalized)
+                        .font(.system(size: 16, weight: .semibold, design: .rounded))
+                        .foregroundColor(.white.opacity(0.85))
+                }
+            }
+            .overlay(
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(Color.white.opacity(0.05))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .stroke(Color.white.opacity(0.1), lineWidth: 0.5)
-                    )
+                    .stroke(Color.white.opacity(0.1), lineWidth: 0.5)
             )
     }
 
-    private var answersGrid: some View {
-        VStack(spacing: 12) {
-            HStack(spacing: 12) {
-                answerButton("George Orwell", isSelected: selectedAnswer == "george")
-                answerButton("Franz Kafka", isSelected: selectedAnswer == "franz")
-            }
-            HStack(spacing: 12) {
-                answerButton("Ernest Hemingway", isSelected: selectedAnswer == "ernest")
-                answerButton("Virginia Woolf", isSelected: selectedAnswer == "virginia")
+    private var lessonSymbol: String {
+        switch lessonId.lowercased() {
+        case "astronomy": return "sparkles"
+        case "history": return "hourglass"
+        case "biology": return "leaf"
+        case "physics": return "atom"
+        case "literature": return "book"
+        default: return "questionmark.circle"
+        }
+    }
+
+    private func answersGrid(_ question: QuizQuestion) -> some View {
+        let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
+
+        return LazyVGrid(columns: columns, spacing: 12) {
+            ForEach(Array(question.choices.enumerated()), id: \.offset) { index, choice in
+                answerButton(choice, at: index)
             }
         }
     }
 
-    private func answerButton(_ text: String, isSelected: Bool) -> some View {
-        Button {
-            selectedAnswer = text.lowercased().split(separator: " ").first.map(String.init)
+    private func answerButton(_ text: String, at index: Int) -> some View {
+        let isSelected = selectedAnswerIndex == index
+        let isCorrect = vm.question?.correctIndex == index
+        let showCorrectState = didSubmit && isCorrect
+        let showWrongState = didSubmit && isSelected && !isCorrect
+
+        return Button {
+            guard !didSubmit else { return }
+            selectedAnswerIndex = index
             EVAccessibilitySupport.playSound(.click)
         } label: {
             Text(text)
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
-                .foregroundColor(isSelected ? Color(hex: "0EB060") : .white.opacity(0.8))
+                .foregroundColor(showCorrectState ? Color(hex: "0EB060") : .white.opacity(0.86))
                 .frame(maxWidth: .infinity)
-                .frame(height: 56)
+                .frame(minHeight: 76)
                 .background(
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .fill(isSelected ? Color(hex: "0EB060").opacity(0.15) : Color.white.opacity(0.06))
+                        .fill(answerBackgroundColor(isSelected: isSelected, showCorrect: showCorrectState, showWrong: showWrongState))
                         .overlay(
                             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                .stroke(isSelected ? Color(hex: "0EB060").opacity(0.4) : Color.white.opacity(0.1), lineWidth: 1)
+                                .stroke(answerBorderColor(isSelected: isSelected, showCorrect: showCorrectState, showWrong: showWrongState), lineWidth: 1)
                         )
                 )
         }
+        .disabled(didSubmit)
+    }
+
+    private func answerBackgroundColor(isSelected: Bool, showCorrect: Bool, showWrong: Bool) -> Color {
+        if showCorrect { return Color(hex: "0EB060").opacity(0.18) }
+        if showWrong { return Color.red.opacity(0.16) }
+        if isSelected { return Color(hex: "0EB060").opacity(0.14) }
+        return Color.white.opacity(0.06)
+    }
+
+    private func answerBorderColor(isSelected: Bool, showCorrect: Bool, showWrong: Bool) -> Color {
+        if showCorrect { return Color(hex: "0EB060").opacity(0.6) }
+        if showWrong { return Color.red.opacity(0.5) }
+        if isSelected { return Color(hex: "0EB060").opacity(0.35) }
+        return Color.white.opacity(0.1)
     }
 
     private var hintButton: some View {
         Button {
+            guard !didSubmit else { return }
             showHint.toggle()
             if showHint {
                 EVAccessibilitySupport.playSound(.hint)
@@ -245,14 +301,35 @@ struct QuestionView: View {
                     )
             )
         }
+            .disabled(didSubmit)
     }
 
     private var nextButton: some View {
         Button {
-            // Handle next question
-            EVAccessibilitySupport.playSound(.next)
+                guard let question = vm.question else { return }
+
+                if didSubmit {
+                    EVAccessibilitySupport.playSound(.next)
+                    onBack?()
+                    return
+                }
+
+                guard selectedAnswerIndex != nil else {
+                    EVAccessibilitySupport.playSound(.click)
+                    return
+                }
+
+                didSubmit = true
+                timerActive = false
+                showHint = false
+
+                if selectedAnswerIndex == question.correctIndex {
+                    EVAccessibilitySupport.playSound(.correct)
+                } else {
+                    EVAccessibilitySupport.playSound(.wrong)
+                }
         } label: {
-            Text("Next Question")
+                Text(didSubmit ? "Finish Round" : "Submit Answer")
                 .font(.system(size: 16, weight: .semibold, design: .rounded))
                 .foregroundColor(.black)
                 .frame(maxWidth: .infinity)
@@ -262,7 +339,7 @@ struct QuestionView: View {
         }
     }
 
-    private var hintSection: some View {
+    private func hintSection(_ question: QuizQuestion) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Image(systemName: "sparkles")
@@ -281,7 +358,7 @@ struct QuestionView: View {
                 }
             }
 
-            Text("Consider the era of the author's most famous works. This book explores the absurdity of bureaucracy and the human condition in a way that defined 20th-century literature.")
+                Text("Focus on the time period, the tone of the writing, and the type of story the prompt describes. Use those clues to eliminate options that do not fit.")
                 .font(.system(size: 13, design: .rounded))
                 .foregroundColor(.white.opacity(0.8))
                 .lineSpacing(2)
@@ -310,163 +387,109 @@ struct QuestionView: View {
         )
     }
 
-    // MARK: - Interactive Spotlight Tutorial
+    private func resultCard(_ question: QuizQuestion) -> some View {
+        let isCorrect = selectedAnswerIndex == question.correctIndex
 
-    private var spotlightTutorialOverlay: some View {
-        ZStack {
-            // Dimmed background
-            Color.black.opacity(0.7)
-                .ignoresSafeArea()
+        return VStack(alignment: .leading, spacing: 8) {
+            Text(isCorrect ? "✅ Correct" : "❌ Wrong")
+                .font(.system(size: 16, weight: .bold, design: .rounded))
+                .foregroundColor(isCorrect ? Color(hex: "0EB060") : Color.red.opacity(0.9))
 
-            // Spotlight regions - drawn as shapes to highlight different parts
-            Canvas { context, size in
-                // Create a spotlight effect by drawing circles with clear regions
-                var path = Path(CGRect(x: 0, y: 0, width: size.width, height: size.height))
-                
-                // Spotlight position changes based on step
-                let spotlightFrame = spotlightFrame(for: currentTutorialStep)
-                let spotlightPath = Path(roundedRect: spotlightFrame, cornerRadius: 16)
-                path.addPath(spotlightPath)
-                
-                context.fill(path, with: .color(.black.opacity(0.7)))
-            }
-            .ignoresSafeArea()
-
-            VStack(spacing: 0) {
-                Spacer()
-
-                // Tutorial explanation box at bottom
-                VStack(spacing: 16) {
-                    HStack(spacing: 12) {
-                        Image(systemName: tutorialSteps[currentTutorialStep].icon)
-                            .font(.system(size: 24, weight: .semibold))
-                            .foregroundColor(Color(hex: "0EB060"))
-                            .frame(width: 40, height: 40)
-
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(tutorialSteps[currentTutorialStep].title)
-                                .font(.system(size: 16, weight: .bold, design: .rounded))
-                                .foregroundColor(.white)
-
-                            Text(tutorialSteps[currentTutorialStep].description)
-                                .font(.system(size: 13, design: .rounded))
-                                .foregroundColor(.white.opacity(0.75))
-                                .lineSpacing(1)
-                        }
-
-                        Spacer()
-                    }
-
-                    // Navigation buttons
-                    HStack(spacing: 12) {
-                        if currentTutorialStep > 0 {
-                            Button {
-                                currentTutorialStep -= 1
-                            } label: {
-                                Text("Previous")
-                                    .font(.system(size: 14, weight: .semibold, design: .rounded))
-                                    .foregroundColor(.white)
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 44)
-                                    .background(Color.white.opacity(0.15))
-                                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                            }
-                        }
-
-                        Button {
-                            if currentTutorialStep < tutorialSteps.count - 1 {
-                                currentTutorialStep += 1
-                            } else {
-                                showTutorial = false
-                            }
-                        } label: {
-                            Text(currentTutorialStep == tutorialSteps.count - 1 ? "Got it!" : "Next")
-                                .font(.system(size: 14, weight: .semibold, design: .rounded))
-                                .foregroundColor(.black)
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 44)
-                                .background(Color(hex: "0EB060"))
-                                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                        }
-                    }
-
-                    // Step indicators
-                    HStack(spacing: 6) {
-                        ForEach(0..<tutorialSteps.count, id: \.self) { index in
-                            Circle()
-                                .fill(index == currentTutorialStep ? Color(hex: "0EB060") : Color.white.opacity(0.25))
-                                .frame(width: 6, height: 6)
-                        }
-                    }
-                    .padding(.top, 4)
-                }
-                .padding(16)
-                .background(
-                    RoundedRectangle(cornerRadius: 16, style: .continuous)
-                        .fill(Color(hex: "1A2420"))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                                .stroke(Color(hex: "0EB060").opacity(0.3), lineWidth: 1)
-                        )
+            Text(question.explanation)
+                .font(.system(size: 13, design: .rounded))
+                .foregroundColor(.white.opacity(0.82))
+                .lineSpacing(2)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(14)
+        .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(Color.white.opacity(0.06))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .stroke((isCorrect ? Color(hex: "0EB060") : Color.red).opacity(0.28), lineWidth: 0.7)
                 )
-                .padding(.horizontal, 16)
-                .padding(.bottom, 20)
-            }
-        }
-    }
-
-    private func spotlightFrame(for step: Int) -> CGRect {
-        let screenWidth = UIScreen.main.bounds.width
-        let screenHeight = UIScreen.main.bounds.height
-
-        switch step {
-        case 0: // Timer
-            return CGRect(x: screenWidth / 2 - 100, y: 100, width: 200, height: 80)
-        case 1: // Question Image
-            return CGRect(x: 20, y: 160, width: screenWidth - 40, height: 200)
-        case 2: // Answer Options
-            return CGRect(x: 20, y: 420, width: screenWidth - 40, height: 180)
-        case 3: // Hint Button
-            return CGRect(x: screenWidth / 2 - 60, y: 640, width: 120, height: 50)
-        case 4: // Next Question Button
-            return CGRect(x: 20, y: 710, width: screenWidth - 40, height: 56)
-        default:
-            return CGRect(x: 0, y: 0, width: 0, height: 0)
-        }
-    }
-
-    private let tutorialSteps: [(title: String, description: String, icon: String)] = [
-        (
-            title: "📝 Question Screen",
-            description: "Welcome to the quiz! This screen shows questions one at a time. Read carefully and select the correct answer from the options below.",
-            icon: "questionmark.bubble.fill"
-        ),
-        (
-            title: "⏱️ Timer",
-            description: "You have a limited time to complete this quiz. The timer at the top shows your remaining hours, minutes, and seconds.",
-            icon: "timer"
-        ),
-        (
-            title: "🎯 Select an Answer",
-            description: "Choose the correct answer by tapping one of the four options. Your selection will be highlighted in green.",
-            icon: "checkmark.circle.fill"
-        ),
-        (
-            title: "💡 Get a Hint",
-            description: "If you're stuck, tap the 'GET HINT' button to receive an expert hint that may help you find the correct answer.",
-            icon: "lightbulb.fill"
-        ),
-        (
-            title: "➡️ Next Question",
-            description: "Once you've selected an answer, tap 'Next Question' to move to the next quiz question.",
-            icon: "arrow.right.circle.fill"
         )
-    ]
+    }
 }
 
 @MainActor
 final class QuestionViewModel: ObservableObject {
+    @Published var question: QuizQuestion?
     @Published var isLoading = false
+    @Published var errorMessage: String?
+
+    private let db = Firestore.firestore()
+
+    func loadFirstRoundQuestion(lessonId: String) async {
+        isLoading = true
+        errorMessage = nil
+        defer { isLoading = false }
+
+        do {
+            let firstId = "\(lessonId)_L01_Q01"
+            let firstSnapshot = try await db
+                .collection("lessons")
+                .document(lessonId)
+                .collection("questions")
+                .document(firstId)
+                .getDocument()
+
+            if let data = firstSnapshot.data(),
+               let parsed = QuizQuestion(id: firstSnapshot.documentID, data: data) {
+                question = parsed
+                return
+            }
+
+            let fallback = try await db
+                .collection("lessons")
+                .document(lessonId)
+                .collection("questions")
+                .order(by: "level")
+                .order(by: "order")
+                .limit(to: 1)
+                .getDocuments()
+
+            guard let doc = fallback.documents.first,
+                  let parsed = QuizQuestion(id: doc.documentID, data: doc.data()) else {
+                errorMessage = "No questions found for this lesson."
+                question = nil
+                return
+            }
+
+            question = parsed
+        } catch {
+            errorMessage = error.localizedDescription
+            question = nil
+        }
+    }
+}
+
+struct QuizQuestion: Identifiable {
+    let id: String
+    let prompt: String
+    let choices: [String]
+    let correctIndex: Int
+    let explanation: String
+
+    init?(id: String, data: [String: Any]) {
+        guard
+            let prompt = data["prompt"] as? String,
+            let choices = data["choices"] as? [String],
+            let correctIndex = data["correctIndex"] as? Int,
+            let explanation = data["explanation"] as? String,
+            !choices.isEmpty,
+            choices.indices.contains(correctIndex)
+        else {
+            return nil
+        }
+
+        self.id = id
+        self.prompt = prompt
+        self.choices = choices
+        self.correctIndex = correctIndex
+        self.explanation = explanation
+    }
 }
 
 #Preview {

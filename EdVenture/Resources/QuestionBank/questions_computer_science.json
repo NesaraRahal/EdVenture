@@ -1,0 +1,2502 @@
+[
+  {
+    "id": "computer_science_L01_Q01",
+    "lessonId": "computer_science",
+    "level": 1,
+    "order": 1,
+    "difficulty": 1,
+    "xpMin": 10,
+    "xpMax": 16,
+    "xpSuggested": 13,
+    "prompt": "Which concept matches this description: It translates source code into machine code or bytecode.",
+    "choices": [
+      "Compiler",
+      "Interpreter",
+      "TCP",
+      "UDP"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Compiler. It translates source code into machine code or bytecode.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500263+00:00"
+  },
+  {
+    "id": "computer_science_L01_Q02",
+    "lessonId": "computer_science",
+    "level": 1,
+    "order": 2,
+    "difficulty": 2,
+    "xpMin": 11,
+    "xpMax": 17,
+    "xpSuggested": 14,
+    "prompt": "Which concept matches this description: It enables systems to learn patterns from data.",
+    "choices": [
+      "Stack",
+      "Machine Learning",
+      "Array",
+      "Linked List"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Machine Learning. It enables systems to learn patterns from data.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500299+00:00"
+  },
+  {
+    "id": "computer_science_L01_Q03",
+    "lessonId": "computer_science",
+    "level": 1,
+    "order": 3,
+    "difficulty": 3,
+    "xpMin": 11,
+    "xpMax": 17,
+    "xpSuggested": 14,
+    "prompt": "Which concept matches this description: It is a reliable connection-oriented transport protocol.",
+    "choices": [
+      "TCP",
+      "UDP",
+      "HTTP",
+      "HTTPS"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: TCP. It is a reliable connection-oriented transport protocol.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500334+00:00"
+  },
+  {
+    "id": "computer_science_L01_Q04",
+    "lessonId": "computer_science",
+    "level": 1,
+    "order": 4,
+    "difficulty": 4,
+    "xpMin": 12,
+    "xpMax": 18,
+    "xpSuggested": 15,
+    "prompt": "Which concept matches this description: It stores nodes connected by references.",
+    "choices": [
+      "Hash Table",
+      "Queue",
+      "Linked List",
+      "Stack"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Linked List. It stores nodes connected by references.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500369+00:00"
+  },
+  {
+    "id": "computer_science_L01_Q05",
+    "lessonId": "computer_science",
+    "level": 1,
+    "order": 5,
+    "difficulty": 5,
+    "xpMin": 12,
+    "xpMax": 18,
+    "xpSuggested": 15,
+    "prompt": "Which concept matches this description: It is an application-layer protocol for web communication.",
+    "choices": [
+      "Thread",
+      "HTTPS",
+      "Operating System",
+      "HTTP"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: HTTP. It is an application-layer protocol for web communication.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500403+00:00"
+  },
+  {
+    "id": "computer_science_L01_Q06",
+    "lessonId": "computer_science",
+    "level": 1,
+    "order": 6,
+    "difficulty": 6,
+    "xpMin": 13,
+    "xpMax": 19,
+    "xpSuggested": 16,
+    "prompt": "Which concept matches this description: It follows FIFO: first in, first out.",
+    "choices": [
+      "Big O",
+      "Queue",
+      "Binary Search",
+      "Hash Table"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Queue. It follows FIFO: first in, first out.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500438+00:00"
+  },
+  {
+    "id": "computer_science_L01_Q07",
+    "lessonId": "computer_science",
+    "level": 1,
+    "order": 7,
+    "difficulty": 7,
+    "xpMin": 13,
+    "xpMax": 19,
+    "xpSuggested": 16,
+    "prompt": "Which concept matches this description: It manages hardware resources and process scheduling.",
+    "choices": [
+      "Deadlock",
+      "Database Index",
+      "Thread",
+      "Operating System"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Operating System. It manages hardware resources and process scheduling.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500473+00:00"
+  },
+  {
+    "id": "computer_science_L01_Q08",
+    "lessonId": "computer_science",
+    "level": 1,
+    "order": 8,
+    "difficulty": 8,
+    "xpMin": 14,
+    "xpMax": 20,
+    "xpSuggested": 17,
+    "prompt": "Which concept matches this description: It repeatedly halves a sorted search space.",
+    "choices": [
+      "Binary Search",
+      "Recursion",
+      "Compiler",
+      "Big O"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Binary Search. It repeatedly halves a sorted search space.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500507+00:00"
+  },
+  {
+    "id": "computer_science_L01_Q09",
+    "lessonId": "computer_science",
+    "level": 1,
+    "order": 9,
+    "difficulty": 9,
+    "xpMin": 14,
+    "xpMax": 20,
+    "xpSuggested": 17,
+    "prompt": "Which concept matches this description: It is a state where processes wait indefinitely on each other.",
+    "choices": [
+      "Machine Learning",
+      "Deadlock",
+      "Database Index",
+      "Normalization"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Deadlock. It is a state where processes wait indefinitely on each other.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500541+00:00"
+  },
+  {
+    "id": "computer_science_L01_Q10",
+    "lessonId": "computer_science",
+    "level": 1,
+    "order": 10,
+    "difficulty": 10,
+    "xpMin": 15,
+    "xpMax": 21,
+    "xpSuggested": 18,
+    "prompt": "Which concept matches this description: It solves a problem by defining it in terms of smaller subproblems.",
+    "choices": [
+      "TCP",
+      "Interpreter",
+      "Compiler",
+      "Recursion"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Recursion. It solves a problem by defining it in terms of smaller subproblems.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500574+00:00"
+  },
+  {
+    "id": "computer_science_L02_Q01",
+    "lessonId": "computer_science",
+    "level": 2,
+    "order": 1,
+    "difficulty": 11,
+    "xpMin": 12,
+    "xpMax": 18,
+    "xpSuggested": 15,
+    "prompt": "Which concept matches this description: It repeatedly halves a sorted search space.",
+    "choices": [
+      "Binary Search",
+      "Big O",
+      "Recursion",
+      "Compiler"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Binary Search. It repeatedly halves a sorted search space.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500605+00:00"
+  },
+  {
+    "id": "computer_science_L02_Q02",
+    "lessonId": "computer_science",
+    "level": 2,
+    "order": 2,
+    "difficulty": 12,
+    "xpMin": 13,
+    "xpMax": 19,
+    "xpSuggested": 16,
+    "prompt": "Which concept matches this description: It is a state where processes wait indefinitely on each other.",
+    "choices": [
+      "Normalization",
+      "Database Index",
+      "Deadlock",
+      "Machine Learning"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Deadlock. It is a state where processes wait indefinitely on each other.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500636+00:00"
+  },
+  {
+    "id": "computer_science_L02_Q03",
+    "lessonId": "computer_science",
+    "level": 2,
+    "order": 3,
+    "difficulty": 13,
+    "xpMin": 13,
+    "xpMax": 19,
+    "xpSuggested": 16,
+    "prompt": "Which concept matches this description: It solves a problem by defining it in terms of smaller subproblems.",
+    "choices": [
+      "Compiler",
+      "Interpreter",
+      "TCP",
+      "Recursion"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Recursion. It solves a problem by defining it in terms of smaller subproblems.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500668+00:00"
+  },
+  {
+    "id": "computer_science_L02_Q04",
+    "lessonId": "computer_science",
+    "level": 2,
+    "order": 4,
+    "difficulty": 14,
+    "xpMin": 14,
+    "xpMax": 20,
+    "xpSuggested": 17,
+    "prompt": "Which concept matches this description: It structures relational data to reduce redundancy.",
+    "choices": [
+      "Normalization",
+      "Machine Learning",
+      "Array",
+      "Linked List"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Normalization. It structures relational data to reduce redundancy.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500699+00:00"
+  },
+  {
+    "id": "computer_science_L02_Q05",
+    "lessonId": "computer_science",
+    "level": 2,
+    "order": 5,
+    "difficulty": 15,
+    "xpMin": 14,
+    "xpMax": 20,
+    "xpSuggested": 17,
+    "prompt": "Which concept matches this description: It executes code directly, statement by statement.",
+    "choices": [
+      "Interpreter",
+      "HTTP",
+      "TCP",
+      "UDP"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Interpreter. It executes code directly, statement by statement.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500730+00:00"
+  },
+  {
+    "id": "computer_science_L02_Q06",
+    "lessonId": "computer_science",
+    "level": 2,
+    "order": 6,
+    "difficulty": 16,
+    "xpMin": 15,
+    "xpMax": 21,
+    "xpSuggested": 18,
+    "prompt": "Which concept matches this description: It stores elements in contiguous memory and supports index access.",
+    "choices": [
+      "Stack",
+      "Array",
+      "Queue",
+      "Linked List"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Array. It stores elements in contiguous memory and supports index access.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500762+00:00"
+  },
+  {
+    "id": "computer_science_L02_Q07",
+    "lessonId": "computer_science",
+    "level": 2,
+    "order": 7,
+    "difficulty": 17,
+    "xpMin": 15,
+    "xpMax": 21,
+    "xpSuggested": 18,
+    "prompt": "Which concept matches this description: It is a low-overhead connectionless transport protocol.",
+    "choices": [
+      "HTTPS",
+      "Operating System",
+      "HTTP",
+      "UDP"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: UDP. It is a low-overhead connectionless transport protocol.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500827+00:00"
+  },
+  {
+    "id": "computer_science_L02_Q08",
+    "lessonId": "computer_science",
+    "level": 2,
+    "order": 8,
+    "difficulty": 18,
+    "xpMin": 16,
+    "xpMax": 22,
+    "xpSuggested": 19,
+    "prompt": "Which concept matches this description: It follows LIFO: last in, first out.",
+    "choices": [
+      "Queue",
+      "Hash Table",
+      "Stack",
+      "Binary Search"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Stack. It follows LIFO: last in, first out.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500859+00:00"
+  },
+  {
+    "id": "computer_science_L02_Q09",
+    "lessonId": "computer_science",
+    "level": 2,
+    "order": 9,
+    "difficulty": 19,
+    "xpMin": 16,
+    "xpMax": 22,
+    "xpSuggested": 19,
+    "prompt": "Which concept matches this description: It secures HTTP with TLS encryption.",
+    "choices": [
+      "Operating System",
+      "Deadlock",
+      "HTTPS",
+      "Thread"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: HTTPS. It secures HTTP with TLS encryption.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500891+00:00"
+  },
+  {
+    "id": "computer_science_L02_Q10",
+    "lessonId": "computer_science",
+    "level": 2,
+    "order": 10,
+    "difficulty": 20,
+    "xpMin": 17,
+    "xpMax": 23,
+    "xpSuggested": 20,
+    "prompt": "Which concept matches this description: It maps keys to values using hash functions.",
+    "choices": [
+      "Big O",
+      "Recursion",
+      "Binary Search",
+      "Hash Table"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Hash Table. It maps keys to values using hash functions.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500922+00:00"
+  },
+  {
+    "id": "computer_science_L03_Q01",
+    "lessonId": "computer_science",
+    "level": 3,
+    "order": 1,
+    "difficulty": 21,
+    "xpMin": 14,
+    "xpMax": 20,
+    "xpSuggested": 17,
+    "prompt": "Which concept matches this description: It follows LIFO: last in, first out.",
+    "choices": [
+      "Stack",
+      "Queue",
+      "Hash Table",
+      "Binary Search"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Stack. It follows LIFO: last in, first out.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500954+00:00"
+  },
+  {
+    "id": "computer_science_L03_Q02",
+    "lessonId": "computer_science",
+    "level": 3,
+    "order": 2,
+    "difficulty": 22,
+    "xpMin": 15,
+    "xpMax": 21,
+    "xpSuggested": 18,
+    "prompt": "Which concept matches this description: It secures HTTP with TLS encryption.",
+    "choices": [
+      "Operating System",
+      "HTTPS",
+      "Deadlock",
+      "Thread"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: HTTPS. It secures HTTP with TLS encryption.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500985+00:00"
+  },
+  {
+    "id": "computer_science_L03_Q03",
+    "lessonId": "computer_science",
+    "level": 3,
+    "order": 3,
+    "difficulty": 23,
+    "xpMin": 15,
+    "xpMax": 21,
+    "xpSuggested": 18,
+    "prompt": "Which concept matches this description: It maps keys to values using hash functions.",
+    "choices": [
+      "Recursion",
+      "Hash Table",
+      "Binary Search",
+      "Big O"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Hash Table. It maps keys to values using hash functions.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501016+00:00"
+  },
+  {
+    "id": "computer_science_L03_Q04",
+    "lessonId": "computer_science",
+    "level": 3,
+    "order": 4,
+    "difficulty": 24,
+    "xpMin": 16,
+    "xpMax": 22,
+    "xpSuggested": 19,
+    "prompt": "Which concept matches this description: It is a lightweight execution unit within a process.",
+    "choices": [
+      "Database Index",
+      "Normalization",
+      "Thread",
+      "Deadlock"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Thread. It is a lightweight execution unit within a process.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501048+00:00"
+  },
+  {
+    "id": "computer_science_L03_Q05",
+    "lessonId": "computer_science",
+    "level": 3,
+    "order": 5,
+    "difficulty": 25,
+    "xpMin": 16,
+    "xpMax": 22,
+    "xpSuggested": 19,
+    "prompt": "Which concept matches this description: It describes asymptotic upper-bound growth of runtime.",
+    "choices": [
+      "Big O",
+      "Compiler",
+      "Recursion",
+      "Interpreter"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Big O. It describes asymptotic upper-bound growth of runtime.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501079+00:00"
+  },
+  {
+    "id": "computer_science_L03_Q06",
+    "lessonId": "computer_science",
+    "level": 3,
+    "order": 6,
+    "difficulty": 26,
+    "xpMin": 17,
+    "xpMax": 23,
+    "xpSuggested": 20,
+    "prompt": "Which concept matches this description: It speeds up data retrieval operations.",
+    "choices": [
+      "Database Index",
+      "Array",
+      "Normalization",
+      "Machine Learning"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Database Index. It speeds up data retrieval operations.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501110+00:00"
+  },
+  {
+    "id": "computer_science_L03_Q07",
+    "lessonId": "computer_science",
+    "level": 3,
+    "order": 7,
+    "difficulty": 27,
+    "xpMin": 17,
+    "xpMax": 23,
+    "xpSuggested": 20,
+    "prompt": "Which concept matches this description: It translates source code into machine code or bytecode.",
+    "choices": [
+      "TCP",
+      "UDP",
+      "Compiler",
+      "Interpreter"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Compiler. It translates source code into machine code or bytecode.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501141+00:00"
+  },
+  {
+    "id": "computer_science_L03_Q08",
+    "lessonId": "computer_science",
+    "level": 3,
+    "order": 8,
+    "difficulty": 28,
+    "xpMin": 18,
+    "xpMax": 24,
+    "xpSuggested": 21,
+    "prompt": "Which concept matches this description: It enables systems to learn patterns from data.",
+    "choices": [
+      "Stack",
+      "Machine Learning",
+      "Linked List",
+      "Array"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Machine Learning. It enables systems to learn patterns from data.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501172+00:00"
+  },
+  {
+    "id": "computer_science_L03_Q09",
+    "lessonId": "computer_science",
+    "level": 3,
+    "order": 9,
+    "difficulty": 29,
+    "xpMin": 18,
+    "xpMax": 24,
+    "xpSuggested": 21,
+    "prompt": "Which concept matches this description: It is a reliable connection-oriented transport protocol.",
+    "choices": [
+      "UDP",
+      "HTTPS",
+      "TCP",
+      "HTTP"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: TCP. It is a reliable connection-oriented transport protocol.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501203+00:00"
+  },
+  {
+    "id": "computer_science_L03_Q10",
+    "lessonId": "computer_science",
+    "level": 3,
+    "order": 10,
+    "difficulty": 30,
+    "xpMin": 19,
+    "xpMax": 26,
+    "xpSuggested": 22,
+    "prompt": "Which concept matches this description: It stores nodes connected by references.",
+    "choices": [
+      "Stack",
+      "Hash Table",
+      "Linked List",
+      "Queue"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Linked List. It stores nodes connected by references.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501234+00:00"
+  },
+  {
+    "id": "computer_science_L04_Q01",
+    "lessonId": "computer_science",
+    "level": 4,
+    "order": 1,
+    "difficulty": 31,
+    "xpMin": 16,
+    "xpMax": 23,
+    "xpSuggested": 19,
+    "prompt": "Which concept matches this description: It enables systems to learn patterns from data.",
+    "choices": [
+      "Machine Learning",
+      "Linked List",
+      "Array",
+      "Stack"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Machine Learning. It enables systems to learn patterns from data.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501266+00:00"
+  },
+  {
+    "id": "computer_science_L04_Q02",
+    "lessonId": "computer_science",
+    "level": 4,
+    "order": 2,
+    "difficulty": 32,
+    "xpMin": 17,
+    "xpMax": 24,
+    "xpSuggested": 20,
+    "prompt": "Which concept matches this description: It is a reliable connection-oriented transport protocol.",
+    "choices": [
+      "TCP",
+      "HTTP",
+      "UDP",
+      "HTTPS"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: TCP. It is a reliable connection-oriented transport protocol.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501298+00:00"
+  },
+  {
+    "id": "computer_science_L04_Q03",
+    "lessonId": "computer_science",
+    "level": 4,
+    "order": 3,
+    "difficulty": 33,
+    "xpMin": 17,
+    "xpMax": 24,
+    "xpSuggested": 20,
+    "prompt": "Which concept matches this description: It stores nodes connected by references.",
+    "choices": [
+      "Linked List",
+      "Hash Table",
+      "Stack",
+      "Queue"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Linked List. It stores nodes connected by references.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501329+00:00"
+  },
+  {
+    "id": "computer_science_L04_Q04",
+    "lessonId": "computer_science",
+    "level": 4,
+    "order": 4,
+    "difficulty": 34,
+    "xpMin": 18,
+    "xpMax": 25,
+    "xpSuggested": 21,
+    "prompt": "Which concept matches this description: It is an application-layer protocol for web communication.",
+    "choices": [
+      "HTTP",
+      "HTTPS",
+      "Operating System",
+      "Thread"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: HTTP. It is an application-layer protocol for web communication.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501360+00:00"
+  },
+  {
+    "id": "computer_science_L04_Q05",
+    "lessonId": "computer_science",
+    "level": 4,
+    "order": 5,
+    "difficulty": 35,
+    "xpMin": 18,
+    "xpMax": 25,
+    "xpSuggested": 21,
+    "prompt": "Which concept matches this description: It follows FIFO: first in, first out.",
+    "choices": [
+      "Binary Search",
+      "Hash Table",
+      "Queue",
+      "Big O"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Queue. It follows FIFO: first in, first out.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501392+00:00"
+  },
+  {
+    "id": "computer_science_L04_Q06",
+    "lessonId": "computer_science",
+    "level": 4,
+    "order": 6,
+    "difficulty": 36,
+    "xpMin": 19,
+    "xpMax": 26,
+    "xpSuggested": 22,
+    "prompt": "Identify the most accurate term for this statement: It manages hardware resources and process scheduling.",
+    "choices": [
+      "Database Index",
+      "Thread",
+      "Operating System",
+      "Deadlock"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Operating System. It manages hardware resources and process scheduling.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501423+00:00"
+  },
+  {
+    "id": "computer_science_L04_Q07",
+    "lessonId": "computer_science",
+    "level": 4,
+    "order": 7,
+    "difficulty": 37,
+    "xpMin": 19,
+    "xpMax": 26,
+    "xpSuggested": 22,
+    "prompt": "Identify the most accurate term for this statement: It repeatedly halves a sorted search space.",
+    "choices": [
+      "Compiler",
+      "Recursion",
+      "Binary Search",
+      "Big O"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Binary Search. It repeatedly halves a sorted search space.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501455+00:00"
+  },
+  {
+    "id": "computer_science_L04_Q08",
+    "lessonId": "computer_science",
+    "level": 4,
+    "order": 8,
+    "difficulty": 38,
+    "xpMin": 20,
+    "xpMax": 27,
+    "xpSuggested": 23,
+    "prompt": "Identify the most accurate term for this statement: It is a state where processes wait indefinitely on each other.",
+    "choices": [
+      "Normalization",
+      "Machine Learning",
+      "Database Index",
+      "Deadlock"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Deadlock. It is a state where processes wait indefinitely on each other.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501486+00:00"
+  },
+  {
+    "id": "computer_science_L04_Q09",
+    "lessonId": "computer_science",
+    "level": 4,
+    "order": 9,
+    "difficulty": 39,
+    "xpMin": 20,
+    "xpMax": 27,
+    "xpSuggested": 23,
+    "prompt": "Identify the most accurate term for this statement: It solves a problem by defining it in terms of smaller subproblems.",
+    "choices": [
+      "Recursion",
+      "Interpreter",
+      "TCP",
+      "Compiler"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Recursion. It solves a problem by defining it in terms of smaller subproblems.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501518+00:00"
+  },
+  {
+    "id": "computer_science_L04_Q10",
+    "lessonId": "computer_science",
+    "level": 4,
+    "order": 10,
+    "difficulty": 40,
+    "xpMin": 21,
+    "xpMax": 28,
+    "xpSuggested": 24,
+    "prompt": "Identify the most accurate term for this statement: It structures relational data to reduce redundancy.",
+    "choices": [
+      "Machine Learning",
+      "Array",
+      "Linked List",
+      "Normalization"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Normalization. It structures relational data to reduce redundancy.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501551+00:00"
+  },
+  {
+    "id": "computer_science_L05_Q01",
+    "lessonId": "computer_science",
+    "level": 5,
+    "order": 1,
+    "difficulty": 41,
+    "xpMin": 18,
+    "xpMax": 25,
+    "xpSuggested": 21,
+    "prompt": "Identify the most accurate term for this statement: It is a state where processes wait indefinitely on each other.",
+    "choices": [
+      "Deadlock",
+      "Normalization",
+      "Machine Learning",
+      "Database Index"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Deadlock. It is a state where processes wait indefinitely on each other.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501585+00:00"
+  },
+  {
+    "id": "computer_science_L05_Q02",
+    "lessonId": "computer_science",
+    "level": 5,
+    "order": 2,
+    "difficulty": 42,
+    "xpMin": 19,
+    "xpMax": 26,
+    "xpSuggested": 22,
+    "prompt": "Identify the most accurate term for this statement: It solves a problem by defining it in terms of smaller subproblems.",
+    "choices": [
+      "Compiler",
+      "Interpreter",
+      "Recursion",
+      "TCP"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Recursion. It solves a problem by defining it in terms of smaller subproblems.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501620+00:00"
+  },
+  {
+    "id": "computer_science_L05_Q03",
+    "lessonId": "computer_science",
+    "level": 5,
+    "order": 3,
+    "difficulty": 43,
+    "xpMin": 19,
+    "xpMax": 26,
+    "xpSuggested": 22,
+    "prompt": "Identify the most accurate term for this statement: It structures relational data to reduce redundancy.",
+    "choices": [
+      "Linked List",
+      "Array",
+      "Machine Learning",
+      "Normalization"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Normalization. It structures relational data to reduce redundancy.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501658+00:00"
+  },
+  {
+    "id": "computer_science_L05_Q04",
+    "lessonId": "computer_science",
+    "level": 5,
+    "order": 4,
+    "difficulty": 44,
+    "xpMin": 20,
+    "xpMax": 27,
+    "xpSuggested": 23,
+    "prompt": "Identify the most accurate term for this statement: It executes code directly, statement by statement.",
+    "choices": [
+      "HTTP",
+      "TCP",
+      "UDP",
+      "Interpreter"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Interpreter. It executes code directly, statement by statement.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501693+00:00"
+  },
+  {
+    "id": "computer_science_L05_Q05",
+    "lessonId": "computer_science",
+    "level": 5,
+    "order": 5,
+    "difficulty": 45,
+    "xpMin": 20,
+    "xpMax": 28,
+    "xpSuggested": 24,
+    "prompt": "Identify the most accurate term for this statement: It stores elements in contiguous memory and supports index access.",
+    "choices": [
+      "Stack",
+      "Array",
+      "Queue",
+      "Linked List"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Array. It stores elements in contiguous memory and supports index access.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501728+00:00"
+  },
+  {
+    "id": "computer_science_L05_Q06",
+    "lessonId": "computer_science",
+    "level": 5,
+    "order": 6,
+    "difficulty": 46,
+    "xpMin": 21,
+    "xpMax": 29,
+    "xpSuggested": 25,
+    "prompt": "Identify the most accurate term for this statement: It is a low-overhead connectionless transport protocol.",
+    "choices": [
+      "HTTP",
+      "HTTPS",
+      "UDP",
+      "Operating System"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: UDP. It is a low-overhead connectionless transport protocol.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501764+00:00"
+  },
+  {
+    "id": "computer_science_L05_Q07",
+    "lessonId": "computer_science",
+    "level": 5,
+    "order": 7,
+    "difficulty": 47,
+    "xpMin": 21,
+    "xpMax": 29,
+    "xpSuggested": 25,
+    "prompt": "Identify the most accurate term for this statement: It follows LIFO: last in, first out.",
+    "choices": [
+      "Hash Table",
+      "Binary Search",
+      "Stack",
+      "Queue"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Stack. It follows LIFO: last in, first out.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501799+00:00"
+  },
+  {
+    "id": "computer_science_L05_Q08",
+    "lessonId": "computer_science",
+    "level": 5,
+    "order": 8,
+    "difficulty": 48,
+    "xpMin": 22,
+    "xpMax": 30,
+    "xpSuggested": 26,
+    "prompt": "Identify the most accurate term for this statement: It secures HTTP with TLS encryption.",
+    "choices": [
+      "Deadlock",
+      "Thread",
+      "HTTPS",
+      "Operating System"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: HTTPS. It secures HTTP with TLS encryption.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501834+00:00"
+  },
+  {
+    "id": "computer_science_L05_Q09",
+    "lessonId": "computer_science",
+    "level": 5,
+    "order": 9,
+    "difficulty": 49,
+    "xpMin": 22,
+    "xpMax": 30,
+    "xpSuggested": 26,
+    "prompt": "Identify the most accurate term for this statement: It maps keys to values using hash functions.",
+    "choices": [
+      "Recursion",
+      "Binary Search",
+      "Big O",
+      "Hash Table"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Hash Table. It maps keys to values using hash functions.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501869+00:00"
+  },
+  {
+    "id": "computer_science_L05_Q10",
+    "lessonId": "computer_science",
+    "level": 5,
+    "order": 10,
+    "difficulty": 50,
+    "xpMin": 23,
+    "xpMax": 31,
+    "xpSuggested": 27,
+    "prompt": "Identify the most accurate term for this statement: It is a lightweight execution unit within a process.",
+    "choices": [
+      "Normalization",
+      "Database Index",
+      "Thread",
+      "Deadlock"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Thread. It is a lightweight execution unit within a process.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501904+00:00"
+  },
+  {
+    "id": "computer_science_L06_Q01",
+    "lessonId": "computer_science",
+    "level": 6,
+    "order": 1,
+    "difficulty": 51,
+    "xpMin": 20,
+    "xpMax": 28,
+    "xpSuggested": 24,
+    "prompt": "Identify the most accurate term for this statement: It secures HTTP with TLS encryption.",
+    "choices": [
+      "HTTPS",
+      "Deadlock",
+      "Operating System",
+      "Thread"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: HTTPS. It secures HTTP with TLS encryption.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501938+00:00"
+  },
+  {
+    "id": "computer_science_L06_Q02",
+    "lessonId": "computer_science",
+    "level": 6,
+    "order": 2,
+    "difficulty": 52,
+    "xpMin": 21,
+    "xpMax": 29,
+    "xpSuggested": 25,
+    "prompt": "Identify the most accurate term for this statement: It maps keys to values using hash functions.",
+    "choices": [
+      "Binary Search",
+      "Hash Table",
+      "Big O",
+      "Recursion"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Hash Table. It maps keys to values using hash functions.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501993+00:00"
+  },
+  {
+    "id": "computer_science_L06_Q03",
+    "lessonId": "computer_science",
+    "level": 6,
+    "order": 3,
+    "difficulty": 53,
+    "xpMin": 21,
+    "xpMax": 29,
+    "xpSuggested": 25,
+    "prompt": "Identify the most accurate term for this statement: It is a lightweight execution unit within a process.",
+    "choices": [
+      "Database Index",
+      "Thread",
+      "Deadlock",
+      "Normalization"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Thread. It is a lightweight execution unit within a process.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502028+00:00"
+  },
+  {
+    "id": "computer_science_L06_Q04",
+    "lessonId": "computer_science",
+    "level": 6,
+    "order": 4,
+    "difficulty": 54,
+    "xpMin": 22,
+    "xpMax": 30,
+    "xpSuggested": 26,
+    "prompt": "Identify the most accurate term for this statement: It describes asymptotic upper-bound growth of runtime.",
+    "choices": [
+      "Compiler",
+      "Interpreter",
+      "Recursion",
+      "Big O"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Big O. It describes asymptotic upper-bound growth of runtime.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502061+00:00"
+  },
+  {
+    "id": "computer_science_L06_Q05",
+    "lessonId": "computer_science",
+    "level": 6,
+    "order": 5,
+    "difficulty": 55,
+    "xpMin": 22,
+    "xpMax": 30,
+    "xpSuggested": 26,
+    "prompt": "Identify the most accurate term for this statement: It speeds up data retrieval operations.",
+    "choices": [
+      "Array",
+      "Machine Learning",
+      "Normalization",
+      "Database Index"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Database Index. It speeds up data retrieval operations.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502095+00:00"
+  },
+  {
+    "id": "computer_science_L06_Q06",
+    "lessonId": "computer_science",
+    "level": 6,
+    "order": 6,
+    "difficulty": 56,
+    "xpMin": 23,
+    "xpMax": 31,
+    "xpSuggested": 27,
+    "prompt": "Identify the most accurate term for this statement: It translates source code into machine code or bytecode.",
+    "choices": [
+      "Interpreter",
+      "UDP",
+      "Compiler",
+      "TCP"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Compiler. It translates source code into machine code or bytecode.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502129+00:00"
+  },
+  {
+    "id": "computer_science_L06_Q07",
+    "lessonId": "computer_science",
+    "level": 6,
+    "order": 7,
+    "difficulty": 57,
+    "xpMin": 23,
+    "xpMax": 31,
+    "xpSuggested": 27,
+    "prompt": "Identify the most accurate term for this statement: It enables systems to learn patterns from data.",
+    "choices": [
+      "Machine Learning",
+      "Array",
+      "Stack",
+      "Linked List"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Machine Learning. It enables systems to learn patterns from data.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502163+00:00"
+  },
+  {
+    "id": "computer_science_L06_Q08",
+    "lessonId": "computer_science",
+    "level": 6,
+    "order": 8,
+    "difficulty": 58,
+    "xpMin": 24,
+    "xpMax": 32,
+    "xpSuggested": 28,
+    "prompt": "Identify the most accurate term for this statement: It is a reliable connection-oriented transport protocol.",
+    "choices": [
+      "HTTP",
+      "HTTPS",
+      "UDP",
+      "TCP"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: TCP. It is a reliable connection-oriented transport protocol.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502197+00:00"
+  },
+  {
+    "id": "computer_science_L06_Q09",
+    "lessonId": "computer_science",
+    "level": 6,
+    "order": 9,
+    "difficulty": 59,
+    "xpMin": 24,
+    "xpMax": 32,
+    "xpSuggested": 28,
+    "prompt": "Identify the most accurate term for this statement: It stores nodes connected by references.",
+    "choices": [
+      "Hash Table",
+      "Stack",
+      "Queue",
+      "Linked List"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Linked List. It stores nodes connected by references.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502231+00:00"
+  },
+  {
+    "id": "computer_science_L06_Q10",
+    "lessonId": "computer_science",
+    "level": 6,
+    "order": 10,
+    "difficulty": 60,
+    "xpMin": 25,
+    "xpMax": 34,
+    "xpSuggested": 29,
+    "prompt": "Identify the most accurate term for this statement: It is an application-layer protocol for web communication.",
+    "choices": [
+      "Thread",
+      "Operating System",
+      "HTTPS",
+      "HTTP"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: HTTP. It is an application-layer protocol for web communication.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502264+00:00"
+  },
+  {
+    "id": "computer_science_L07_Q01",
+    "lessonId": "computer_science",
+    "level": 7,
+    "order": 1,
+    "difficulty": 61,
+    "xpMin": 22,
+    "xpMax": 31,
+    "xpSuggested": 26,
+    "prompt": "Identify the most accurate term for this statement: It is a reliable connection-oriented transport protocol.",
+    "choices": [
+      "HTTP",
+      "HTTPS",
+      "TCP",
+      "UDP"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: TCP. It is a reliable connection-oriented transport protocol.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502298+00:00"
+  },
+  {
+    "id": "computer_science_L07_Q02",
+    "lessonId": "computer_science",
+    "level": 7,
+    "order": 2,
+    "difficulty": 62,
+    "xpMin": 23,
+    "xpMax": 32,
+    "xpSuggested": 27,
+    "prompt": "Identify the most accurate term for this statement: It stores nodes connected by references.",
+    "choices": [
+      "Stack",
+      "Hash Table",
+      "Linked List",
+      "Queue"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Linked List. It stores nodes connected by references.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502331+00:00"
+  },
+  {
+    "id": "computer_science_L07_Q03",
+    "lessonId": "computer_science",
+    "level": 7,
+    "order": 3,
+    "difficulty": 63,
+    "xpMin": 23,
+    "xpMax": 32,
+    "xpSuggested": 27,
+    "prompt": "Identify the most accurate term for this statement: It is an application-layer protocol for web communication.",
+    "choices": [
+      "Operating System",
+      "HTTP",
+      "Thread",
+      "HTTPS"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: HTTP. It is an application-layer protocol for web communication.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502364+00:00"
+  },
+  {
+    "id": "computer_science_L07_Q04",
+    "lessonId": "computer_science",
+    "level": 7,
+    "order": 4,
+    "difficulty": 64,
+    "xpMin": 24,
+    "xpMax": 33,
+    "xpSuggested": 28,
+    "prompt": "Identify the most accurate term for this statement: It follows FIFO: first in, first out.",
+    "choices": [
+      "Binary Search",
+      "Queue",
+      "Big O",
+      "Hash Table"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Queue. It follows FIFO: first in, first out.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502397+00:00"
+  },
+  {
+    "id": "computer_science_L07_Q05",
+    "lessonId": "computer_science",
+    "level": 7,
+    "order": 5,
+    "difficulty": 65,
+    "xpMin": 24,
+    "xpMax": 33,
+    "xpSuggested": 28,
+    "prompt": "Identify the most accurate term for this statement: It manages hardware resources and process scheduling.",
+    "choices": [
+      "Thread",
+      "Deadlock",
+      "Database Index",
+      "Operating System"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Operating System. It manages hardware resources and process scheduling.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502430+00:00"
+  },
+  {
+    "id": "computer_science_L07_Q06",
+    "lessonId": "computer_science",
+    "level": 7,
+    "order": 6,
+    "difficulty": 66,
+    "xpMin": 25,
+    "xpMax": 34,
+    "xpSuggested": 29,
+    "prompt": "Identify the most accurate term for this statement: It repeatedly halves a sorted search space.",
+    "choices": [
+      "Binary Search",
+      "Compiler",
+      "Recursion",
+      "Big O"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Binary Search. It repeatedly halves a sorted search space.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502463+00:00"
+  },
+  {
+    "id": "computer_science_L07_Q07",
+    "lessonId": "computer_science",
+    "level": 7,
+    "order": 7,
+    "difficulty": 67,
+    "xpMin": 25,
+    "xpMax": 34,
+    "xpSuggested": 29,
+    "prompt": "Identify the most accurate term for this statement: It is a state where processes wait indefinitely on each other.",
+    "choices": [
+      "Machine Learning",
+      "Normalization",
+      "Deadlock",
+      "Database Index"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Deadlock. It is a state where processes wait indefinitely on each other.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502496+00:00"
+  },
+  {
+    "id": "computer_science_L07_Q08",
+    "lessonId": "computer_science",
+    "level": 7,
+    "order": 8,
+    "difficulty": 68,
+    "xpMin": 26,
+    "xpMax": 35,
+    "xpSuggested": 30,
+    "prompt": "Identify the most accurate term for this statement: It solves a problem by defining it in terms of smaller subproblems.",
+    "choices": [
+      "TCP",
+      "Interpreter",
+      "Compiler",
+      "Recursion"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Recursion. It solves a problem by defining it in terms of smaller subproblems.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502530+00:00"
+  },
+  {
+    "id": "computer_science_L07_Q09",
+    "lessonId": "computer_science",
+    "level": 7,
+    "order": 9,
+    "difficulty": 69,
+    "xpMin": 26,
+    "xpMax": 35,
+    "xpSuggested": 30,
+    "prompt": "Identify the most accurate term for this statement: It structures relational data to reduce redundancy.",
+    "choices": [
+      "Array",
+      "Normalization",
+      "Linked List",
+      "Machine Learning"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Normalization. It structures relational data to reduce redundancy.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502562+00:00"
+  },
+  {
+    "id": "computer_science_L07_Q10",
+    "lessonId": "computer_science",
+    "level": 7,
+    "order": 10,
+    "difficulty": 70,
+    "xpMin": 27,
+    "xpMax": 36,
+    "xpSuggested": 31,
+    "prompt": "Identify the most accurate term for this statement: It executes code directly, statement by statement.",
+    "choices": [
+      "Interpreter",
+      "UDP",
+      "TCP",
+      "HTTP"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Interpreter. It executes code directly, statement by statement.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502596+00:00"
+  },
+  {
+    "id": "computer_science_L08_Q01",
+    "lessonId": "computer_science",
+    "level": 8,
+    "order": 1,
+    "difficulty": 71,
+    "xpMin": 24,
+    "xpMax": 33,
+    "xpSuggested": 28,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It solves a problem by defining it in terms of smaller subproblems.",
+    "choices": [
+      "Interpreter",
+      "TCP",
+      "Compiler",
+      "Recursion"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Recursion. It solves a problem by defining it in terms of smaller subproblems.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502629+00:00"
+  },
+  {
+    "id": "computer_science_L08_Q02",
+    "lessonId": "computer_science",
+    "level": 8,
+    "order": 2,
+    "difficulty": 72,
+    "xpMin": 25,
+    "xpMax": 34,
+    "xpSuggested": 29,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It structures relational data to reduce redundancy.",
+    "choices": [
+      "Array",
+      "Machine Learning",
+      "Normalization",
+      "Linked List"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Normalization. It structures relational data to reduce redundancy.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502662+00:00"
+  },
+  {
+    "id": "computer_science_L08_Q03",
+    "lessonId": "computer_science",
+    "level": 8,
+    "order": 3,
+    "difficulty": 73,
+    "xpMin": 25,
+    "xpMax": 34,
+    "xpSuggested": 29,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It executes code directly, statement by statement.",
+    "choices": [
+      "Interpreter",
+      "HTTP",
+      "TCP",
+      "UDP"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Interpreter. It executes code directly, statement by statement.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502695+00:00"
+  },
+  {
+    "id": "computer_science_L08_Q04",
+    "lessonId": "computer_science",
+    "level": 8,
+    "order": 4,
+    "difficulty": 74,
+    "xpMin": 26,
+    "xpMax": 35,
+    "xpSuggested": 30,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It stores elements in contiguous memory and supports index access.",
+    "choices": [
+      "Linked List",
+      "Queue",
+      "Array",
+      "Stack"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Array. It stores elements in contiguous memory and supports index access.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502729+00:00"
+  },
+  {
+    "id": "computer_science_L08_Q05",
+    "lessonId": "computer_science",
+    "level": 8,
+    "order": 5,
+    "difficulty": 75,
+    "xpMin": 26,
+    "xpMax": 36,
+    "xpSuggested": 31,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is a low-overhead connectionless transport protocol.",
+    "choices": [
+      "Operating System",
+      "UDP",
+      "HTTP",
+      "HTTPS"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: UDP. It is a low-overhead connectionless transport protocol.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502762+00:00"
+  },
+  {
+    "id": "computer_science_L08_Q06",
+    "lessonId": "computer_science",
+    "level": 8,
+    "order": 6,
+    "difficulty": 76,
+    "xpMin": 27,
+    "xpMax": 37,
+    "xpSuggested": 32,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It follows LIFO: last in, first out.",
+    "choices": [
+      "Hash Table",
+      "Stack",
+      "Binary Search",
+      "Queue"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Stack. It follows LIFO: last in, first out.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502795+00:00"
+  },
+  {
+    "id": "computer_science_L08_Q07",
+    "lessonId": "computer_science",
+    "level": 8,
+    "order": 7,
+    "difficulty": 77,
+    "xpMin": 27,
+    "xpMax": 37,
+    "xpSuggested": 32,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It secures HTTP with TLS encryption.",
+    "choices": [
+      "Operating System",
+      "HTTPS",
+      "Thread",
+      "Deadlock"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: HTTPS. It secures HTTP with TLS encryption.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502828+00:00"
+  },
+  {
+    "id": "computer_science_L08_Q08",
+    "lessonId": "computer_science",
+    "level": 8,
+    "order": 8,
+    "difficulty": 78,
+    "xpMin": 28,
+    "xpMax": 38,
+    "xpSuggested": 33,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It maps keys to values using hash functions.",
+    "choices": [
+      "Recursion",
+      "Hash Table",
+      "Binary Search",
+      "Big O"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Hash Table. It maps keys to values using hash functions.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502862+00:00"
+  },
+  {
+    "id": "computer_science_L08_Q09",
+    "lessonId": "computer_science",
+    "level": 8,
+    "order": 9,
+    "difficulty": 79,
+    "xpMin": 28,
+    "xpMax": 38,
+    "xpSuggested": 33,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is a lightweight execution unit within a process.",
+    "choices": [
+      "Thread",
+      "Deadlock",
+      "Database Index",
+      "Normalization"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Thread. It is a lightweight execution unit within a process.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502894+00:00"
+  },
+  {
+    "id": "computer_science_L08_Q10",
+    "lessonId": "computer_science",
+    "level": 8,
+    "order": 10,
+    "difficulty": 80,
+    "xpMin": 29,
+    "xpMax": 39,
+    "xpSuggested": 34,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It describes asymptotic upper-bound growth of runtime.",
+    "choices": [
+      "Big O",
+      "Compiler",
+      "Recursion",
+      "Interpreter"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Big O. It describes asymptotic upper-bound growth of runtime.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502927+00:00"
+  },
+  {
+    "id": "computer_science_L09_Q01",
+    "lessonId": "computer_science",
+    "level": 9,
+    "order": 1,
+    "difficulty": 81,
+    "xpMin": 26,
+    "xpMax": 36,
+    "xpSuggested": 31,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It maps keys to values using hash functions.",
+    "choices": [
+      "Big O",
+      "Recursion",
+      "Hash Table",
+      "Binary Search"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Hash Table. It maps keys to values using hash functions.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502961+00:00"
+  },
+  {
+    "id": "computer_science_L09_Q02",
+    "lessonId": "computer_science",
+    "level": 9,
+    "order": 2,
+    "difficulty": 82,
+    "xpMin": 27,
+    "xpMax": 37,
+    "xpSuggested": 32,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is a lightweight execution unit within a process.",
+    "choices": [
+      "Thread",
+      "Normalization",
+      "Deadlock",
+      "Database Index"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Thread. It is a lightweight execution unit within a process.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502994+00:00"
+  },
+  {
+    "id": "computer_science_L09_Q03",
+    "lessonId": "computer_science",
+    "level": 9,
+    "order": 3,
+    "difficulty": 83,
+    "xpMin": 27,
+    "xpMax": 37,
+    "xpSuggested": 32,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It describes asymptotic upper-bound growth of runtime.",
+    "choices": [
+      "Recursion",
+      "Interpreter",
+      "Big O",
+      "Compiler"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Big O. It describes asymptotic upper-bound growth of runtime.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503027+00:00"
+  },
+  {
+    "id": "computer_science_L09_Q04",
+    "lessonId": "computer_science",
+    "level": 9,
+    "order": 4,
+    "difficulty": 84,
+    "xpMin": 28,
+    "xpMax": 38,
+    "xpSuggested": 33,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It speeds up data retrieval operations.",
+    "choices": [
+      "Normalization",
+      "Array",
+      "Machine Learning",
+      "Database Index"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Database Index. It speeds up data retrieval operations.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503061+00:00"
+  },
+  {
+    "id": "computer_science_L09_Q05",
+    "lessonId": "computer_science",
+    "level": 9,
+    "order": 5,
+    "difficulty": 85,
+    "xpMin": 28,
+    "xpMax": 38,
+    "xpSuggested": 33,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It translates source code into machine code or bytecode.",
+    "choices": [
+      "Compiler",
+      "UDP",
+      "TCP",
+      "Interpreter"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Compiler. It translates source code into machine code or bytecode.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503094+00:00"
+  },
+  {
+    "id": "computer_science_L09_Q06",
+    "lessonId": "computer_science",
+    "level": 9,
+    "order": 6,
+    "difficulty": 86,
+    "xpMin": 29,
+    "xpMax": 39,
+    "xpSuggested": 34,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It enables systems to learn patterns from data.",
+    "choices": [
+      "Stack",
+      "Array",
+      "Machine Learning",
+      "Linked List"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Machine Learning. It enables systems to learn patterns from data.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503127+00:00"
+  },
+  {
+    "id": "computer_science_L09_Q07",
+    "lessonId": "computer_science",
+    "level": 9,
+    "order": 7,
+    "difficulty": 87,
+    "xpMin": 29,
+    "xpMax": 39,
+    "xpSuggested": 34,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is a reliable connection-oriented transport protocol.",
+    "choices": [
+      "TCP",
+      "UDP",
+      "HTTP",
+      "HTTPS"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: TCP. It is a reliable connection-oriented transport protocol.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503181+00:00"
+  },
+  {
+    "id": "computer_science_L09_Q08",
+    "lessonId": "computer_science",
+    "level": 9,
+    "order": 8,
+    "difficulty": 88,
+    "xpMin": 30,
+    "xpMax": 40,
+    "xpSuggested": 35,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It stores nodes connected by references.",
+    "choices": [
+      "Linked List",
+      "Stack",
+      "Queue",
+      "Hash Table"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Linked List. It stores nodes connected by references.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503215+00:00"
+  },
+  {
+    "id": "computer_science_L09_Q09",
+    "lessonId": "computer_science",
+    "level": 9,
+    "order": 9,
+    "difficulty": 89,
+    "xpMin": 30,
+    "xpMax": 40,
+    "xpSuggested": 35,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is an application-layer protocol for web communication.",
+    "choices": [
+      "HTTPS",
+      "Operating System",
+      "HTTP",
+      "Thread"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: HTTP. It is an application-layer protocol for web communication.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503248+00:00"
+  },
+  {
+    "id": "computer_science_L09_Q10",
+    "lessonId": "computer_science",
+    "level": 9,
+    "order": 10,
+    "difficulty": 90,
+    "xpMin": 31,
+    "xpMax": 42,
+    "xpSuggested": 36,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It follows FIFO: first in, first out.",
+    "choices": [
+      "Binary Search",
+      "Hash Table",
+      "Queue",
+      "Big O"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Queue. It follows FIFO: first in, first out.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503282+00:00"
+  },
+  {
+    "id": "computer_science_L10_Q01",
+    "lessonId": "computer_science",
+    "level": 10,
+    "order": 1,
+    "difficulty": 91,
+    "xpMin": 28,
+    "xpMax": 39,
+    "xpSuggested": 33,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It stores nodes connected by references.",
+    "choices": [
+      "Stack",
+      "Queue",
+      "Linked List",
+      "Hash Table"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Linked List. It stores nodes connected by references.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503315+00:00"
+  },
+  {
+    "id": "computer_science_L10_Q02",
+    "lessonId": "computer_science",
+    "level": 10,
+    "order": 2,
+    "difficulty": 92,
+    "xpMin": 29,
+    "xpMax": 40,
+    "xpSuggested": 34,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is an application-layer protocol for web communication.",
+    "choices": [
+      "Thread",
+      "HTTP",
+      "HTTPS",
+      "Operating System"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: HTTP. It is an application-layer protocol for web communication.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503348+00:00"
+  },
+  {
+    "id": "computer_science_L10_Q03",
+    "lessonId": "computer_science",
+    "level": 10,
+    "order": 3,
+    "difficulty": 93,
+    "xpMin": 29,
+    "xpMax": 40,
+    "xpSuggested": 34,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It follows FIFO: first in, first out.",
+    "choices": [
+      "Binary Search",
+      "Big O",
+      "Queue",
+      "Hash Table"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Queue. It follows FIFO: first in, first out.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503382+00:00"
+  },
+  {
+    "id": "computer_science_L10_Q04",
+    "lessonId": "computer_science",
+    "level": 10,
+    "order": 4,
+    "difficulty": 94,
+    "xpMin": 30,
+    "xpMax": 41,
+    "xpSuggested": 35,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It manages hardware resources and process scheduling.",
+    "choices": [
+      "Database Index",
+      "Thread",
+      "Deadlock",
+      "Operating System"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Operating System. It manages hardware resources and process scheduling.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503415+00:00"
+  },
+  {
+    "id": "computer_science_L10_Q05",
+    "lessonId": "computer_science",
+    "level": 10,
+    "order": 5,
+    "difficulty": 95,
+    "xpMin": 30,
+    "xpMax": 41,
+    "xpSuggested": 35,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It repeatedly halves a sorted search space.",
+    "choices": [
+      "Big O",
+      "Binary Search",
+      "Compiler",
+      "Recursion"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Binary Search. It repeatedly halves a sorted search space.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503449+00:00"
+  },
+  {
+    "id": "computer_science_L10_Q06",
+    "lessonId": "computer_science",
+    "level": 10,
+    "order": 6,
+    "difficulty": 96,
+    "xpMin": 31,
+    "xpMax": 42,
+    "xpSuggested": 36,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is a state where processes wait indefinitely on each other.",
+    "choices": [
+      "Database Index",
+      "Normalization",
+      "Deadlock",
+      "Machine Learning"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Deadlock. It is a state where processes wait indefinitely on each other.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503483+00:00"
+  },
+  {
+    "id": "computer_science_L10_Q07",
+    "lessonId": "computer_science",
+    "level": 10,
+    "order": 7,
+    "difficulty": 97,
+    "xpMin": 31,
+    "xpMax": 42,
+    "xpSuggested": 36,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It solves a problem by defining it in terms of smaller subproblems.",
+    "choices": [
+      "Compiler",
+      "Interpreter",
+      "TCP",
+      "Recursion"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Recursion. It solves a problem by defining it in terms of smaller subproblems.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503516+00:00"
+  },
+  {
+    "id": "computer_science_L10_Q08",
+    "lessonId": "computer_science",
+    "level": 10,
+    "order": 8,
+    "difficulty": 98,
+    "xpMin": 32,
+    "xpMax": 43,
+    "xpSuggested": 37,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It structures relational data to reduce redundancy.",
+    "choices": [
+      "Array",
+      "Linked List",
+      "Machine Learning",
+      "Normalization"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Normalization. It structures relational data to reduce redundancy.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503550+00:00"
+  },
+  {
+    "id": "computer_science_L10_Q09",
+    "lessonId": "computer_science",
+    "level": 10,
+    "order": 9,
+    "difficulty": 99,
+    "xpMin": 32,
+    "xpMax": 43,
+    "xpSuggested": 37,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It executes code directly, statement by statement.",
+    "choices": [
+      "Interpreter",
+      "TCP",
+      "HTTP",
+      "UDP"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Interpreter. It executes code directly, statement by statement.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503583+00:00"
+  },
+  {
+    "id": "computer_science_L10_Q10",
+    "lessonId": "computer_science",
+    "level": 10,
+    "order": 10,
+    "difficulty": 100,
+    "xpMin": 33,
+    "xpMax": 44,
+    "xpSuggested": 38,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It stores elements in contiguous memory and supports index access.",
+    "choices": [
+      "Linked List",
+      "Array",
+      "Stack",
+      "Queue"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Array. It stores elements in contiguous memory and supports index access.",
+    "tags": [
+      "computing",
+      "algorithms"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503617+00:00"
+  }
+]

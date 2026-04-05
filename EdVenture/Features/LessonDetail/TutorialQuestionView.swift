@@ -279,13 +279,25 @@ struct TutorialQuestionView: View {
 
     private var hintSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 8) {
-                Image(systemName: "lightbulb.fill")
+            HStack(spacing: 10) {
+                Image(systemName: "book.closed.fill")
+                    .font(.system(size: 12, weight: .semibold))
                     .foregroundColor(Color(hex: "0EB060"))
-                Text("Expert Hint")
-                    .font(.system(size: 14, weight: .bold, design: .rounded))
-                    .foregroundColor(Color(hex: "0EB060"))
+                    .frame(width: 34, height: 34)
+                    .background(Color(hex: "0EB060").opacity(0.12))
+                    .clipShape(Circle())
+
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Visual Clue")
+                        .font(.system(size: 14, weight: .bold, design: .rounded))
+                        .foregroundColor(Color(hex: "0EB060"))
+                    Text("Use the category and the clue to narrow the options.")
+                        .font(.system(size: 12, design: .rounded))
+                        .foregroundColor(.white.opacity(0.6))
+                }
+
                 Spacer()
+
                 Button {
                     showHint = false
                 } label: {
@@ -294,7 +306,7 @@ struct TutorialQuestionView: View {
                 }
             }
 
-            Text("Consider the era of the author's most famous works. This book explores bureaucracy and the human condition in a classic 20th-century style.")
+            Text("Think about the literary movement, the time period, and the kind of story the prompt describes. Choose the author whose work best fits those clues.")
                 .font(.system(size: 13, design: .rounded))
                 .foregroundColor(.white.opacity(0.75))
                 .lineSpacing(2)

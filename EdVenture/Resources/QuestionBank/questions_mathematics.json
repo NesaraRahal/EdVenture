@@ -1,0 +1,2482 @@
+[
+  {
+    "id": "mathematics_L01_Q01",
+    "lessonId": "mathematics",
+    "level": 1,
+    "order": 1,
+    "difficulty": 1,
+    "xpMin": 10,
+    "xpMax": 16,
+    "xpSuggested": 13,
+    "prompt": "What is 7 + 2 \u00d7 2?",
+    "choices": [
+      "18",
+      "14",
+      "11",
+      "9"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 11.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500257+00:00"
+  },
+  {
+    "id": "mathematics_L01_Q02",
+    "lessonId": "mathematics",
+    "level": 1,
+    "order": 2,
+    "difficulty": 2,
+    "xpMin": 11,
+    "xpMax": 17,
+    "xpSuggested": 14,
+    "prompt": "What is 2 + 23 \u00d7 2?",
+    "choices": [
+      "50",
+      "46",
+      "25",
+      "48"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: 48.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500294+00:00"
+  },
+  {
+    "id": "mathematics_L01_Q03",
+    "lessonId": "mathematics",
+    "level": 1,
+    "order": 3,
+    "difficulty": 3,
+    "xpMin": 11,
+    "xpMax": 17,
+    "xpSuggested": 14,
+    "prompt": "What is 3 + 6 \u00d7 2?",
+    "choices": [
+      "18",
+      "18",
+      "15",
+      "9"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 15.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500329+00:00"
+  },
+  {
+    "id": "mathematics_L01_Q04",
+    "lessonId": "mathematics",
+    "level": 1,
+    "order": 4,
+    "difficulty": 4,
+    "xpMin": 12,
+    "xpMax": 18,
+    "xpSuggested": 15,
+    "prompt": "What is 25 + 3 \u00d7 2?",
+    "choices": [
+      "56",
+      "28",
+      "31",
+      "75"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 31.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500364+00:00"
+  },
+  {
+    "id": "mathematics_L01_Q05",
+    "lessonId": "mathematics",
+    "level": 1,
+    "order": 5,
+    "difficulty": 5,
+    "xpMin": 12,
+    "xpMax": 18,
+    "xpSuggested": 15,
+    "prompt": "What is 10 + 20 \u00d7 2?",
+    "choices": [
+      "30",
+      "200",
+      "60",
+      "50"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: 50.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500399+00:00"
+  },
+  {
+    "id": "mathematics_L01_Q06",
+    "lessonId": "mathematics",
+    "level": 1,
+    "order": 6,
+    "difficulty": 6,
+    "xpMin": 13,
+    "xpMax": 19,
+    "xpSuggested": 16,
+    "prompt": "What is 19 + 11 \u00d7 2?",
+    "choices": [
+      "30",
+      "209",
+      "60",
+      "41"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: 41.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500433+00:00"
+  },
+  {
+    "id": "mathematics_L01_Q07",
+    "lessonId": "mathematics",
+    "level": 1,
+    "order": 7,
+    "difficulty": 7,
+    "xpMin": 13,
+    "xpMax": 19,
+    "xpSuggested": 16,
+    "prompt": "What is 22 + 18 \u00d7 2?",
+    "choices": [
+      "80",
+      "40",
+      "58",
+      "396"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 58.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500468+00:00"
+  },
+  {
+    "id": "mathematics_L01_Q08",
+    "lessonId": "mathematics",
+    "level": 1,
+    "order": 8,
+    "difficulty": 8,
+    "xpMin": 14,
+    "xpMax": 20,
+    "xpSuggested": 17,
+    "prompt": "What is 6 + 16 \u00d7 2?",
+    "choices": [
+      "22",
+      "96",
+      "38",
+      "44"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 38.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500502+00:00"
+  },
+  {
+    "id": "mathematics_L01_Q09",
+    "lessonId": "mathematics",
+    "level": 1,
+    "order": 9,
+    "difficulty": 9,
+    "xpMin": 14,
+    "xpMax": 20,
+    "xpSuggested": 17,
+    "prompt": "What is 6 + 7 \u00d7 2?",
+    "choices": [
+      "20",
+      "26",
+      "13",
+      "42"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: 20.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500536+00:00"
+  },
+  {
+    "id": "mathematics_L01_Q10",
+    "lessonId": "mathematics",
+    "level": 1,
+    "order": 10,
+    "difficulty": 10,
+    "xpMin": 15,
+    "xpMax": 21,
+    "xpSuggested": 18,
+    "prompt": "What is 18 + 8 \u00d7 2?",
+    "choices": [
+      "26",
+      "144",
+      "34",
+      "52"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 34.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500570+00:00"
+  },
+  {
+    "id": "mathematics_L02_Q01",
+    "lessonId": "mathematics",
+    "level": 2,
+    "order": 1,
+    "difficulty": 11,
+    "xpMin": 12,
+    "xpMax": 18,
+    "xpSuggested": 15,
+    "prompt": "What is 21 + 20 \u00d7 2?",
+    "choices": [
+      "82",
+      "61",
+      "420",
+      "41"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 61.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500601+00:00"
+  },
+  {
+    "id": "mathematics_L02_Q02",
+    "lessonId": "mathematics",
+    "level": 2,
+    "order": 2,
+    "difficulty": 12,
+    "xpMin": 13,
+    "xpMax": 19,
+    "xpSuggested": 16,
+    "prompt": "What is 14 + 6 \u00d7 2?",
+    "choices": [
+      "26",
+      "84",
+      "20",
+      "40"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: 26.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500632+00:00"
+  },
+  {
+    "id": "mathematics_L02_Q03",
+    "lessonId": "mathematics",
+    "level": 2,
+    "order": 3,
+    "difficulty": 13,
+    "xpMin": 13,
+    "xpMax": 19,
+    "xpSuggested": 16,
+    "prompt": "What is 24 + 13 \u00d7 2?",
+    "choices": [
+      "74",
+      "50",
+      "312",
+      "37"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 50.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500664+00:00"
+  },
+  {
+    "id": "mathematics_L02_Q04",
+    "lessonId": "mathematics",
+    "level": 2,
+    "order": 4,
+    "difficulty": 14,
+    "xpMin": 14,
+    "xpMax": 20,
+    "xpSuggested": 17,
+    "prompt": "What is 10 + 7 \u00d7 2?",
+    "choices": [
+      "17",
+      "34",
+      "24",
+      "70"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 24.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500695+00:00"
+  },
+  {
+    "id": "mathematics_L02_Q05",
+    "lessonId": "mathematics",
+    "level": 2,
+    "order": 5,
+    "difficulty": 15,
+    "xpMin": 14,
+    "xpMax": 20,
+    "xpSuggested": 17,
+    "prompt": "What is 23 + 24 \u00d7 2?",
+    "choices": [
+      "71",
+      "47",
+      "94",
+      "552"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: 71.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500726+00:00"
+  },
+  {
+    "id": "mathematics_L02_Q06",
+    "lessonId": "mathematics",
+    "level": 2,
+    "order": 6,
+    "difficulty": 16,
+    "xpMin": 15,
+    "xpMax": 21,
+    "xpSuggested": 18,
+    "prompt": "What is 19 + 23 \u00d7 2?",
+    "choices": [
+      "84",
+      "65",
+      "42",
+      "437"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 65.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500758+00:00"
+  },
+  {
+    "id": "mathematics_L02_Q07",
+    "lessonId": "mathematics",
+    "level": 2,
+    "order": 7,
+    "difficulty": 17,
+    "xpMin": 15,
+    "xpMax": 21,
+    "xpSuggested": 18,
+    "prompt": "What is 5 + 13 \u00d7 2?",
+    "choices": [
+      "31",
+      "36",
+      "18",
+      "65"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: 31.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500823+00:00"
+  },
+  {
+    "id": "mathematics_L02_Q08",
+    "lessonId": "mathematics",
+    "level": 2,
+    "order": 8,
+    "difficulty": 18,
+    "xpMin": 16,
+    "xpMax": 22,
+    "xpSuggested": 19,
+    "prompt": "What is 5 + 18 \u00d7 2?",
+    "choices": [
+      "23",
+      "41",
+      "46",
+      "90"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 41.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500855+00:00"
+  },
+  {
+    "id": "mathematics_L02_Q09",
+    "lessonId": "mathematics",
+    "level": 2,
+    "order": 9,
+    "difficulty": 19,
+    "xpMin": 16,
+    "xpMax": 22,
+    "xpSuggested": 19,
+    "prompt": "What is 7 + 20 \u00d7 2?",
+    "choices": [
+      "54",
+      "140",
+      "47",
+      "27"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 47.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500887+00:00"
+  },
+  {
+    "id": "mathematics_L02_Q10",
+    "lessonId": "mathematics",
+    "level": 2,
+    "order": 10,
+    "difficulty": 20,
+    "xpMin": 17,
+    "xpMax": 23,
+    "xpSuggested": 20,
+    "prompt": "What is 16 + 15 \u00d7 2?",
+    "choices": [
+      "62",
+      "240",
+      "31",
+      "46"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: 46.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500918+00:00"
+  },
+  {
+    "id": "mathematics_L03_Q01",
+    "lessonId": "mathematics",
+    "level": 3,
+    "order": 1,
+    "difficulty": 21,
+    "xpMin": 14,
+    "xpMax": 20,
+    "xpSuggested": 17,
+    "prompt": "What is 2 + 15 \u00d7 2?",
+    "choices": [
+      "17",
+      "34",
+      "32",
+      "30"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 32.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500950+00:00"
+  },
+  {
+    "id": "mathematics_L03_Q02",
+    "lessonId": "mathematics",
+    "level": 3,
+    "order": 2,
+    "difficulty": 22,
+    "xpMin": 15,
+    "xpMax": 21,
+    "xpSuggested": 18,
+    "prompt": "What is 15 + 14 \u00d7 2?",
+    "choices": [
+      "29",
+      "58",
+      "210",
+      "43"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: 43.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500981+00:00"
+  },
+  {
+    "id": "mathematics_L03_Q03",
+    "lessonId": "mathematics",
+    "level": 3,
+    "order": 3,
+    "difficulty": 23,
+    "xpMin": 15,
+    "xpMax": 21,
+    "xpSuggested": 18,
+    "prompt": "What is 3 + 19 \u00d7 2?",
+    "choices": [
+      "57",
+      "44",
+      "22",
+      "41"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: 41.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501012+00:00"
+  },
+  {
+    "id": "mathematics_L03_Q04",
+    "lessonId": "mathematics",
+    "level": 3,
+    "order": 4,
+    "difficulty": 24,
+    "xpMin": 16,
+    "xpMax": 22,
+    "xpSuggested": 19,
+    "prompt": "What is 17 + 13 \u00d7 2?",
+    "choices": [
+      "221",
+      "60",
+      "43",
+      "30"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 43.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501044+00:00"
+  },
+  {
+    "id": "mathematics_L03_Q05",
+    "lessonId": "mathematics",
+    "level": 3,
+    "order": 5,
+    "difficulty": 25,
+    "xpMin": 16,
+    "xpMax": 22,
+    "xpSuggested": 19,
+    "prompt": "What is 22 + 23 \u00d7 2?",
+    "choices": [
+      "506",
+      "68",
+      "45",
+      "90"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 68.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501075+00:00"
+  },
+  {
+    "id": "mathematics_L03_Q06",
+    "lessonId": "mathematics",
+    "level": 3,
+    "order": 6,
+    "difficulty": 26,
+    "xpMin": 17,
+    "xpMax": 23,
+    "xpSuggested": 20,
+    "prompt": "What is 23 + 15 \u00d7 2?",
+    "choices": [
+      "345",
+      "38",
+      "53",
+      "76"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 53.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501106+00:00"
+  },
+  {
+    "id": "mathematics_L03_Q07",
+    "lessonId": "mathematics",
+    "level": 3,
+    "order": 7,
+    "difficulty": 27,
+    "xpMin": 17,
+    "xpMax": 23,
+    "xpSuggested": 20,
+    "prompt": "What is 6 + 10 \u00d7 2?",
+    "choices": [
+      "32",
+      "26",
+      "16",
+      "60"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 26.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501137+00:00"
+  },
+  {
+    "id": "mathematics_L03_Q08",
+    "lessonId": "mathematics",
+    "level": 3,
+    "order": 8,
+    "difficulty": 28,
+    "xpMin": 18,
+    "xpMax": 24,
+    "xpSuggested": 21,
+    "prompt": "What is 11 + 10 \u00d7 2?",
+    "choices": [
+      "21",
+      "31",
+      "42",
+      "110"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 31.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501168+00:00"
+  },
+  {
+    "id": "mathematics_L03_Q09",
+    "lessonId": "mathematics",
+    "level": 3,
+    "order": 9,
+    "difficulty": 29,
+    "xpMin": 18,
+    "xpMax": 24,
+    "xpSuggested": 21,
+    "prompt": "What is 4 + 4 \u00d7 2?",
+    "choices": [
+      "12",
+      "16",
+      "16",
+      "8"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: 12.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501199+00:00"
+  },
+  {
+    "id": "mathematics_L03_Q10",
+    "lessonId": "mathematics",
+    "level": 3,
+    "order": 10,
+    "difficulty": 30,
+    "xpMin": 19,
+    "xpMax": 26,
+    "xpSuggested": 22,
+    "prompt": "What is 5 + 9 \u00d7 2?",
+    "choices": [
+      "23",
+      "45",
+      "14",
+      "28"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: 23.",
+    "tags": [
+      "arithmetic",
+      "order_of_operations"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501230+00:00"
+  },
+  {
+    "id": "mathematics_L04_Q01",
+    "lessonId": "mathematics",
+    "level": 4,
+    "order": 1,
+    "difficulty": 31,
+    "xpMin": 16,
+    "xpMax": 23,
+    "xpSuggested": 19,
+    "prompt": "Solve for x: 7x + 18 = 74",
+    "choices": [
+      "7",
+      "10",
+      "8",
+      "9"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 8.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501262+00:00"
+  },
+  {
+    "id": "mathematics_L04_Q02",
+    "lessonId": "mathematics",
+    "level": 4,
+    "order": 2,
+    "difficulty": 32,
+    "xpMin": 17,
+    "xpMax": 24,
+    "xpSuggested": 20,
+    "prompt": "Solve for x: 2x + 20 = 34",
+    "choices": [
+      "9",
+      "7",
+      "6",
+      "8"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 7.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501294+00:00"
+  },
+  {
+    "id": "mathematics_L04_Q03",
+    "lessonId": "mathematics",
+    "level": 4,
+    "order": 3,
+    "difficulty": 33,
+    "xpMin": 17,
+    "xpMax": 24,
+    "xpSuggested": 20,
+    "prompt": "Solve for x: 12x + 27 = 51",
+    "choices": [
+      "4",
+      "2",
+      "1",
+      "3"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 2.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501325+00:00"
+  },
+  {
+    "id": "mathematics_L04_Q04",
+    "lessonId": "mathematics",
+    "level": 4,
+    "order": 4,
+    "difficulty": 34,
+    "xpMin": 18,
+    "xpMax": 25,
+    "xpSuggested": 21,
+    "prompt": "Solve for x: 3x + 37 = 61",
+    "choices": [
+      "8",
+      "7",
+      "10",
+      "9"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: 8.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501356+00:00"
+  },
+  {
+    "id": "mathematics_L04_Q05",
+    "lessonId": "mathematics",
+    "level": 4,
+    "order": 5,
+    "difficulty": 35,
+    "xpMin": 18,
+    "xpMax": 25,
+    "xpSuggested": 21,
+    "prompt": "Solve for x: 7x + 40 = 54",
+    "choices": [
+      "3",
+      "2",
+      "1",
+      "4"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 2.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501388+00:00"
+  },
+  {
+    "id": "mathematics_L04_Q06",
+    "lessonId": "mathematics",
+    "level": 4,
+    "order": 6,
+    "difficulty": 36,
+    "xpMin": 19,
+    "xpMax": 26,
+    "xpSuggested": 22,
+    "prompt": "Solve for x: 2x + 13 = 27",
+    "choices": [
+      "7",
+      "6",
+      "9",
+      "8"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: 7.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501419+00:00"
+  },
+  {
+    "id": "mathematics_L04_Q07",
+    "lessonId": "mathematics",
+    "level": 4,
+    "order": 7,
+    "difficulty": 37,
+    "xpMin": 19,
+    "xpMax": 26,
+    "xpSuggested": 22,
+    "prompt": "Solve for x: 2x + 12 = 24",
+    "choices": [
+      "5",
+      "8",
+      "7",
+      "6"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: 6.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501451+00:00"
+  },
+  {
+    "id": "mathematics_L04_Q08",
+    "lessonId": "mathematics",
+    "level": 4,
+    "order": 8,
+    "difficulty": 38,
+    "xpMin": 20,
+    "xpMax": 27,
+    "xpSuggested": 23,
+    "prompt": "Solve for x: 4x + 18 = 58",
+    "choices": [
+      "12",
+      "9",
+      "11",
+      "10"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: 10.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501483+00:00"
+  },
+  {
+    "id": "mathematics_L04_Q09",
+    "lessonId": "mathematics",
+    "level": 4,
+    "order": 9,
+    "difficulty": 39,
+    "xpMin": 20,
+    "xpMax": 27,
+    "xpSuggested": 23,
+    "prompt": "Solve for x: 7x + 34 = 111",
+    "choices": [
+      "12",
+      "13",
+      "10",
+      "11"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: 11.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501514+00:00"
+  },
+  {
+    "id": "mathematics_L04_Q10",
+    "lessonId": "mathematics",
+    "level": 4,
+    "order": 10,
+    "difficulty": 40,
+    "xpMin": 21,
+    "xpMax": 28,
+    "xpSuggested": 24,
+    "prompt": "Solve for x: 3x + 10 = 40",
+    "choices": [
+      "12",
+      "11",
+      "10",
+      "9"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 10.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501546+00:00"
+  },
+  {
+    "id": "mathematics_L05_Q01",
+    "lessonId": "mathematics",
+    "level": 5,
+    "order": 1,
+    "difficulty": 41,
+    "xpMin": 18,
+    "xpMax": 25,
+    "xpSuggested": 21,
+    "prompt": "Solve for x: 7x + 19 = 82",
+    "choices": [
+      "9",
+      "11",
+      "8",
+      "10"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: 9.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501580+00:00"
+  },
+  {
+    "id": "mathematics_L05_Q02",
+    "lessonId": "mathematics",
+    "level": 5,
+    "order": 2,
+    "difficulty": 42,
+    "xpMin": 19,
+    "xpMax": 26,
+    "xpSuggested": 22,
+    "prompt": "Solve for x: 5x + 39 = 64",
+    "choices": [
+      "5",
+      "4",
+      "6",
+      "7"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: 5.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501616+00:00"
+  },
+  {
+    "id": "mathematics_L05_Q03",
+    "lessonId": "mathematics",
+    "level": 5,
+    "order": 3,
+    "difficulty": 43,
+    "xpMin": 19,
+    "xpMax": 26,
+    "xpSuggested": 22,
+    "prompt": "Solve for x: 5x + 37 = 62",
+    "choices": [
+      "6",
+      "5",
+      "4",
+      "7"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 5.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501653+00:00"
+  },
+  {
+    "id": "mathematics_L05_Q04",
+    "lessonId": "mathematics",
+    "level": 5,
+    "order": 4,
+    "difficulty": 44,
+    "xpMin": 20,
+    "xpMax": 27,
+    "xpSuggested": 23,
+    "prompt": "Solve for x: 3x + 12 = 24",
+    "choices": [
+      "6",
+      "4",
+      "3",
+      "5"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 4.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501688+00:00"
+  },
+  {
+    "id": "mathematics_L05_Q05",
+    "lessonId": "mathematics",
+    "level": 5,
+    "order": 5,
+    "difficulty": 45,
+    "xpMin": 20,
+    "xpMax": 28,
+    "xpSuggested": 24,
+    "prompt": "Solve for x: 3x + 18 = 27",
+    "choices": [
+      "5",
+      "4",
+      "2",
+      "3"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: 3.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501724+00:00"
+  },
+  {
+    "id": "mathematics_L05_Q06",
+    "lessonId": "mathematics",
+    "level": 5,
+    "order": 6,
+    "difficulty": 46,
+    "xpMin": 21,
+    "xpMax": 29,
+    "xpSuggested": 25,
+    "prompt": "Solve for x: 11x + 21 = 43",
+    "choices": [
+      "4",
+      "1",
+      "3",
+      "2"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: 2.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501759+00:00"
+  },
+  {
+    "id": "mathematics_L05_Q07",
+    "lessonId": "mathematics",
+    "level": 5,
+    "order": 7,
+    "difficulty": 47,
+    "xpMin": 21,
+    "xpMax": 29,
+    "xpSuggested": 25,
+    "prompt": "Solve for x: 2x + 31 = 47",
+    "choices": [
+      "10",
+      "9",
+      "7",
+      "8"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: 8.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501794+00:00"
+  },
+  {
+    "id": "mathematics_L05_Q08",
+    "lessonId": "mathematics",
+    "level": 5,
+    "order": 8,
+    "difficulty": 48,
+    "xpMin": 22,
+    "xpMax": 30,
+    "xpSuggested": 26,
+    "prompt": "Solve for x: 3x + 29 = 44",
+    "choices": [
+      "6",
+      "4",
+      "5",
+      "7"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 5.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501829+00:00"
+  },
+  {
+    "id": "mathematics_L05_Q09",
+    "lessonId": "mathematics",
+    "level": 5,
+    "order": 9,
+    "difficulty": 49,
+    "xpMin": 22,
+    "xpMax": 30,
+    "xpSuggested": 26,
+    "prompt": "Solve for x: 8x + 33 = 121",
+    "choices": [
+      "10",
+      "12",
+      "13",
+      "11"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: 11.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501865+00:00"
+  },
+  {
+    "id": "mathematics_L05_Q10",
+    "lessonId": "mathematics",
+    "level": 5,
+    "order": 10,
+    "difficulty": 50,
+    "xpMin": 23,
+    "xpMax": 31,
+    "xpSuggested": 27,
+    "prompt": "Solve for x: 12x + 28 = 64",
+    "choices": [
+      "2",
+      "3",
+      "5",
+      "4"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 3.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501899+00:00"
+  },
+  {
+    "id": "mathematics_L06_Q01",
+    "lessonId": "mathematics",
+    "level": 6,
+    "order": 1,
+    "difficulty": 51,
+    "xpMin": 20,
+    "xpMax": 28,
+    "xpSuggested": 24,
+    "prompt": "Solve for x: 9x + 12 = 120",
+    "choices": [
+      "13",
+      "11",
+      "12",
+      "14"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 12.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501934+00:00"
+  },
+  {
+    "id": "mathematics_L06_Q02",
+    "lessonId": "mathematics",
+    "level": 6,
+    "order": 2,
+    "difficulty": 52,
+    "xpMin": 21,
+    "xpMax": 29,
+    "xpSuggested": 25,
+    "prompt": "Solve for x: 5x + 36 = 71",
+    "choices": [
+      "9",
+      "8",
+      "6",
+      "7"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: 7.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501988+00:00"
+  },
+  {
+    "id": "mathematics_L06_Q03",
+    "lessonId": "mathematics",
+    "level": 6,
+    "order": 3,
+    "difficulty": 53,
+    "xpMin": 21,
+    "xpMax": 29,
+    "xpSuggested": 25,
+    "prompt": "Solve for x: 6x + 11 = 65",
+    "choices": [
+      "10",
+      "9",
+      "11",
+      "8"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 9.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502023+00:00"
+  },
+  {
+    "id": "mathematics_L06_Q04",
+    "lessonId": "mathematics",
+    "level": 6,
+    "order": 4,
+    "difficulty": 54,
+    "xpMin": 22,
+    "xpMax": 30,
+    "xpSuggested": 26,
+    "prompt": "Solve for x: 12x + 39 = 99",
+    "choices": [
+      "6",
+      "7",
+      "4",
+      "5"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: 5.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502057+00:00"
+  },
+  {
+    "id": "mathematics_L06_Q05",
+    "lessonId": "mathematics",
+    "level": 6,
+    "order": 5,
+    "difficulty": 55,
+    "xpMin": 22,
+    "xpMax": 30,
+    "xpSuggested": 26,
+    "prompt": "Solve for x: 7x + 17 = 101",
+    "choices": [
+      "14",
+      "12",
+      "13",
+      "11"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 12.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502091+00:00"
+  },
+  {
+    "id": "mathematics_L06_Q06",
+    "lessonId": "mathematics",
+    "level": 6,
+    "order": 6,
+    "difficulty": 56,
+    "xpMin": 23,
+    "xpMax": 31,
+    "xpSuggested": 27,
+    "prompt": "Solve for x: 9x + 21 = 102",
+    "choices": [
+      "9",
+      "10",
+      "8",
+      "11"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: 9.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502125+00:00"
+  },
+  {
+    "id": "mathematics_L06_Q07",
+    "lessonId": "mathematics",
+    "level": 6,
+    "order": 7,
+    "difficulty": 57,
+    "xpMin": 23,
+    "xpMax": 31,
+    "xpSuggested": 27,
+    "prompt": "Solve for x: 8x + 10 = 26",
+    "choices": [
+      "2",
+      "1",
+      "3",
+      "4"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: 2.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502159+00:00"
+  },
+  {
+    "id": "mathematics_L06_Q08",
+    "lessonId": "mathematics",
+    "level": 6,
+    "order": 8,
+    "difficulty": 58,
+    "xpMin": 24,
+    "xpMax": 32,
+    "xpSuggested": 28,
+    "prompt": "Solve for x: 11x + 24 = 79",
+    "choices": [
+      "7",
+      "5",
+      "6",
+      "4"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 5.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502193+00:00"
+  },
+  {
+    "id": "mathematics_L06_Q09",
+    "lessonId": "mathematics",
+    "level": 6,
+    "order": 9,
+    "difficulty": 59,
+    "xpMin": 24,
+    "xpMax": 32,
+    "xpSuggested": 28,
+    "prompt": "Solve for x: 10x + 15 = 135",
+    "choices": [
+      "12",
+      "11",
+      "14",
+      "13"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: 12.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502227+00:00"
+  },
+  {
+    "id": "mathematics_L06_Q10",
+    "lessonId": "mathematics",
+    "level": 6,
+    "order": 10,
+    "difficulty": 60,
+    "xpMin": 25,
+    "xpMax": 34,
+    "xpSuggested": 29,
+    "prompt": "Solve for x: 5x + 16 = 61",
+    "choices": [
+      "8",
+      "11",
+      "9",
+      "10"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 9.",
+    "tags": [
+      "algebra",
+      "linear_equation"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502260+00:00"
+  },
+  {
+    "id": "mathematics_L07_Q01",
+    "lessonId": "mathematics",
+    "level": 7,
+    "order": 1,
+    "difficulty": 61,
+    "xpMin": 22,
+    "xpMax": 31,
+    "xpSuggested": 26,
+    "prompt": "What is the derivative of x^2?",
+    "choices": [
+      "2x^1",
+      "x^1",
+      "1x^2",
+      "3x^2"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: 2x^1.",
+    "tags": [
+      "calculus",
+      "derivative"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502293+00:00"
+  },
+  {
+    "id": "mathematics_L07_Q02",
+    "lessonId": "mathematics",
+    "level": 7,
+    "order": 2,
+    "difficulty": 62,
+    "xpMin": 23,
+    "xpMax": 32,
+    "xpSuggested": 27,
+    "prompt": "What is the derivative of x^6?",
+    "choices": [
+      "7x^6",
+      "6x^5",
+      "x^5",
+      "5x^6"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 6x^5.",
+    "tags": [
+      "calculus",
+      "derivative"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502326+00:00"
+  },
+  {
+    "id": "mathematics_L07_Q03",
+    "lessonId": "mathematics",
+    "level": 7,
+    "order": 3,
+    "difficulty": 63,
+    "xpMin": 23,
+    "xpMax": 32,
+    "xpSuggested": 27,
+    "prompt": "What is the derivative of x^4?",
+    "choices": [
+      "3x^4",
+      "x^3",
+      "5x^4",
+      "4x^3"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: 4x^3.",
+    "tags": [
+      "calculus",
+      "derivative"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502360+00:00"
+  },
+  {
+    "id": "mathematics_L07_Q04",
+    "lessonId": "mathematics",
+    "level": 7,
+    "order": 4,
+    "difficulty": 64,
+    "xpMin": 24,
+    "xpMax": 33,
+    "xpSuggested": 28,
+    "prompt": "What is the derivative of x^3?",
+    "choices": [
+      "2x^3",
+      "x^2",
+      "4x^3",
+      "3x^2"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: 3x^2.",
+    "tags": [
+      "calculus",
+      "derivative"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502393+00:00"
+  },
+  {
+    "id": "mathematics_L07_Q05",
+    "lessonId": "mathematics",
+    "level": 7,
+    "order": 5,
+    "difficulty": 65,
+    "xpMin": 24,
+    "xpMax": 33,
+    "xpSuggested": 28,
+    "prompt": "What is the derivative of x^4?",
+    "choices": [
+      "3x^4",
+      "5x^4",
+      "4x^3",
+      "x^3"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 4x^3.",
+    "tags": [
+      "calculus",
+      "derivative"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502426+00:00"
+  },
+  {
+    "id": "mathematics_L07_Q06",
+    "lessonId": "mathematics",
+    "level": 7,
+    "order": 6,
+    "difficulty": 66,
+    "xpMin": 25,
+    "xpMax": 34,
+    "xpSuggested": 29,
+    "prompt": "What is the derivative of x^5?",
+    "choices": [
+      "6x^5",
+      "4x^5",
+      "x^4",
+      "5x^4"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: 5x^4.",
+    "tags": [
+      "calculus",
+      "derivative"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502459+00:00"
+  },
+  {
+    "id": "mathematics_L07_Q07",
+    "lessonId": "mathematics",
+    "level": 7,
+    "order": 7,
+    "difficulty": 67,
+    "xpMin": 25,
+    "xpMax": 34,
+    "xpSuggested": 29,
+    "prompt": "What is the derivative of x^3?",
+    "choices": [
+      "2x^3",
+      "3x^2",
+      "4x^3",
+      "x^2"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 3x^2.",
+    "tags": [
+      "calculus",
+      "derivative"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502492+00:00"
+  },
+  {
+    "id": "mathematics_L07_Q08",
+    "lessonId": "mathematics",
+    "level": 7,
+    "order": 8,
+    "difficulty": 68,
+    "xpMin": 26,
+    "xpMax": 35,
+    "xpSuggested": 30,
+    "prompt": "What is the derivative of x^3?",
+    "choices": [
+      "2x^3",
+      "3x^2",
+      "x^2",
+      "4x^3"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 3x^2.",
+    "tags": [
+      "calculus",
+      "derivative"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502525+00:00"
+  },
+  {
+    "id": "mathematics_L07_Q09",
+    "lessonId": "mathematics",
+    "level": 7,
+    "order": 9,
+    "difficulty": 69,
+    "xpMin": 26,
+    "xpMax": 35,
+    "xpSuggested": 30,
+    "prompt": "What is the derivative of x^2?",
+    "choices": [
+      "1x^2",
+      "2x^1",
+      "3x^2",
+      "x^1"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 2x^1.",
+    "tags": [
+      "calculus",
+      "derivative"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502558+00:00"
+  },
+  {
+    "id": "mathematics_L07_Q10",
+    "lessonId": "mathematics",
+    "level": 7,
+    "order": 10,
+    "difficulty": 70,
+    "xpMin": 27,
+    "xpMax": 36,
+    "xpSuggested": 31,
+    "prompt": "What is the derivative of x^4?",
+    "choices": [
+      "3x^4",
+      "x^3",
+      "4x^3",
+      "5x^4"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 4x^3.",
+    "tags": [
+      "calculus",
+      "derivative"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502591+00:00"
+  },
+  {
+    "id": "mathematics_L08_Q01",
+    "lessonId": "mathematics",
+    "level": 8,
+    "order": 1,
+    "difficulty": 71,
+    "xpMin": 24,
+    "xpMax": 33,
+    "xpSuggested": 28,
+    "prompt": "What is the derivative of x^6?",
+    "choices": [
+      "x^5",
+      "5x^6",
+      "6x^5",
+      "7x^6"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 6x^5.",
+    "tags": [
+      "calculus",
+      "derivative"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502625+00:00"
+  },
+  {
+    "id": "mathematics_L08_Q02",
+    "lessonId": "mathematics",
+    "level": 8,
+    "order": 2,
+    "difficulty": 72,
+    "xpMin": 25,
+    "xpMax": 34,
+    "xpSuggested": 29,
+    "prompt": "What is the derivative of x^3?",
+    "choices": [
+      "3x^2",
+      "4x^3",
+      "2x^3",
+      "x^2"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: 3x^2.",
+    "tags": [
+      "calculus",
+      "derivative"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502658+00:00"
+  },
+  {
+    "id": "mathematics_L08_Q03",
+    "lessonId": "mathematics",
+    "level": 8,
+    "order": 3,
+    "difficulty": 73,
+    "xpMin": 25,
+    "xpMax": 34,
+    "xpSuggested": 29,
+    "prompt": "What is the derivative of x^6?",
+    "choices": [
+      "5x^6",
+      "6x^5",
+      "x^5",
+      "7x^6"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 6x^5.",
+    "tags": [
+      "calculus",
+      "derivative"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502691+00:00"
+  },
+  {
+    "id": "mathematics_L08_Q04",
+    "lessonId": "mathematics",
+    "level": 8,
+    "order": 4,
+    "difficulty": 74,
+    "xpMin": 26,
+    "xpMax": 35,
+    "xpSuggested": 30,
+    "prompt": "What is the derivative of x^4?",
+    "choices": [
+      "5x^4",
+      "3x^4",
+      "4x^3",
+      "x^3"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 4x^3.",
+    "tags": [
+      "calculus",
+      "derivative"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502724+00:00"
+  },
+  {
+    "id": "mathematics_L08_Q05",
+    "lessonId": "mathematics",
+    "level": 8,
+    "order": 5,
+    "difficulty": 75,
+    "xpMin": 26,
+    "xpMax": 36,
+    "xpSuggested": 31,
+    "prompt": "What is the derivative of x^6?",
+    "choices": [
+      "5x^6",
+      "x^5",
+      "6x^5",
+      "7x^6"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 6x^5.",
+    "tags": [
+      "calculus",
+      "derivative"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502758+00:00"
+  },
+  {
+    "id": "mathematics_L08_Q06",
+    "lessonId": "mathematics",
+    "level": 8,
+    "order": 6,
+    "difficulty": 76,
+    "xpMin": 27,
+    "xpMax": 37,
+    "xpSuggested": 32,
+    "prompt": "What is the derivative of x^5?",
+    "choices": [
+      "5x^4",
+      "6x^5",
+      "x^4",
+      "4x^5"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: 5x^4.",
+    "tags": [
+      "calculus",
+      "derivative"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502791+00:00"
+  },
+  {
+    "id": "mathematics_L08_Q07",
+    "lessonId": "mathematics",
+    "level": 8,
+    "order": 7,
+    "difficulty": 77,
+    "xpMin": 27,
+    "xpMax": 37,
+    "xpSuggested": 32,
+    "prompt": "What is the derivative of x^4?",
+    "choices": [
+      "3x^4",
+      "x^3",
+      "4x^3",
+      "5x^4"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 4x^3.",
+    "tags": [
+      "calculus",
+      "derivative"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502824+00:00"
+  },
+  {
+    "id": "mathematics_L08_Q08",
+    "lessonId": "mathematics",
+    "level": 8,
+    "order": 8,
+    "difficulty": 78,
+    "xpMin": 28,
+    "xpMax": 38,
+    "xpSuggested": 33,
+    "prompt": "What is the derivative of x^4?",
+    "choices": [
+      "x^3",
+      "4x^3",
+      "3x^4",
+      "5x^4"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 4x^3.",
+    "tags": [
+      "calculus",
+      "derivative"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502857+00:00"
+  },
+  {
+    "id": "mathematics_L08_Q09",
+    "lessonId": "mathematics",
+    "level": 8,
+    "order": 9,
+    "difficulty": 79,
+    "xpMin": 28,
+    "xpMax": 38,
+    "xpSuggested": 33,
+    "prompt": "What is the derivative of x^2?",
+    "choices": [
+      "1x^2",
+      "x^1",
+      "2x^1",
+      "3x^2"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 2x^1.",
+    "tags": [
+      "calculus",
+      "derivative"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502890+00:00"
+  },
+  {
+    "id": "mathematics_L08_Q10",
+    "lessonId": "mathematics",
+    "level": 8,
+    "order": 10,
+    "difficulty": 80,
+    "xpMin": 29,
+    "xpMax": 39,
+    "xpSuggested": 34,
+    "prompt": "What is the derivative of x^4?",
+    "choices": [
+      "5x^4",
+      "x^3",
+      "4x^3",
+      "3x^4"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 4x^3.",
+    "tags": [
+      "calculus",
+      "derivative"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502923+00:00"
+  },
+  {
+    "id": "mathematics_L09_Q01",
+    "lessonId": "mathematics",
+    "level": 9,
+    "order": 1,
+    "difficulty": 81,
+    "xpMin": 26,
+    "xpMax": 36,
+    "xpSuggested": 31,
+    "prompt": "If P(A)=2/15, what is P(not A)?",
+    "choices": [
+      "2/13",
+      "15/2",
+      "2/15",
+      "13/15"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: 13/15.",
+    "tags": [
+      "probability"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502956+00:00"
+  },
+  {
+    "id": "mathematics_L09_Q02",
+    "lessonId": "mathematics",
+    "level": 9,
+    "order": 2,
+    "difficulty": 82,
+    "xpMin": 27,
+    "xpMax": 37,
+    "xpSuggested": 32,
+    "prompt": "If P(A)=5/15, what is P(not A)?",
+    "choices": [
+      "5/10",
+      "10/15",
+      "15/5",
+      "5/15"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 10/15.",
+    "tags": [
+      "probability"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502990+00:00"
+  },
+  {
+    "id": "mathematics_L09_Q03",
+    "lessonId": "mathematics",
+    "level": 9,
+    "order": 3,
+    "difficulty": 83,
+    "xpMin": 27,
+    "xpMax": 37,
+    "xpSuggested": 32,
+    "prompt": "If P(A)=6/10, what is P(not A)?",
+    "choices": [
+      "6/10",
+      "6/4",
+      "10/6",
+      "4/10"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: 4/10.",
+    "tags": [
+      "probability"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503023+00:00"
+  },
+  {
+    "id": "mathematics_L09_Q04",
+    "lessonId": "mathematics",
+    "level": 9,
+    "order": 4,
+    "difficulty": 84,
+    "xpMin": 28,
+    "xpMax": 38,
+    "xpSuggested": 33,
+    "prompt": "If P(A)=4/8, what is P(not A)?",
+    "choices": [
+      "4/8",
+      "4/4",
+      "4/8",
+      "8/4"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: 4/8.",
+    "tags": [
+      "probability"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503057+00:00"
+  },
+  {
+    "id": "mathematics_L09_Q05",
+    "lessonId": "mathematics",
+    "level": 9,
+    "order": 5,
+    "difficulty": 85,
+    "xpMin": 28,
+    "xpMax": 38,
+    "xpSuggested": 33,
+    "prompt": "If P(A)=1/13, what is P(not A)?",
+    "choices": [
+      "12/13",
+      "13/1",
+      "1/12",
+      "1/13"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: 12/13.",
+    "tags": [
+      "probability"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503090+00:00"
+  },
+  {
+    "id": "mathematics_L09_Q06",
+    "lessonId": "mathematics",
+    "level": 9,
+    "order": 6,
+    "difficulty": 86,
+    "xpMin": 29,
+    "xpMax": 39,
+    "xpSuggested": 34,
+    "prompt": "If P(A)=6/12, what is P(not A)?",
+    "choices": [
+      "12/6",
+      "6/6",
+      "6/12",
+      "6/12"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 6/12.",
+    "tags": [
+      "probability"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503123+00:00"
+  },
+  {
+    "id": "mathematics_L09_Q07",
+    "lessonId": "mathematics",
+    "level": 9,
+    "order": 7,
+    "difficulty": 87,
+    "xpMin": 29,
+    "xpMax": 39,
+    "xpSuggested": 34,
+    "prompt": "If P(A)=3/13, what is P(not A)?",
+    "choices": [
+      "13/3",
+      "10/13",
+      "3/13",
+      "3/10"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 10/13.",
+    "tags": [
+      "probability"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503177+00:00"
+  },
+  {
+    "id": "mathematics_L09_Q08",
+    "lessonId": "mathematics",
+    "level": 9,
+    "order": 8,
+    "difficulty": 88,
+    "xpMin": 30,
+    "xpMax": 40,
+    "xpSuggested": 35,
+    "prompt": "If P(A)=5/12, what is P(not A)?",
+    "choices": [
+      "7/12",
+      "12/5",
+      "5/7",
+      "5/12"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: 7/12.",
+    "tags": [
+      "probability"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503211+00:00"
+  },
+  {
+    "id": "mathematics_L09_Q09",
+    "lessonId": "mathematics",
+    "level": 9,
+    "order": 9,
+    "difficulty": 89,
+    "xpMin": 30,
+    "xpMax": 40,
+    "xpSuggested": 35,
+    "prompt": "If P(A)=3/15, what is P(not A)?",
+    "choices": [
+      "15/3",
+      "12/15",
+      "3/15",
+      "3/12"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 12/15.",
+    "tags": [
+      "probability"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503244+00:00"
+  },
+  {
+    "id": "mathematics_L09_Q10",
+    "lessonId": "mathematics",
+    "level": 9,
+    "order": 10,
+    "difficulty": 90,
+    "xpMin": 31,
+    "xpMax": 42,
+    "xpSuggested": 36,
+    "prompt": "If P(A)=2/10, what is P(not A)?",
+    "choices": [
+      "8/10",
+      "10/2",
+      "2/8",
+      "2/10"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: 8/10.",
+    "tags": [
+      "probability"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503277+00:00"
+  },
+  {
+    "id": "mathematics_L10_Q01",
+    "lessonId": "mathematics",
+    "level": 10,
+    "order": 1,
+    "difficulty": 91,
+    "xpMin": 28,
+    "xpMax": 39,
+    "xpSuggested": 33,
+    "prompt": "If P(A)=4/14, what is P(not A)?",
+    "choices": [
+      "4/10",
+      "14/4",
+      "10/14",
+      "4/14"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 10/14.",
+    "tags": [
+      "probability"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503311+00:00"
+  },
+  {
+    "id": "mathematics_L10_Q02",
+    "lessonId": "mathematics",
+    "level": 10,
+    "order": 2,
+    "difficulty": 92,
+    "xpMin": 29,
+    "xpMax": 40,
+    "xpSuggested": 34,
+    "prompt": "If P(A)=3/14, what is P(not A)?",
+    "choices": [
+      "3/14",
+      "14/3",
+      "11/14",
+      "3/11"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 11/14.",
+    "tags": [
+      "probability"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503344+00:00"
+  },
+  {
+    "id": "mathematics_L10_Q03",
+    "lessonId": "mathematics",
+    "level": 10,
+    "order": 3,
+    "difficulty": 93,
+    "xpMin": 29,
+    "xpMax": 40,
+    "xpSuggested": 34,
+    "prompt": "If P(A)=3/8, what is P(not A)?",
+    "choices": [
+      "5/8",
+      "8/3",
+      "3/5",
+      "3/8"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: 5/8.",
+    "tags": [
+      "probability"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503377+00:00"
+  },
+  {
+    "id": "mathematics_L10_Q04",
+    "lessonId": "mathematics",
+    "level": 10,
+    "order": 4,
+    "difficulty": 94,
+    "xpMin": 30,
+    "xpMax": 41,
+    "xpSuggested": 35,
+    "prompt": "If P(A)=7/14, what is P(not A)?",
+    "choices": [
+      "7/14",
+      "14/7",
+      "7/7",
+      "7/14"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: 7/14.",
+    "tags": [
+      "probability"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503411+00:00"
+  },
+  {
+    "id": "mathematics_L10_Q05",
+    "lessonId": "mathematics",
+    "level": 10,
+    "order": 5,
+    "difficulty": 95,
+    "xpMin": 30,
+    "xpMax": 41,
+    "xpSuggested": 35,
+    "prompt": "If P(A)=6/11, what is P(not A)?",
+    "choices": [
+      "11/6",
+      "6/11",
+      "5/11",
+      "6/5"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 5/11.",
+    "tags": [
+      "probability"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503445+00:00"
+  },
+  {
+    "id": "mathematics_L10_Q06",
+    "lessonId": "mathematics",
+    "level": 10,
+    "order": 6,
+    "difficulty": 96,
+    "xpMin": 31,
+    "xpMax": 42,
+    "xpSuggested": 36,
+    "prompt": "If P(A)=2/12, what is P(not A)?",
+    "choices": [
+      "2/12",
+      "12/2",
+      "2/10",
+      "10/12"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: 10/12.",
+    "tags": [
+      "probability"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503479+00:00"
+  },
+  {
+    "id": "mathematics_L10_Q07",
+    "lessonId": "mathematics",
+    "level": 10,
+    "order": 7,
+    "difficulty": 97,
+    "xpMin": 31,
+    "xpMax": 42,
+    "xpSuggested": 36,
+    "prompt": "If P(A)=6/13, what is P(not A)?",
+    "choices": [
+      "6/13",
+      "7/13",
+      "13/6",
+      "6/7"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 7/13.",
+    "tags": [
+      "probability"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503512+00:00"
+  },
+  {
+    "id": "mathematics_L10_Q08",
+    "lessonId": "mathematics",
+    "level": 10,
+    "order": 8,
+    "difficulty": 98,
+    "xpMin": 32,
+    "xpMax": 43,
+    "xpSuggested": 37,
+    "prompt": "If P(A)=3/9, what is P(not A)?",
+    "choices": [
+      "3/9",
+      "9/3",
+      "6/9",
+      "3/6"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: 6/9.",
+    "tags": [
+      "probability"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503546+00:00"
+  },
+  {
+    "id": "mathematics_L10_Q09",
+    "lessonId": "mathematics",
+    "level": 10,
+    "order": 9,
+    "difficulty": 99,
+    "xpMin": 32,
+    "xpMax": 43,
+    "xpSuggested": 37,
+    "prompt": "If P(A)=5/11, what is P(not A)?",
+    "choices": [
+      "11/5",
+      "6/11",
+      "5/11",
+      "5/6"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: 6/11.",
+    "tags": [
+      "probability"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503579+00:00"
+  },
+  {
+    "id": "mathematics_L10_Q10",
+    "lessonId": "mathematics",
+    "level": 10,
+    "order": 10,
+    "difficulty": 100,
+    "xpMin": 33,
+    "xpMax": 44,
+    "xpSuggested": 38,
+    "prompt": "If P(A)=2/11, what is P(not A)?",
+    "choices": [
+      "9/11",
+      "2/11",
+      "11/2",
+      "2/9"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: 9/11.",
+    "tags": [
+      "probability"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503613+00:00"
+  }
+]

@@ -125,11 +125,14 @@ struct ContentView: View {
                                 if !path.isEmpty {
                                     path.removeLast()
                                 }
+                            },
+                            onStartQuiz: { selectedLessonId, questionIndex in
+                                path.append(AppRoute.question(lessonId: selectedLessonId, questionIndex: questionIndex))
                             }
                         )
 
                     case .question(let lessonId, let questionIndex):
-                        QuestionView(
+                        LevelQuizView(
                             lessonId: lessonId,
                             questionIndex: questionIndex,
                             onBack: {
