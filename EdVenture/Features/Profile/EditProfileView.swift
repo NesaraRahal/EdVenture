@@ -4,6 +4,8 @@ import UIKit
 
 struct EditProfileView: View {
     @StateObject private var vm = UserProfileViewModel()
+    @AppStorage("security.biometricsEnabled") private var biometricsEnabled = false
+    @AppStorage("security.requireForProfileChanges") private var requireForProfileChanges = false
 
     @State private var showingAddInterest = false
     @State private var showingPhotoOptions = false
@@ -319,6 +321,17 @@ struct EditProfileView: View {
     private var saveButton: some View {
         Button {
             Task {
+                if biometricsEnabled && requireForProfileChanges {
+                    let ok = await EVBiometricAuth.authorize(
+                        reason: "Authenticate to save profile changes"
+                    )
+
+                    if !ok {
+                        vm.errorMessage = "Face ID / Touch ID verification failed. Changes were not saved."
+                        return
+                    }
+                }
+
                 if let selectedImage {
                     await vm.uploadProfileImage(selectedImage)
                     if vm.errorMessage != nil {

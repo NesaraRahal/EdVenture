@@ -2,6 +2,9 @@ import SwiftUI
 
 struct ProfileView: View {
     @StateObject private var vm = UserProfileViewModel()
+    @AppStorage("security.biometricsEnabled") private var biometricsEnabled = false
+    @AppStorage("security.requireForProfileChanges") private var requireForProfileChanges = false
+    @State private var showingBiometricError = false
 
     var onEditProfile: (() -> Void)?
     var onBack: (() -> Void)?
@@ -64,6 +67,11 @@ struct ProfileView: View {
         .navigationBarHidden(true)
         .onAppear {
             Task { await vm.loadProfile() }
+        }
+        .alert("Authentication Required", isPresented: $showingBiometricError) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("Face ID / Touch ID verification failed. Please try again.")
         }
     }
 
@@ -171,7 +179,23 @@ struct ProfileView: View {
                 .minimumScaleFactor(0.85)
                 .padding(.horizontal, 20)
 
-            Button("Edit Profile") { onEditProfile?() }
+            Button("Edit Profile") {
+                Task {
+                    if biometricsEnabled && requireForProfileChanges {
+                        let ok = await EVBiometricAuth.authorize(
+                            reason: "Authenticate to edit your profile"
+                        )
+
+                        if ok {
+                            onEditProfile?()
+                        } else {
+                            showingBiometricError = true
+                        }
+                    } else {
+                        onEditProfile?()
+                    }
+                }
+            }
                 .font(.system(size: 17, weight: .semibold, design: .rounded))
                 .foregroundColor(Color(hex: "0EB060"))
                 .frame(width: 180, height: 50)

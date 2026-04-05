@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import LocalAuthentication
 
 // MARK: - LoginView
 // Features/Auth/LoginView.swift
@@ -19,10 +20,26 @@ struct LoginView: View {
     @State private var showPassword = false
     @State private var appeared     = false
 
+    @AppStorage("security.biometricsEnabled") private var biometricsEnabled = false
+    @AppStorage("security.biometricEnrollmentCompleted") private var biometricEnrollmentCompleted = false
+
     // Navigation callbacks
     var onAuthenticated:   (() -> Void)?   // → Home
     var onCreateAccount:   (() -> Void)?   // → RegisterView
     var onForgotPassword:  (() -> Void)?   // → ForgotPasswordView
+
+    private var canUseBiometricLogin: Bool {
+        biometricsEnabled && biometricEnrollmentCompleted
+    }
+
+    private var biometryLabel: String {
+        let context = LAContext()
+        switch context.biometryType {
+        case .faceID: return "Face ID"
+        case .touchID: return "Touch ID"
+        default: return "Biometrics"
+        }
+    }
 
     var body: some View {
         ZStack {
@@ -97,13 +114,65 @@ struct LoginView: View {
                     ) {
                         Task {
                             await vm.login(email: email, password: password)
-                            if vm.isAuthenticated { onAuthenticated?() }
+                            if vm.isAuthenticated {
+                                if canUseBiometricLogin {
+                                    _ = EVCredentialStore.save(email: email, password: password)
+                                }
+                                onAuthenticated?()
+                            }
                         }
                     }
                     .padding(.horizontal, 24)
                     .padding(.top, 24)
                     .opacity(appeared ? 1 : 0)
                     .animation(.easeOut(duration: 0.4).delay(0.3), value: appeared)
+
+                    if canUseBiometricLogin {
+                        Button {
+                            Task {
+                                let ok = await EVBiometricAuth.authorize(
+                                    reason: "Sign in to EdVenture"
+                                )
+
+                                guard ok else {
+                                    vm.errorMessage = "\(biometryLabel) verification failed."
+                                    return
+                                }
+
+                                guard let credential = EVCredentialStore.load() else {
+                                    vm.errorMessage = "No saved login found. Please sign in once with email and password."
+                                    return
+                                }
+
+                                email = credential.email
+                                password = credential.password
+
+                                await vm.login(email: credential.email, password: credential.password)
+                                if vm.isAuthenticated {
+                                    onAuthenticated?()
+                                }
+                            }
+                        } label: {
+                            HStack(spacing: 8) {
+                                Image(systemName: biometryLabel == "Face ID" ? "faceid" : "touchid")
+                                    .font(.system(size: 16, weight: .semibold))
+                                Text("Sign In with \(biometryLabel)")
+                                    .font(.system(size: 15, weight: .semibold, design: .rounded))
+                            }
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 52)
+                            .background(Color.white.opacity(0.08))
+                            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                    .stroke(Color.white.opacity(0.14), lineWidth: 0.6)
+                            )
+                        }
+                        .buttonStyle(ScaleButtonStyle())
+                        .padding(.horizontal, 24)
+                        .padding(.top, 12)
+                    }
 
                     // ── Divider ───────────────────────────────────────
                     EVDivider()

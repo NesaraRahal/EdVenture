@@ -115,7 +115,17 @@ struct ContentView: View {
                             onLessons:   { goToMainTab(.lessons) },
                             onDiscovery: { goToMainTab(.discovery) },
                             onRank:      { goToMainTab(.rank) },
+                            onBiometricsAndPassword: { path.append(AppRoute.biometricsSettings) },
                             onProfile:   { path.append(AppRoute.profile) }
+                        )
+
+                    case .biometricsSettings:
+                        BiometricsPasswordView(
+                            onBack: {
+                                if !path.isEmpty {
+                                    path.removeLast()
+                                }
+                            }
                         )
 
                     case .profile:
