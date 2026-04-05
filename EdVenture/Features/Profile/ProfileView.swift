@@ -2,6 +2,9 @@ import SwiftUI
 
 struct ProfileView: View {
     @StateObject private var vm = UserProfileViewModel()
+    @AppStorage("security.biometricsEnabled") private var biometricsEnabled = false
+    @AppStorage("security.requireForProfileChanges") private var requireForProfileChanges = false
+    @State private var showingBiometricError = false
 
     var onEditProfile: (() -> Void)?
     var onBack: (() -> Void)?
@@ -65,6 +68,11 @@ struct ProfileView: View {
         .onAppear {
             Task { await vm.loadProfile() }
         }
+        .alert("Authentication Required", isPresented: $showingBiometricError) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("Face ID / Touch ID verification failed. Please try again.")
+        }
     }
 
     private var topBar: some View {
@@ -103,12 +111,12 @@ struct ProfileView: View {
         VStack(spacing: 12) {
             ZStack(alignment: .bottomTrailing) {
                 Circle()
-                    .stroke(Color(hex: "2BE292"), lineWidth: 5)
-                    .frame(width: 150, height: 150)
-
-                Circle()
-                    .fill(Color.white.opacity(0.1))
-                    .frame(width: 130, height: 130)
+                    .fill(Color.white.opacity(0.08))
+                    .frame(width: 148, height: 148)
+                    .overlay(
+                        Circle()
+                            .stroke(Color(hex: "2BE292"), lineWidth: 5)
+                    )
                     .overlay(
                         Group {
                             if !vm.profile.profileImagePath.isEmpty {
@@ -141,6 +149,8 @@ struct ProfileView: View {
                                     .foregroundColor(.white.opacity(0.7))
                             }
                         }
+                        .frame(width: 136, height: 136)
+                        .clipShape(Circle())
                     )
                     .clipShape(Circle())
 
@@ -152,18 +162,40 @@ struct ProfileView: View {
                             .font(.system(size: 15, weight: .bold))
                             .foregroundColor(Color(hex: "0A0F0D"))
                     )
-                    .offset(x: 2, y: -6)
+                    .offset(x: -2, y: -2)
             }
 
             Text(vm.profile.fullName.isEmpty ? "Learner" : vm.profile.fullName)
                 .font(.system(size: 40, weight: .bold, design: .rounded))
                 .foregroundColor(.white)
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
+                .padding(.horizontal, 20)
 
             Text(vm.profile.username.isEmpty ? "Leveling up daily" : "@\(vm.profile.username)")
                 .font(.system(size: 16, design: .rounded))
                 .foregroundColor(.white.opacity(0.55))
+                .lineLimit(1)
+                .minimumScaleFactor(0.85)
+                .padding(.horizontal, 20)
 
-            Button("Edit Profile") { onEditProfile?() }
+            Button("Edit Profile") {
+                Task {
+                    if biometricsEnabled && requireForProfileChanges {
+                        let ok = await EVBiometricAuth.authorize(
+                            reason: "Authenticate to edit your profile"
+                        )
+
+                        if ok {
+                            onEditProfile?()
+                        } else {
+                            showingBiometricError = true
+                        }
+                    } else {
+                        onEditProfile?()
+                    }
+                }
+            }
                 .font(.system(size: 17, weight: .semibold, design: .rounded))
                 .foregroundColor(Color(hex: "0EB060"))
                 .frame(width: 180, height: 50)

@@ -4,6 +4,8 @@ import UIKit
 
 struct EditProfileView: View {
     @StateObject private var vm = UserProfileViewModel()
+    @AppStorage("security.biometricsEnabled") private var biometricsEnabled = false
+    @AppStorage("security.requireForProfileChanges") private var requireForProfileChanges = false
 
     @State private var showingAddInterest = false
     @State private var showingPhotoOptions = false
@@ -12,6 +14,8 @@ struct EditProfileView: View {
     @State private var newInterest = ""
     @State private var selectedPhotoItem: PhotosPickerItem?
     @State private var selectedImage: UIImage?
+    @State private var showingErrorAlert = false
+    @State private var showingSavedAlert = false
 
     var onBack: (() -> Void)?
 
@@ -95,12 +99,18 @@ struct EditProfileView: View {
         } message: {
             Text("Add a topic you want to learn")
         }
-        .alert("Error", isPresented: .constant(vm.errorMessage != nil)) {
+        .onChange(of: vm.errorMessage) { _, newValue in
+            showingErrorAlert = (newValue != nil)
+        }
+        .onChange(of: vm.saveMessage) { _, newValue in
+            showingSavedAlert = (newValue != nil)
+        }
+        .alert("Error", isPresented: $showingErrorAlert) {
             Button("OK") { vm.errorMessage = nil }
         } message: {
             Text(vm.errorMessage ?? "")
         }
-        .alert("Saved", isPresented: .constant(vm.saveMessage != nil)) {
+        .alert("Saved", isPresented: $showingSavedAlert) {
             Button("OK") { vm.saveMessage = nil }
         } message: {
             Text(vm.saveMessage ?? "")
@@ -143,12 +153,12 @@ struct EditProfileView: View {
         VStack(spacing: 12) {
             ZStack(alignment: .bottomTrailing) {
                 Circle()
-                    .stroke(Color(hex: "2BE292"), lineWidth: 5)
-                    .frame(width: 150, height: 150)
-
-                Circle()
-                    .fill(Color.white.opacity(0.1))
-                    .frame(width: 130, height: 130)
+                    .fill(Color.white.opacity(0.08))
+                    .frame(width: 148, height: 148)
+                    .overlay(
+                        Circle()
+                            .stroke(Color(hex: "2BE292"), lineWidth: 5)
+                    )
                     .overlay(
                         Group {
                             if let selectedImage {
@@ -185,23 +195,36 @@ struct EditProfileView: View {
                                     .foregroundColor(.white.opacity(0.7))
                             }
                         }
+                        .frame(width: 136, height: 136)
+                        .clipShape(Circle())
                     )
                     .clipShape(Circle())
 
-                Circle()
-                    .fill(Color(hex: "2BE292"))
-                    .frame(width: 38, height: 38)
-                    .overlay(
-                        Image(systemName: "pencil")
-                            .font(.system(size: 15, weight: .bold))
-                            .foregroundColor(Color(hex: "0A0F0D"))
-                    )
-                    .onTapGesture { showingPhotoOptions = true }
+                Button {
+                    showingPhotoOptions = true
+                } label: {
+                    Circle()
+                        .fill(Color(hex: "2BE292"))
+                        .frame(width: 38, height: 38)
+                        .overlay(
+                            Image(systemName: "pencil")
+                                .font(.system(size: 15, weight: .bold))
+                                .foregroundColor(Color(hex: "0A0F0D"))
+                        )
+                        .shadow(color: .black.opacity(0.22), radius: 6, y: 2)
+                }
+                    .offset(x: -2, y: -2)
+                .frame(minWidth: 44, minHeight: 44)
+                .contentShape(Rectangle())
+                .buttonStyle(ScaleButtonStyle())
             }
 
             Text(vm.profile.fullName.isEmpty ? "Your Name" : vm.profile.fullName)
                 .font(.system(size: 40, weight: .bold, design: .rounded))
                 .foregroundColor(.white)
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
+                .padding(.horizontal, 20)
         }
     }
 
@@ -298,6 +321,17 @@ struct EditProfileView: View {
     private var saveButton: some View {
         Button {
             Task {
+                if biometricsEnabled && requireForProfileChanges {
+                    let ok = await EVBiometricAuth.authorize(
+                        reason: "Authenticate to save profile changes"
+                    )
+
+                    if !ok {
+                        vm.errorMessage = "Face ID / Touch ID verification failed. Changes were not saved."
+                        return
+                    }
+                }
+
                 if let selectedImage {
                     await vm.uploadProfileImage(selectedImage)
                     if vm.errorMessage != nil {

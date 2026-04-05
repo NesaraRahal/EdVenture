@@ -20,12 +20,18 @@ final class LessonsViewModel: ObservableObject {
     @Published var errorMessage:   String?       = nil
     @Published var searchText:     String        = ""
     @Published var selectedFilter: String        = "All"
+    @Published var activePracticeLessonIDs: Set<String> = []
+    @Published var processingLessonIDs: Set<String> = []
 
     private let db = Firestore.firestore()
 
     // All filter chips — "All" + each lesson title
     var filterChips: [String] {
-        ["All"] + lessons.map { $0.title }
+        let titles = lessons
+            .map { $0.title.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .map { $0.isEmpty ? "Untitled" : $0 }
+
+        return ["All"] + Array(NSOrderedSet(array: titles)).compactMap { $0 as? String }
     }
 
     // Lessons after search + filter applied
@@ -34,7 +40,9 @@ final class LessonsViewModel: ObservableObject {
 
         // Filter chip
         if selectedFilter != "All" {
-            result = result.filter { $0.title == selectedFilter }
+            result = result.filter {
+                $0.title.trimmingCharacters(in: .whitespacesAndNewlines) == selectedFilter
+            }
         }
 
         // Search text
@@ -69,9 +77,32 @@ final class LessonsViewModel: ObservableObject {
         isLoading = false
     }
 
+    // MARK: - Fetch user's active practice lessons
+    func fetchActivePracticeLessons(userId: String) async {
+        errorMessage = nil
+
+        do {
+            let snapshot = try await db
+                .collection("users")
+                .document(userId)
+                .collection("activeLessons")
+                .getDocuments()
+
+            activePracticeLessonIDs = Set(snapshot.documents.map { $0.documentID })
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
     // MARK: - Add lesson to user's practice list
     // Stores the lesson ID under the current user's profile in Firestore
     func addToPractice(lessonId: String, userId: String) async {
+        guard !activePracticeLessonIDs.contains(lessonId) else { return }
+        guard !processingLessonIDs.contains(lessonId) else { return }
+
+        processingLessonIDs.insert(lessonId)
+        defer { processingLessonIDs.remove(lessonId) }
+
         let ref = db.collection("users").document(userId)
             .collection("activeLessons").document(lessonId)
         do {
@@ -80,6 +111,9 @@ final class LessonsViewModel: ObservableObject {
                 "addedAt":   Timestamp(date: Date()),
                 "progress":  0.0
             ], merge: true)
+
+            // Frontend state mirrors backend success
+            activePracticeLessonIDs.insert(lessonId)
         } catch {
             errorMessage = error.localizedDescription
         }

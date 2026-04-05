@@ -14,6 +14,7 @@ struct SettingsView: View {
     var onLessons:   (() -> Void)?
     var onDiscovery: (() -> Void)?
     var onRank:      (() -> Void)?
+    var onBiometricsAndPassword: (() -> Void)?
     var onProfile:   (() -> Void)?
 
     // MARK: - Body
@@ -48,30 +49,30 @@ struct SettingsView: View {
                         // Preferences
                         sectionLabel("Preferences")
                         settingsGroup([
-                            RowConfig(icon: "bell",          label: "Notifications"),
+                            RowConfig(icon: "bell",          label: "Notifications", action: nil),
                         ])
                         .padding(.bottom, 24)
 
                         // Accessibility
                         sectionLabel("Accessibility")
                         settingsGroup([
-                            RowConfig(icon: "figure.stand",  label: "Accessibility"),
+                            RowConfig(icon: "figure.stand",  label: "Accessibility", action: nil),
                         ])
                         .padding(.bottom, 24)
 
                         // Security
                         sectionLabel("Security")
                         settingsGroup([
-                            RowConfig(icon: "lock.shield",   label: "Biometrics and Password"),
+                            RowConfig(icon: "lock.shield",   label: "Biometrics and Password", action: onBiometricsAndPassword),
                         ])
                         .padding(.bottom, 24)
 
                         // Support
                         sectionLabel("Support")
                         settingsGroup([
-                            RowConfig(icon: "questionmark.circle", label: "Help Center"),
-                            RowConfig(icon: "envelope",             label: "Contact Us"),
-                            RowConfig(icon: "doc.text",             label: "Terms and Privacy"),
+                            RowConfig(icon: "questionmark.circle", label: "Help Center", action: nil),
+                            RowConfig(icon: "envelope",             label: "Contact Us", action: nil),
+                            RowConfig(icon: "doc.text",             label: "Terms and Privacy", action: nil),
                         ])
                         .padding(.bottom, 32)
 
@@ -208,12 +209,15 @@ struct SettingsView: View {
     private struct RowConfig {
         let icon: String
         let label: String
+        let action: (() -> Void)?
     }
 
     private func settingsGroup(_ rows: [RowConfig]) -> some View {
         VStack(spacing: 0) {
             ForEach(Array(rows.enumerated()), id: \.offset) { i, row in
-                Button {} label: {
+                Button {
+                    row.action?()
+                } label: {
                     HStack(spacing: 14) {
                         // Icon badge
                         Image(systemName: row.icon)
@@ -237,6 +241,8 @@ struct SettingsView: View {
                     .frame(height: 54)
                 }
                 .buttonStyle(ScaleButtonStyle())
+                .disabled(row.action == nil)
+                .opacity(row.action == nil ? 0.88 : 1)
 
                 // Divider between rows only
                 if i < rows.count - 1 {

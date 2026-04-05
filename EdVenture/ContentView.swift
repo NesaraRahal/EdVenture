@@ -8,10 +8,16 @@ struct ContentView: View {
 
     @State private var path            = NavigationPath()
     @State private var registeredEmail = ""
+    @State private var pendingLessonFilter: String?
 
     private func goToMainTab(_ route: AppRoute) {
         path = NavigationPath()
         path.append(route)
+    }
+
+    private func goToLessons(filter: String? = nil) {
+        pendingLessonFilter = filter
+        goToMainTab(.lessons)
     }
 
     var body: some View {
@@ -54,15 +60,19 @@ struct ContentView: View {
                     // ── Main app ───────────────────────────────────
                     case .home:
                         HomeView(
-                            onLessons:   { goToMainTab(.lessons) },
+                            onLessons:   { goToLessons() },
                             onDiscovery: { goToMainTab(.discovery) },
                             onRank:      { goToMainTab(.rank) },
                             onSettings:  { goToMainTab(.settings) },
+                            onOpenLesson: { lessonId in
+                                path.append(AppRoute.lessonDetail(lessonId))
+                            },
                             onProfile:   { path.append(AppRoute.profile) }
                         )
 
                     case .lessons:
                         LessonsView(
+                            initialSelectedFilter: pendingLessonFilter,
                             onHome:      { goToMainTab(.home) },
                             onDiscovery: { goToMainTab(.discovery) },
                             onRank:      { goToMainTab(.rank) },
@@ -70,6 +80,35 @@ struct ContentView: View {
                             onProfile:   { path.append(AppRoute.profile) }
                         )
 
+                    case .lessonDetail(let lessonId):
+                        LessonDetailView(
+                            lessonId: lessonId,
+                            onBack: {
+                                if !path.isEmpty {
+                                    path.removeLast()
+                                }
+                            }
+                        )
+
+                    case .question(let lessonId, let questionIndex):
+                        QuestionView(
+                            lessonId: lessonId,
+                            questionIndex: questionIndex,
+                            onBack: {
+                                if !path.isEmpty {
+                                    path.removeLast()
+                                }
+                            }
+                        )
+
+                        case .tutorialQuestion:
+                            TutorialQuestionView(
+                                onBack: {
+                                    if !path.isEmpty {
+                                        path.removeLast()
+                                    }
+                                }
+                            )
                     case .discovery:
                         DiscoveryView(
                             onHome:     { goToMainTab(.home) },
@@ -95,7 +134,17 @@ struct ContentView: View {
                             onLessons:   { goToMainTab(.lessons) },
                             onDiscovery: { goToMainTab(.discovery) },
                             onRank:      { goToMainTab(.rank) },
+                            onBiometricsAndPassword: { path.append(AppRoute.biometricsSettings) },
                             onProfile:   { path.append(AppRoute.profile) }
+                        )
+
+                    case .biometricsSettings:
+                        BiometricsPasswordView(
+                            onBack: {
+                                if !path.isEmpty {
+                                    path.removeLast()
+                                }
+                            }
                         )
 
                     case .profile:
