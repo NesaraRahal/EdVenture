@@ -6,6 +6,7 @@ struct ProfileView: View {
     @AppStorage("security.requireForProfileChanges") private var requireForProfileChanges = false
     @State private var showingBiometricError = false
 
+    var onInsights: (() -> Void)?
     var onEditProfile: (() -> Void)?
     var onBack: (() -> Void)?
 
@@ -232,44 +233,49 @@ struct ProfileView: View {
     }
 
     private var insightsCard: some View {
-        VStack(spacing: 14) {
-            HStack {
-                Label("LEARNING INSIGHTS", systemImage: "sparkles")
-                    .font(.system(size: 13, weight: .bold, design: .rounded))
-                    .foregroundColor(.white.opacity(0.88))
-                    .tracking(1)
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(.white.opacity(0.5))
-            }
-
-            HStack {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("STRONGEST")
-                        .font(.system(size: 11, weight: .semibold, design: .rounded))
-                        .foregroundColor(.white.opacity(0.45))
-                        .tracking(1.1)
-                    Text("Astronomy")
-                        .font(.system(size: 17, weight: .bold, design: .rounded))
-                        .foregroundColor(.white)
+        Button {
+            onInsights?()
+        } label: {
+            VStack(spacing: 14) {
+                HStack {
+                    Label("LEARNING INSIGHTS", systemImage: "sparkles")
+                        .font(.system(size: 13, weight: .bold, design: .rounded))
+                        .foregroundColor(.white.opacity(0.88))
+                        .tracking(1)
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(.white.opacity(0.5))
                 }
 
-                Spacer()
+                HStack {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("STRONGEST")
+                            .font(.system(size: 11, weight: .semibold, design: .rounded))
+                            .foregroundColor(.white.opacity(0.45))
+                            .tracking(1.1)
+                        Text("Astronomy")
+                            .font(.system(size: 17, weight: .bold, design: .rounded))
+                            .foregroundColor(.white)
+                    }
 
-                VStack(alignment: .trailing, spacing: 6) {
-                    Text("TREND")
-                        .font(.system(size: 11, weight: .semibold, design: .rounded))
-                        .foregroundColor(.white.opacity(0.45))
-                        .tracking(1.1)
-                    Text("+12% accuracy")
-                        .font(.system(size: 17, weight: .bold, design: .rounded))
-                        .foregroundColor(Color(hex: "71F8AA"))
+                    Spacer()
+
+                    VStack(alignment: .trailing, spacing: 6) {
+                        Text("TREND")
+                            .font(.system(size: 11, weight: .semibold, design: .rounded))
+                            .foregroundColor(.white.opacity(0.45))
+                            .tracking(1.1)
+                        Text("+12% accuracy")
+                            .font(.system(size: 17, weight: .bold, design: .rounded))
+                            .foregroundColor(Color(hex: "71F8AA"))
+                    }
                 }
             }
+            .padding(18)
+            .background(statCardBackground)
         }
-        .padding(18)
-        .background(statCardBackground)
+        .buttonStyle(ScaleButtonStyle())
     }
 
     private var levelSection: some View {

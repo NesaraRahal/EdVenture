@@ -53,6 +53,8 @@ struct ContentView: View {
             return "Biometrics and password settings. Enable Face ID or Touch ID, and configure protections for app unlock and profile changes."
         case .profile:
             return "Profile screen. View avatar, profile information, activity, and edit profile actions."
+        case .insights:
+            return "Insights screen. View subject proficiency, consistency heatmap, weekly XP performance, and daily rhythm patterns."
         case .editProfile:
             return "Edit profile screen. Update your personal details, avatar, and save changes."
         }
@@ -200,7 +202,17 @@ struct ContentView: View {
 
                     case .profile:
                         ProfileView(
+                            onInsights: { path.append(AppRoute.insights) },
                             onEditProfile: { path.append(AppRoute.editProfile) },
+                            onBack: {
+                                if !path.isEmpty {
+                                    path.removeLast()
+                                }
+                            }
+                        )
+
+                    case .insights:
+                        InsightsView(
                             onBack: {
                                 if !path.isEmpty {
                                     path.removeLast()

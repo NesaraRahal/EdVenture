@@ -17,5 +17,6 @@ enum AppRoute: Hashable {
     case question(lessonId: String, questionIndex: Int)
     case tutorialQuestion
     case profile
+    case insights
     case editProfile
 }

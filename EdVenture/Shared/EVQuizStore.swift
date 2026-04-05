@@ -281,6 +281,7 @@ final class EVQuizStore {
 
         let userRef = db.collection("users").document(userId)
         let sessionRef = userRef.collection("quizSessions").document(session.lessonId)
+        let attemptRef = userRef.collection("quizAttempts").document()
         let leaderboardRef = db.collection("leaderboards").document("global").collection("entries").document(userId)
         let streakValue: Any = isCorrect ? FieldValue.increment(Int64(1)) : 0
 
@@ -293,6 +294,18 @@ final class EVQuizStore {
         ], forDocument: userRef, merge: true)
 
         batch.setData(updatedSession.dictionary, forDocument: sessionRef, merge: true)
+        batch.setData([
+            "lessonId": session.lessonId,
+            "level": session.level,
+            "questionId": question.id,
+            "questionIndex": questionIndex,
+            "selectedIndex": selectedIndex,
+            "correctIndex": question.correctIndex,
+            "isCorrect": isCorrect,
+            "earnedXP": earnedXP,
+            "answeredAt": Timestamp(date: now),
+            "createdAt": Timestamp(date: now)
+        ], forDocument: attemptRef, merge: false)
         batch.setData([
             "uid": userId,
             "displayName": displayName,
