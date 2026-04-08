@@ -123,6 +123,7 @@ class DiscoveryViewModel: ObservableObject {
             
             progress = 1.0
             state = .displayingContent
+            isShowingAROverlay = true
             
             print("🎓 Educational content generated successfully")
             
@@ -132,6 +133,7 @@ class DiscoveryViewModel: ObservableObject {
                 educationalContent = fallback
                 progress = 1.0
                 state = .displayingContent
+                isShowingAROverlay = true
                 saveScanToHistory(fallback)
                 return
             }

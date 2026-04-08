@@ -126,13 +126,13 @@ class GeminiAPIService: ObservableObject {
         for version in apiVersions {
             for model in modelCandidates {
                 do {
-                    let responseText = try await requestCompletionText(version: version, model: model, key: key, request: request)
+                    let responseText = try await requestCompletionTextWithRetry(version: version, model: model, key: key, request: request)
                     let content = try parseEducationalContent(responseText, extractedText: extractedText)
                     return content
                 } catch GeminiError.apiError(let statusCode) {
                     lastStatusCode = statusCode
-                    // If model/version is not found, try next combination.
-                    if statusCode == 404 { continue }
+                    // Keep trying on model/version misses and transient server/rate-limit failures.
+                    if statusCode == 404 || isRetryableStatus(statusCode) { continue }
                     throw GeminiError.apiError(statusCode: statusCode)
                 }
             }
@@ -231,6 +231,41 @@ class GeminiAPIService: ObservableObject {
             throw GeminiError.invalidResponse
         }
         return responseText
+    }
+
+    private func requestCompletionTextWithRetry(version: String, model: String, key: String, request: GeminiRequest) async throws -> String {
+        let maxAttempts = 3
+        var lastError: Error?
+
+        for attempt in 1...maxAttempts {
+            do {
+                return try await requestCompletionText(version: version, model: model, key: key, request: request)
+            } catch GeminiError.apiError(let statusCode) {
+                lastError = GeminiError.apiError(statusCode: statusCode)
+                guard isRetryableStatus(statusCode), attempt < maxAttempts else {
+                    throw GeminiError.apiError(statusCode: statusCode)
+                }
+                let delay = UInt64(attempt * 500_000_000) // 0.5s, 1.0s
+                try? await Task.sleep(nanoseconds: delay)
+            } catch {
+                lastError = error
+                if attempt < maxAttempts {
+                    let delay = UInt64(attempt * 500_000_000)
+                    try? await Task.sleep(nanoseconds: delay)
+                    continue
+                }
+                throw GeminiError.networkError(error)
+            }
+        }
+
+        if let geminiError = lastError as? GeminiError {
+            throw geminiError
+        }
+        throw GeminiError.invalidResponse
+    }
+
+    private func isRetryableStatus(_ statusCode: Int) -> Bool {
+        statusCode == 429 || (500...599).contains(statusCode)
     }
     
     private func parseEducationalContent(_ jsonText: String, extractedText: String) throws -> EducationalContent {
