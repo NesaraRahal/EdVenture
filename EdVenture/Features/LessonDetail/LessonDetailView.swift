@@ -7,6 +7,7 @@ import Combine
 struct LessonDetailView: View {
     let lessonId: String
     var onBack: (() -> Void)?
+    var onStartQuiz: ((_ lessonId: String, _ questionIndex: Int) -> Void)?
 
     @StateObject private var vm = LessonDetailViewModel()
 
@@ -188,42 +189,50 @@ struct LessonDetailView: View {
                 .tracking(2)
 
             ForEach(Array(vm.items.enumerated()), id: \.element.id) { index, item in
-                HStack(spacing: 14) {
-                    Text(String(format: "%02d", index + 1))
-                        .font(.system(size: 28, weight: .bold, design: .rounded))
-                        .foregroundColor(item.statusColor)
-                        .frame(width: 48, alignment: .leading)
-
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text(item.title)
-                            .font(.system(size: 20, weight: .semibold, design: .rounded))
-                            .foregroundColor(item.isLocked ? .white.opacity(0.35) : .white)
-                            .lineLimit(2)
-
-                        Text(item.meta)
-                            .font(.system(size: 13, weight: .semibold, design: .rounded))
+                Button {
+                    guard !item.isLocked else { return }
+                    // One-round gameplay starts from first question for now.
+                    onStartQuiz?(lesson.id, 0)
+                } label: {
+                    HStack(spacing: 14) {
+                        Text(String(format: "%02d", index + 1))
+                            .font(.system(size: 28, weight: .bold, design: .rounded))
                             .foregroundColor(item.statusColor)
+                            .frame(width: 48, alignment: .leading)
+
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(item.title)
+                                .font(.system(size: 20, weight: .semibold, design: .rounded))
+                                .foregroundColor(item.isLocked ? .white.opacity(0.35) : .white)
+                                .lineLimit(2)
+
+                            Text(item.meta)
+                                .font(.system(size: 13, weight: .semibold, design: .rounded))
+                                .foregroundColor(item.statusColor)
+                        }
+
+                        Spacer()
+
+                        Image(systemName: item.buttonIcon)
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundColor(item.buttonTint)
+                            .frame(width: 56, height: 56)
+                            .background(item.buttonBackground)
+                            .clipShape(Circle())
                     }
-
-                    Spacer()
-
-                    Image(systemName: item.buttonIcon)
-                        .font(.system(size: 18, weight: .bold))
-                        .foregroundColor(item.buttonTint)
-                        .frame(width: 56, height: 56)
-                        .background(item.buttonBackground)
-                        .clipShape(Circle())
+                    .padding(.horizontal, 18)
+                    .frame(minHeight: 94)
+                    .background(
+                        RoundedRectangle(cornerRadius: 22, style: .continuous)
+                            .fill(Color.white.opacity(0.035))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 22, style: .continuous)
+                                    .stroke(item.isLocked ? Color.white.opacity(0.04) : Color.white.opacity(0.08), lineWidth: 0.6)
+                            )
+                    )
                 }
-                .padding(.horizontal, 18)
-                .frame(minHeight: 94)
-                .background(
-                    RoundedRectangle(cornerRadius: 22, style: .continuous)
-                        .fill(Color.white.opacity(0.035))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                                .stroke(item.isLocked ? Color.white.opacity(0.04) : Color.white.opacity(0.08), lineWidth: 0.6)
-                        )
-                )
+                .buttonStyle(.plain)
+                .disabled(item.isLocked)
             }
         }
     }

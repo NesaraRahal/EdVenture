@@ -6,18 +6,61 @@ import SwiftUI
 
 struct ContentView: View {
 
-    @State private var path            = NavigationPath()
+    @State private var path: [AppRoute] = []
     @State private var registeredEmail = ""
     @State private var pendingLessonFilter: String?
+    @AppStorage("accessibility.dynamicText") private var dynamicText = true
+    private let mainTabAnimation = Animation.easeInOut(duration: 0.22)
 
     private func goToMainTab(_ route: AppRoute) {
-        path = NavigationPath()
-        path.append(route)
+        if path.count == 1, path.first == route { return }
+        withAnimation(mainTabAnimation) {
+            path = [route]
+        }
     }
 
     private func goToLessons(filter: String? = nil) {
         pendingLessonFilter = filter
         goToMainTab(.lessons)
+    }
+
+    private func accessibilityAnnouncement(for route: AppRoute) -> String {
+        switch route {
+        case .login:
+            return "Login screen. Enter email and password, then use sign in button. Social sign in and create account options are available below."
+        case .register:
+            return "Register screen. Fill in account details, create your password, then continue to verification."
+        case .forgotPassword:
+            return "Forgot password screen. Enter your email to receive a reset link."
+        case .otp:
+            return "Verification screen. Enter the code sent to your email to complete sign up."
+        case .home:
+            return "Home screen. Top navigation and profile avatar at the top. Main area shows active lessons, progress, and quick access to tabs."
+        case .lessons:
+            return "Lessons screen. Browse lessons by category, search, and open a lesson card to start learning."
+        case .lessonDetail:
+            return "Lesson detail screen. Overview card shows XP per question and progress stats. Curriculum list below contains lesson quiz items with play buttons."
+        case .question:
+            return "Question screen. Timer at top, question content in the center, answer options below, hint button, and next question button at the bottom."
+        case .tutorialQuestion:
+            return "Tutorial question screen. A guided demo shows wrong answer feedback, hint usage, then correct answer flow."
+        case .discovery:
+            return "Discovery screen. Explore recommended content and discover new lessons."
+        case .rank:
+            return "Rank screen. View leaderboard rankings and compare your progress with others."
+        case .settings:
+            return "Settings screen. Sections include preferences, accessibility, security, support, and sign out."
+        case .accessibilitySettings:
+            return "Accessibility settings screen. Toggles available for haptic feedback, sound effects, screen reader, and dynamic text."
+        case .biometricsSettings:
+            return "Biometrics and password settings. Enable Face ID or Touch ID, and configure protections for app unlock and profile changes."
+        case .profile:
+            return "Profile screen. View avatar, profile information, activity, and edit profile actions."
+        case .insights:
+            return "Insights screen. View subject proficiency, consistency heatmap, weekly XP performance, and daily rhythm patterns."
+        case .editProfile:
+            return "Edit profile screen. Update your personal details, avatar, and save changes."
+        }
     }
 
     var body: some View {
@@ -87,11 +130,14 @@ struct ContentView: View {
                                 if !path.isEmpty {
                                     path.removeLast()
                                 }
+                            },
+                            onStartQuiz: { selectedLessonId, questionIndex in
+                                path.append(AppRoute.question(lessonId: selectedLessonId, questionIndex: questionIndex))
                             }
                         )
 
                     case .question(let lessonId, let questionIndex):
-                        QuestionView(
+                        LevelQuizView(
                             lessonId: lessonId,
                             questionIndex: questionIndex,
                             onBack: {
@@ -101,14 +147,23 @@ struct ContentView: View {
                             }
                         )
 
-                        case .tutorialQuestion:
-                            TutorialQuestionView(
-                                onBack: {
-                                    if !path.isEmpty {
-                                        path.removeLast()
-                                    }
+                    case .tutorialQuestion:
+                        TutorialQuestionView(
+                            onBack: {
+                                if !path.isEmpty {
+                                    path.removeLast()
                                 }
-                            )
+                            }
+                        )
+
+                    case .accessibilitySettings:
+                        AccessibilitySettingsView(
+                            onBack: {
+                                if !path.isEmpty {
+                                    path.removeLast()
+                                }
+                            }
+                        )
                     case .discovery:
                         DiscoveryView(
                             onHome:     { goToMainTab(.home) },
@@ -129,11 +184,12 @@ struct ContentView: View {
 
                     case .settings:
                         SettingsView(
-                            onSignOut: { path = NavigationPath() },
+                            onSignOut: { path = [] },
                             onHome:      { goToMainTab(.home) },
                             onLessons:   { goToMainTab(.lessons) },
                             onDiscovery: { goToMainTab(.discovery) },
                             onRank:      { goToMainTab(.rank) },
+                            onAccessibility: { path.append(AppRoute.accessibilitySettings) },
                             onBiometricsAndPassword: { path.append(AppRoute.biometricsSettings) },
                             onProfile:   { path.append(AppRoute.profile) }
                         )
@@ -149,7 +205,17 @@ struct ContentView: View {
 
                     case .profile:
                         ProfileView(
+                            onInsights: { path.append(AppRoute.insights) },
                             onEditProfile: { path.append(AppRoute.editProfile) },
+                            onBack: {
+                                if !path.isEmpty {
+                                    path.removeLast()
+                                }
+                            }
+                        )
+
+                    case .insights:
+                        InsightsView(
                             onBack: {
                                 if !path.isEmpty {
                                     path.removeLast()
@@ -167,6 +233,9 @@ struct ContentView: View {
                         )
                     }
                 }
+                .onAppear {
+                    EVAccessibilitySupport.announce(accessibilityAnnouncement(for: route))
+                }
                 // ── iOS standard slide transition ──────────────────
                 // .navigationTransition is iOS 18+
                 // NavigationStack already provides the correct
@@ -178,6 +247,8 @@ struct ContentView: View {
             // draws its own liquid glass nav bar
             .navigationBarHidden(true)
         }
+        .dynamicTypeSize(dynamicText ? DynamicTypeSize.xSmall ... DynamicTypeSize.accessibility5
+                                     : DynamicTypeSize.xSmall ... DynamicTypeSize.large)
         // iOS 16+ NavigationStack uses the correct push/pop
         // slide transition with velocity-matched spring by default.
         // The liquid glass morph on the nav bar is automatic when

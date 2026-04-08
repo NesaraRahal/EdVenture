@@ -57,8 +57,6 @@ struct HomeView: View {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 0) {
                     topBar
-                        .padding(.horizontal, 20)
-                        .padding(.top, 16)
 
                     greeting
                         .padding(.horizontal, 20)
@@ -91,35 +89,7 @@ struct HomeView: View {
 
     // MARK: - Top bar
     private var topBar: some View {
-        HStack {
-            HStack(spacing: 8) {
-                Image("EdVentureLogo")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 22, height: 22)
-                Text("EdVenture")
-                    .font(.system(size: 18, weight: .bold, design: .rounded))
-                    .foregroundColor(Color(hex: "0EB060"))
-            }
-            Spacer()
-            HStack(spacing: 14) {
-                Button {} label: {
-                    Image(systemName: "bell.fill")
-                        .font(.system(size: 18))
-                        .foregroundColor(.white)
-                        .frame(width: 44, height: 44)
-                }
-                Button { onProfile?() } label: {
-                    EVProfileAvatarView(
-                        size: 38,
-                        iconSize: 15,
-                        iconOpacity: 0.6,
-                        ringColor: Color.white.opacity(0.1),
-                        ringWidth: 0.5
-                    )
-                }
-            }
-        }
+        EVScreenTopBar(onProfile: onProfile)
         .opacity(appeared ? 1 : 0)
         .animation(.easeOut(duration: 0.4), value: appeared)
     }
@@ -259,20 +229,13 @@ struct HomeView: View {
 
     // MARK: - Tab bar
     private var tabBar: some View {
-        EVMainTabBar(activeTab: .home) { tab in
-            switch tab {
-            case .lessons:
-                onLessons?()
-            case .discovery:
-                onDiscovery?()
-            case .rank:
-                onRank?()
-            case .settings:
-                onSettings?()
-            default:
-                break
-            }
-        }
+        EVMainTabNavigationBar(
+            activeTab: .home,
+            onLessons: onLessons,
+            onDiscovery: onDiscovery,
+            onRank: onRank,
+            onSettings: onSettings
+        )
         .opacity(appeared ? 1 : 0)
         .animation(.easeOut(duration: 0.4).delay(0.2), value: appeared)
     }

@@ -1,0 +1,2502 @@
+[
+  {
+    "id": "astronomy_L01_Q01",
+    "lessonId": "astronomy",
+    "level": 1,
+    "order": 1,
+    "difficulty": 1,
+    "xpMin": 10,
+    "xpMax": 16,
+    "xpSuggested": 13,
+    "prompt": "Which concept matches this description: It is the galaxy that contains our Solar System.",
+    "choices": [
+      "Nebula",
+      "Black Hole",
+      "Milky Way",
+      "Supernova"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Milky Way. It is the galaxy that contains our Solar System.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500084+00:00"
+  },
+  {
+    "id": "astronomy_L01_Q02",
+    "lessonId": "astronomy",
+    "level": 1,
+    "order": 2,
+    "difficulty": 2,
+    "xpMin": 11,
+    "xpMax": 17,
+    "xpSuggested": 14,
+    "prompt": "Which concept matches this description: It is the boundary around a black hole beyond which escape is impossible.",
+    "choices": [
+      "Earth",
+      "Venus",
+      "Mercury",
+      "Event Horizon"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Event Horizon. It is the boundary around a black hole beyond which escape is impossible.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500267+00:00"
+  },
+  {
+    "id": "astronomy_L01_Q03",
+    "lessonId": "astronomy",
+    "level": 1,
+    "order": 3,
+    "difficulty": 3,
+    "xpMin": 11,
+    "xpMax": 17,
+    "xpSuggested": 14,
+    "prompt": "Which concept matches this description: It is an explosive death event of a massive star.",
+    "choices": [
+      "Supernova",
+      "White Dwarf",
+      "Red Giant",
+      "Nebula"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Supernova. It is an explosive death event of a massive star.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500304+00:00"
+  },
+  {
+    "id": "astronomy_L01_Q04",
+    "lessonId": "astronomy",
+    "level": 1,
+    "order": 4,
+    "difficulty": 4,
+    "xpMin": 12,
+    "xpMax": 18,
+    "xpSuggested": 15,
+    "prompt": "Which concept matches this description: It is the hottest planet due to a strong greenhouse atmosphere.",
+    "choices": [
+      "Earth",
+      "Venus",
+      "Mars",
+      "Jupiter"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Venus. It is the hottest planet due to a strong greenhouse atmosphere.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500338+00:00"
+  },
+  {
+    "id": "astronomy_L01_Q05",
+    "lessonId": "astronomy",
+    "level": 1,
+    "order": 5,
+    "difficulty": 5,
+    "xpMin": 12,
+    "xpMax": 18,
+    "xpSuggested": 15,
+    "prompt": "Which concept matches this description: It is a late stage of stellar evolution after core hydrogen is depleted.",
+    "choices": [
+      "Astronomical Unit",
+      "White Dwarf",
+      "Red Giant",
+      "Light-year"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Red Giant. It is a late stage of stellar evolution after core hydrogen is depleted.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500373+00:00"
+  },
+  {
+    "id": "astronomy_L01_Q06",
+    "lessonId": "astronomy",
+    "level": 1,
+    "order": 6,
+    "difficulty": 6,
+    "xpMin": 13,
+    "xpMax": 19,
+    "xpSuggested": 16,
+    "prompt": "Which concept matches this description: It is known as the Red Planet.",
+    "choices": [
+      "Mars",
+      "Saturn",
+      "Jupiter",
+      "Uranus"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Mars. It is known as the Red Planet.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500408+00:00"
+  },
+  {
+    "id": "astronomy_L01_Q07",
+    "lessonId": "astronomy",
+    "level": 1,
+    "order": 7,
+    "difficulty": 7,
+    "xpMin": 13,
+    "xpMax": 19,
+    "xpSuggested": 16,
+    "prompt": "Which concept matches this description: It is a distance unit equal to how far light travels in one year.",
+    "choices": [
+      "Light-year",
+      "Astronomical Unit",
+      "Exoplanet",
+      "Transit Method"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Light-year. It is a distance unit equal to how far light travels in one year.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500442+00:00"
+  },
+  {
+    "id": "astronomy_L01_Q08",
+    "lessonId": "astronomy",
+    "level": 1,
+    "order": 8,
+    "difficulty": 8,
+    "xpMin": 14,
+    "xpMax": 20,
+    "xpSuggested": 17,
+    "prompt": "Which concept matches this description: It is famous for its prominent ring system.",
+    "choices": [
+      "Milky Way",
+      "Saturn",
+      "Neptune",
+      "Uranus"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Saturn. It is famous for its prominent ring system.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500477+00:00"
+  },
+  {
+    "id": "astronomy_L01_Q09",
+    "lessonId": "astronomy",
+    "level": 1,
+    "order": 9,
+    "difficulty": 9,
+    "xpMin": 14,
+    "xpMax": 20,
+    "xpSuggested": 17,
+    "prompt": "Which concept matches this description: It is a planet that orbits a star outside our Solar System.",
+    "choices": [
+      "Exoplanet",
+      "Transit Method",
+      "Spectroscopy",
+      "Event Horizon"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Exoplanet. It is a planet that orbits a star outside our Solar System.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500511+00:00"
+  },
+  {
+    "id": "astronomy_L01_Q10",
+    "lessonId": "astronomy",
+    "level": 1,
+    "order": 10,
+    "difficulty": 10,
+    "xpMin": 15,
+    "xpMax": 21,
+    "xpSuggested": 18,
+    "prompt": "Which concept matches this description: It is the farthest major planet from the Sun.",
+    "choices": [
+      "Black Hole",
+      "Milky Way",
+      "Supernova",
+      "Neptune"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Neptune. It is the farthest major planet from the Sun.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500545+00:00"
+  },
+  {
+    "id": "astronomy_L02_Q01",
+    "lessonId": "astronomy",
+    "level": 2,
+    "order": 1,
+    "difficulty": 11,
+    "xpMin": 12,
+    "xpMax": 18,
+    "xpSuggested": 15,
+    "prompt": "Which concept matches this description: It is famous for its prominent ring system.",
+    "choices": [
+      "Neptune",
+      "Saturn",
+      "Uranus",
+      "Milky Way"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Saturn. It is famous for its prominent ring system.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500578+00:00"
+  },
+  {
+    "id": "astronomy_L02_Q02",
+    "lessonId": "astronomy",
+    "level": 2,
+    "order": 2,
+    "difficulty": 12,
+    "xpMin": 13,
+    "xpMax": 19,
+    "xpSuggested": 16,
+    "prompt": "Which concept matches this description: It is a planet that orbits a star outside our Solar System.",
+    "choices": [
+      "Exoplanet",
+      "Event Horizon",
+      "Transit Method",
+      "Spectroscopy"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Exoplanet. It is a planet that orbits a star outside our Solar System.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500609+00:00"
+  },
+  {
+    "id": "astronomy_L02_Q03",
+    "lessonId": "astronomy",
+    "level": 2,
+    "order": 3,
+    "difficulty": 13,
+    "xpMin": 13,
+    "xpMax": 19,
+    "xpSuggested": 16,
+    "prompt": "Which concept matches this description: It is the farthest major planet from the Sun.",
+    "choices": [
+      "Supernova",
+      "Milky Way",
+      "Black Hole",
+      "Neptune"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Neptune. It is the farthest major planet from the Sun.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500640+00:00"
+  },
+  {
+    "id": "astronomy_L02_Q04",
+    "lessonId": "astronomy",
+    "level": 2,
+    "order": 4,
+    "difficulty": 14,
+    "xpMin": 14,
+    "xpMax": 20,
+    "xpSuggested": 17,
+    "prompt": "Which concept matches this description: It studies light to infer composition and motion of celestial objects.",
+    "choices": [
+      "Mercury",
+      "Spectroscopy",
+      "Event Horizon",
+      "Venus"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Spectroscopy. It studies light to infer composition and motion of celestial objects.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500672+00:00"
+  },
+  {
+    "id": "astronomy_L02_Q05",
+    "lessonId": "astronomy",
+    "level": 2,
+    "order": 5,
+    "difficulty": 15,
+    "xpMin": 14,
+    "xpMax": 20,
+    "xpSuggested": 17,
+    "prompt": "Which concept matches this description: It is an object with gravity so strong that light cannot escape.",
+    "choices": [
+      "Supernova",
+      "Red Giant",
+      "Black Hole",
+      "Nebula"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Black Hole. It is an object with gravity so strong that light cannot escape.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500703+00:00"
+  },
+  {
+    "id": "astronomy_L02_Q06",
+    "lessonId": "astronomy",
+    "level": 2,
+    "order": 6,
+    "difficulty": 16,
+    "xpMin": 15,
+    "xpMax": 21,
+    "xpSuggested": 18,
+    "prompt": "Which concept matches this description: It is the closest planet to the Sun.",
+    "choices": [
+      "Mercury",
+      "Earth",
+      "Venus",
+      "Mars"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Mercury. It is the closest planet to the Sun.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500735+00:00"
+  },
+  {
+    "id": "astronomy_L02_Q07",
+    "lessonId": "astronomy",
+    "level": 2,
+    "order": 7,
+    "difficulty": 17,
+    "xpMin": 15,
+    "xpMax": 21,
+    "xpSuggested": 18,
+    "prompt": "Which concept matches this description: It is an interstellar cloud where stars can form.",
+    "choices": [
+      "Light-year",
+      "Nebula",
+      "Red Giant",
+      "White Dwarf"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Nebula. It is an interstellar cloud where stars can form.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500766+00:00"
+  },
+  {
+    "id": "astronomy_L02_Q08",
+    "lessonId": "astronomy",
+    "level": 2,
+    "order": 8,
+    "difficulty": 18,
+    "xpMin": 16,
+    "xpMax": 22,
+    "xpSuggested": 19,
+    "prompt": "Which concept matches this description: It is the only known planet with stable surface liquid water.",
+    "choices": [
+      "Saturn",
+      "Earth",
+      "Mars",
+      "Jupiter"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Earth. It is the only known planet with stable surface liquid water.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500831+00:00"
+  },
+  {
+    "id": "astronomy_L02_Q09",
+    "lessonId": "astronomy",
+    "level": 2,
+    "order": 9,
+    "difficulty": 19,
+    "xpMin": 16,
+    "xpMax": 22,
+    "xpSuggested": 19,
+    "prompt": "Which concept matches this description: It is the dense stellar remnant of a low or medium mass star.",
+    "choices": [
+      "Exoplanet",
+      "Light-year",
+      "Astronomical Unit",
+      "White Dwarf"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: White Dwarf. It is the dense stellar remnant of a low or medium mass star.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500862+00:00"
+  },
+  {
+    "id": "astronomy_L02_Q10",
+    "lessonId": "astronomy",
+    "level": 2,
+    "order": 10,
+    "difficulty": 20,
+    "xpMin": 17,
+    "xpMax": 23,
+    "xpSuggested": 20,
+    "prompt": "Which concept matches this description: It is the largest planet in the Solar System.",
+    "choices": [
+      "Jupiter",
+      "Uranus",
+      "Saturn",
+      "Neptune"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Jupiter. It is the largest planet in the Solar System.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500894+00:00"
+  },
+  {
+    "id": "astronomy_L03_Q01",
+    "lessonId": "astronomy",
+    "level": 3,
+    "order": 1,
+    "difficulty": 21,
+    "xpMin": 14,
+    "xpMax": 20,
+    "xpSuggested": 17,
+    "prompt": "Which concept matches this description: It is the only known planet with stable surface liquid water.",
+    "choices": [
+      "Earth",
+      "Jupiter",
+      "Mars",
+      "Saturn"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Earth. It is the only known planet with stable surface liquid water.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500926+00:00"
+  },
+  {
+    "id": "astronomy_L03_Q02",
+    "lessonId": "astronomy",
+    "level": 3,
+    "order": 2,
+    "difficulty": 22,
+    "xpMin": 15,
+    "xpMax": 21,
+    "xpSuggested": 18,
+    "prompt": "Which concept matches this description: It is the dense stellar remnant of a low or medium mass star.",
+    "choices": [
+      "White Dwarf",
+      "Astronomical Unit",
+      "Light-year",
+      "Exoplanet"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: White Dwarf. It is the dense stellar remnant of a low or medium mass star.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500957+00:00"
+  },
+  {
+    "id": "astronomy_L03_Q03",
+    "lessonId": "astronomy",
+    "level": 3,
+    "order": 3,
+    "difficulty": 23,
+    "xpMin": 15,
+    "xpMax": 21,
+    "xpSuggested": 18,
+    "prompt": "Which concept matches this description: It is the largest planet in the Solar System.",
+    "choices": [
+      "Neptune",
+      "Saturn",
+      "Uranus",
+      "Jupiter"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Jupiter. It is the largest planet in the Solar System.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.500989+00:00"
+  },
+  {
+    "id": "astronomy_L03_Q04",
+    "lessonId": "astronomy",
+    "level": 3,
+    "order": 4,
+    "difficulty": 24,
+    "xpMin": 16,
+    "xpMax": 22,
+    "xpSuggested": 19,
+    "prompt": "Which concept matches this description: It is approximately the average Earth-Sun distance.",
+    "choices": [
+      "Astronomical Unit",
+      "Spectroscopy",
+      "Transit Method",
+      "Exoplanet"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Astronomical Unit. It is approximately the average Earth-Sun distance.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501020+00:00"
+  },
+  {
+    "id": "astronomy_L03_Q05",
+    "lessonId": "astronomy",
+    "level": 3,
+    "order": 5,
+    "difficulty": 25,
+    "xpMin": 16,
+    "xpMax": 22,
+    "xpSuggested": 19,
+    "prompt": "Which concept matches this description: It rotates on its side with an extreme axial tilt.",
+    "choices": [
+      "Uranus",
+      "Black Hole",
+      "Milky Way",
+      "Neptune"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Uranus. It rotates on its side with an extreme axial tilt.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501052+00:00"
+  },
+  {
+    "id": "astronomy_L03_Q06",
+    "lessonId": "astronomy",
+    "level": 3,
+    "order": 6,
+    "difficulty": 26,
+    "xpMin": 17,
+    "xpMax": 23,
+    "xpSuggested": 20,
+    "prompt": "Which concept matches this description: It detects planets when they pass in front of their star.",
+    "choices": [
+      "Spectroscopy",
+      "Event Horizon",
+      "Mercury",
+      "Transit Method"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Transit Method. It detects planets when they pass in front of their star.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501083+00:00"
+  },
+  {
+    "id": "astronomy_L03_Q07",
+    "lessonId": "astronomy",
+    "level": 3,
+    "order": 7,
+    "difficulty": 27,
+    "xpMin": 17,
+    "xpMax": 23,
+    "xpSuggested": 20,
+    "prompt": "Which concept matches this description: It is the galaxy that contains our Solar System.",
+    "choices": [
+      "Supernova",
+      "Black Hole",
+      "Nebula",
+      "Milky Way"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Milky Way. It is the galaxy that contains our Solar System.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501114+00:00"
+  },
+  {
+    "id": "astronomy_L03_Q08",
+    "lessonId": "astronomy",
+    "level": 3,
+    "order": 8,
+    "difficulty": 28,
+    "xpMin": 18,
+    "xpMax": 24,
+    "xpSuggested": 21,
+    "prompt": "Which concept matches this description: It is the boundary around a black hole beyond which escape is impossible.",
+    "choices": [
+      "Earth",
+      "Event Horizon",
+      "Mercury",
+      "Venus"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Event Horizon. It is the boundary around a black hole beyond which escape is impossible.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501145+00:00"
+  },
+  {
+    "id": "astronomy_L03_Q09",
+    "lessonId": "astronomy",
+    "level": 3,
+    "order": 9,
+    "difficulty": 29,
+    "xpMin": 18,
+    "xpMax": 24,
+    "xpSuggested": 21,
+    "prompt": "Which concept matches this description: It is an explosive death event of a massive star.",
+    "choices": [
+      "Red Giant",
+      "Nebula",
+      "White Dwarf",
+      "Supernova"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Supernova. It is an explosive death event of a massive star.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501176+00:00"
+  },
+  {
+    "id": "astronomy_L03_Q10",
+    "lessonId": "astronomy",
+    "level": 3,
+    "order": 10,
+    "difficulty": 30,
+    "xpMin": 19,
+    "xpMax": 26,
+    "xpSuggested": 22,
+    "prompt": "Which concept matches this description: It is the hottest planet due to a strong greenhouse atmosphere.",
+    "choices": [
+      "Earth",
+      "Mars",
+      "Jupiter",
+      "Venus"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Venus. It is the hottest planet due to a strong greenhouse atmosphere.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501207+00:00"
+  },
+  {
+    "id": "astronomy_L04_Q01",
+    "lessonId": "astronomy",
+    "level": 4,
+    "order": 1,
+    "difficulty": 31,
+    "xpMin": 16,
+    "xpMax": 23,
+    "xpSuggested": 19,
+    "prompt": "Which concept matches this description: It is the boundary around a black hole beyond which escape is impossible.",
+    "choices": [
+      "Event Horizon",
+      "Venus",
+      "Earth",
+      "Mercury"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Event Horizon. It is the boundary around a black hole beyond which escape is impossible.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501238+00:00"
+  },
+  {
+    "id": "astronomy_L04_Q02",
+    "lessonId": "astronomy",
+    "level": 4,
+    "order": 2,
+    "difficulty": 32,
+    "xpMin": 17,
+    "xpMax": 24,
+    "xpSuggested": 20,
+    "prompt": "Which concept matches this description: It is an explosive death event of a massive star.",
+    "choices": [
+      "Red Giant",
+      "Supernova",
+      "Nebula",
+      "White Dwarf"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Supernova. It is an explosive death event of a massive star.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501270+00:00"
+  },
+  {
+    "id": "astronomy_L04_Q03",
+    "lessonId": "astronomy",
+    "level": 4,
+    "order": 3,
+    "difficulty": 33,
+    "xpMin": 17,
+    "xpMax": 24,
+    "xpSuggested": 20,
+    "prompt": "Which concept matches this description: It is the hottest planet due to a strong greenhouse atmosphere.",
+    "choices": [
+      "Jupiter",
+      "Earth",
+      "Mars",
+      "Venus"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Venus. It is the hottest planet due to a strong greenhouse atmosphere.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501301+00:00"
+  },
+  {
+    "id": "astronomy_L04_Q04",
+    "lessonId": "astronomy",
+    "level": 4,
+    "order": 4,
+    "difficulty": 34,
+    "xpMin": 18,
+    "xpMax": 25,
+    "xpSuggested": 21,
+    "prompt": "Which concept matches this description: It is a late stage of stellar evolution after core hydrogen is depleted.",
+    "choices": [
+      "Light-year",
+      "Astronomical Unit",
+      "White Dwarf",
+      "Red Giant"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Red Giant. It is a late stage of stellar evolution after core hydrogen is depleted.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501333+00:00"
+  },
+  {
+    "id": "astronomy_L04_Q05",
+    "lessonId": "astronomy",
+    "level": 4,
+    "order": 5,
+    "difficulty": 35,
+    "xpMin": 18,
+    "xpMax": 25,
+    "xpSuggested": 21,
+    "prompt": "Which concept matches this description: It is known as the Red Planet.",
+    "choices": [
+      "Uranus",
+      "Jupiter",
+      "Saturn",
+      "Mars"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Mars. It is known as the Red Planet.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501364+00:00"
+  },
+  {
+    "id": "astronomy_L04_Q06",
+    "lessonId": "astronomy",
+    "level": 4,
+    "order": 6,
+    "difficulty": 36,
+    "xpMin": 19,
+    "xpMax": 26,
+    "xpSuggested": 22,
+    "prompt": "Identify the most accurate term for this statement: It is a distance unit equal to how far light travels in one year.",
+    "choices": [
+      "Astronomical Unit",
+      "Light-year",
+      "Exoplanet",
+      "Transit Method"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Light-year. It is a distance unit equal to how far light travels in one year.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501396+00:00"
+  },
+  {
+    "id": "astronomy_L04_Q07",
+    "lessonId": "astronomy",
+    "level": 4,
+    "order": 7,
+    "difficulty": 37,
+    "xpMin": 19,
+    "xpMax": 26,
+    "xpSuggested": 22,
+    "prompt": "Identify the most accurate term for this statement: It is famous for its prominent ring system.",
+    "choices": [
+      "Saturn",
+      "Uranus",
+      "Neptune",
+      "Milky Way"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Saturn. It is famous for its prominent ring system.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501427+00:00"
+  },
+  {
+    "id": "astronomy_L04_Q08",
+    "lessonId": "astronomy",
+    "level": 4,
+    "order": 8,
+    "difficulty": 38,
+    "xpMin": 20,
+    "xpMax": 27,
+    "xpSuggested": 23,
+    "prompt": "Identify the most accurate term for this statement: It is a planet that orbits a star outside our Solar System.",
+    "choices": [
+      "Transit Method",
+      "Spectroscopy",
+      "Exoplanet",
+      "Event Horizon"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Exoplanet. It is a planet that orbits a star outside our Solar System.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501459+00:00"
+  },
+  {
+    "id": "astronomy_L04_Q09",
+    "lessonId": "astronomy",
+    "level": 4,
+    "order": 9,
+    "difficulty": 39,
+    "xpMin": 20,
+    "xpMax": 27,
+    "xpSuggested": 23,
+    "prompt": "Identify the most accurate term for this statement: It is the farthest major planet from the Sun.",
+    "choices": [
+      "Black Hole",
+      "Milky Way",
+      "Neptune",
+      "Supernova"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Neptune. It is the farthest major planet from the Sun.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501490+00:00"
+  },
+  {
+    "id": "astronomy_L04_Q10",
+    "lessonId": "astronomy",
+    "level": 4,
+    "order": 10,
+    "difficulty": 40,
+    "xpMin": 21,
+    "xpMax": 28,
+    "xpSuggested": 24,
+    "prompt": "Identify the most accurate term for this statement: It studies light to infer composition and motion of celestial objects.",
+    "choices": [
+      "Mercury",
+      "Spectroscopy",
+      "Event Horizon",
+      "Venus"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Spectroscopy. It studies light to infer composition and motion of celestial objects.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501522+00:00"
+  },
+  {
+    "id": "astronomy_L05_Q01",
+    "lessonId": "astronomy",
+    "level": 5,
+    "order": 1,
+    "difficulty": 41,
+    "xpMin": 18,
+    "xpMax": 25,
+    "xpSuggested": 21,
+    "prompt": "Identify the most accurate term for this statement: It is a planet that orbits a star outside our Solar System.",
+    "choices": [
+      "Event Horizon",
+      "Spectroscopy",
+      "Exoplanet",
+      "Transit Method"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Exoplanet. It is a planet that orbits a star outside our Solar System.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501555+00:00"
+  },
+  {
+    "id": "astronomy_L05_Q02",
+    "lessonId": "astronomy",
+    "level": 5,
+    "order": 2,
+    "difficulty": 42,
+    "xpMin": 19,
+    "xpMax": 26,
+    "xpSuggested": 22,
+    "prompt": "Identify the most accurate term for this statement: It is the farthest major planet from the Sun.",
+    "choices": [
+      "Neptune",
+      "Supernova",
+      "Black Hole",
+      "Milky Way"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Neptune. It is the farthest major planet from the Sun.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501589+00:00"
+  },
+  {
+    "id": "astronomy_L05_Q03",
+    "lessonId": "astronomy",
+    "level": 5,
+    "order": 3,
+    "difficulty": 43,
+    "xpMin": 19,
+    "xpMax": 26,
+    "xpSuggested": 22,
+    "prompt": "Identify the most accurate term for this statement: It studies light to infer composition and motion of celestial objects.",
+    "choices": [
+      "Spectroscopy",
+      "Event Horizon",
+      "Venus",
+      "Mercury"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Spectroscopy. It studies light to infer composition and motion of celestial objects.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501625+00:00"
+  },
+  {
+    "id": "astronomy_L05_Q04",
+    "lessonId": "astronomy",
+    "level": 5,
+    "order": 4,
+    "difficulty": 44,
+    "xpMin": 20,
+    "xpMax": 27,
+    "xpSuggested": 23,
+    "prompt": "Identify the most accurate term for this statement: It is an object with gravity so strong that light cannot escape.",
+    "choices": [
+      "Supernova",
+      "Red Giant",
+      "Nebula",
+      "Black Hole"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Black Hole. It is an object with gravity so strong that light cannot escape.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501662+00:00"
+  },
+  {
+    "id": "astronomy_L05_Q05",
+    "lessonId": "astronomy",
+    "level": 5,
+    "order": 5,
+    "difficulty": 45,
+    "xpMin": 20,
+    "xpMax": 28,
+    "xpSuggested": 24,
+    "prompt": "Identify the most accurate term for this statement: It is the closest planet to the Sun.",
+    "choices": [
+      "Earth",
+      "Venus",
+      "Mars",
+      "Mercury"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Mercury. It is the closest planet to the Sun.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501698+00:00"
+  },
+  {
+    "id": "astronomy_L05_Q06",
+    "lessonId": "astronomy",
+    "level": 5,
+    "order": 6,
+    "difficulty": 46,
+    "xpMin": 21,
+    "xpMax": 29,
+    "xpSuggested": 25,
+    "prompt": "Identify the most accurate term for this statement: It is an interstellar cloud where stars can form.",
+    "choices": [
+      "Red Giant",
+      "Light-year",
+      "White Dwarf",
+      "Nebula"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Nebula. It is an interstellar cloud where stars can form.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501733+00:00"
+  },
+  {
+    "id": "astronomy_L05_Q07",
+    "lessonId": "astronomy",
+    "level": 5,
+    "order": 7,
+    "difficulty": 47,
+    "xpMin": 21,
+    "xpMax": 29,
+    "xpSuggested": 25,
+    "prompt": "Identify the most accurate term for this statement: It is the only known planet with stable surface liquid water.",
+    "choices": [
+      "Jupiter",
+      "Saturn",
+      "Earth",
+      "Mars"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Earth. It is the only known planet with stable surface liquid water.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501768+00:00"
+  },
+  {
+    "id": "astronomy_L05_Q08",
+    "lessonId": "astronomy",
+    "level": 5,
+    "order": 8,
+    "difficulty": 48,
+    "xpMin": 22,
+    "xpMax": 30,
+    "xpSuggested": 26,
+    "prompt": "Identify the most accurate term for this statement: It is the dense stellar remnant of a low or medium mass star.",
+    "choices": [
+      "Astronomical Unit",
+      "White Dwarf",
+      "Light-year",
+      "Exoplanet"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: White Dwarf. It is the dense stellar remnant of a low or medium mass star.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501803+00:00"
+  },
+  {
+    "id": "astronomy_L05_Q09",
+    "lessonId": "astronomy",
+    "level": 5,
+    "order": 9,
+    "difficulty": 49,
+    "xpMin": 22,
+    "xpMax": 30,
+    "xpSuggested": 26,
+    "prompt": "Identify the most accurate term for this statement: It is the largest planet in the Solar System.",
+    "choices": [
+      "Neptune",
+      "Uranus",
+      "Jupiter",
+      "Saturn"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Jupiter. It is the largest planet in the Solar System.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501838+00:00"
+  },
+  {
+    "id": "astronomy_L05_Q10",
+    "lessonId": "astronomy",
+    "level": 5,
+    "order": 10,
+    "difficulty": 50,
+    "xpMin": 23,
+    "xpMax": 31,
+    "xpSuggested": 27,
+    "prompt": "Identify the most accurate term for this statement: It is approximately the average Earth-Sun distance.",
+    "choices": [
+      "Spectroscopy",
+      "Exoplanet",
+      "Transit Method",
+      "Astronomical Unit"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Astronomical Unit. It is approximately the average Earth-Sun distance.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501873+00:00"
+  },
+  {
+    "id": "astronomy_L06_Q01",
+    "lessonId": "astronomy",
+    "level": 6,
+    "order": 1,
+    "difficulty": 51,
+    "xpMin": 20,
+    "xpMax": 28,
+    "xpSuggested": 24,
+    "prompt": "Identify the most accurate term for this statement: It is the dense stellar remnant of a low or medium mass star.",
+    "choices": [
+      "Astronomical Unit",
+      "White Dwarf",
+      "Light-year",
+      "Exoplanet"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: White Dwarf. It is the dense stellar remnant of a low or medium mass star.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501908+00:00"
+  },
+  {
+    "id": "astronomy_L06_Q02",
+    "lessonId": "astronomy",
+    "level": 6,
+    "order": 2,
+    "difficulty": 52,
+    "xpMin": 21,
+    "xpMax": 29,
+    "xpSuggested": 25,
+    "prompt": "Identify the most accurate term for this statement: It is the largest planet in the Solar System.",
+    "choices": [
+      "Jupiter",
+      "Neptune",
+      "Uranus",
+      "Saturn"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Jupiter. It is the largest planet in the Solar System.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501942+00:00"
+  },
+  {
+    "id": "astronomy_L06_Q03",
+    "lessonId": "astronomy",
+    "level": 6,
+    "order": 3,
+    "difficulty": 53,
+    "xpMin": 21,
+    "xpMax": 29,
+    "xpSuggested": 25,
+    "prompt": "Identify the most accurate term for this statement: It is approximately the average Earth-Sun distance.",
+    "choices": [
+      "Astronomical Unit",
+      "Spectroscopy",
+      "Exoplanet",
+      "Transit Method"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Astronomical Unit. It is approximately the average Earth-Sun distance.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.501997+00:00"
+  },
+  {
+    "id": "astronomy_L06_Q04",
+    "lessonId": "astronomy",
+    "level": 6,
+    "order": 4,
+    "difficulty": 54,
+    "xpMin": 22,
+    "xpMax": 30,
+    "xpSuggested": 26,
+    "prompt": "Identify the most accurate term for this statement: It rotates on its side with an extreme axial tilt.",
+    "choices": [
+      "Milky Way",
+      "Black Hole",
+      "Neptune",
+      "Uranus"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Uranus. It rotates on its side with an extreme axial tilt.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502032+00:00"
+  },
+  {
+    "id": "astronomy_L06_Q05",
+    "lessonId": "astronomy",
+    "level": 6,
+    "order": 5,
+    "difficulty": 55,
+    "xpMin": 22,
+    "xpMax": 30,
+    "xpSuggested": 26,
+    "prompt": "Identify the most accurate term for this statement: It detects planets when they pass in front of their star.",
+    "choices": [
+      "Spectroscopy",
+      "Mercury",
+      "Transit Method",
+      "Event Horizon"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Transit Method. It detects planets when they pass in front of their star.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502065+00:00"
+  },
+  {
+    "id": "astronomy_L06_Q06",
+    "lessonId": "astronomy",
+    "level": 6,
+    "order": 6,
+    "difficulty": 56,
+    "xpMin": 23,
+    "xpMax": 31,
+    "xpSuggested": 27,
+    "prompt": "Identify the most accurate term for this statement: It is the galaxy that contains our Solar System.",
+    "choices": [
+      "Nebula",
+      "Black Hole",
+      "Milky Way",
+      "Supernova"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Milky Way. It is the galaxy that contains our Solar System.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502100+00:00"
+  },
+  {
+    "id": "astronomy_L06_Q07",
+    "lessonId": "astronomy",
+    "level": 6,
+    "order": 7,
+    "difficulty": 57,
+    "xpMin": 23,
+    "xpMax": 31,
+    "xpSuggested": 27,
+    "prompt": "Identify the most accurate term for this statement: It is the boundary around a black hole beyond which escape is impossible.",
+    "choices": [
+      "Mercury",
+      "Earth",
+      "Event Horizon",
+      "Venus"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Event Horizon. It is the boundary around a black hole beyond which escape is impossible.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502133+00:00"
+  },
+  {
+    "id": "astronomy_L06_Q08",
+    "lessonId": "astronomy",
+    "level": 6,
+    "order": 8,
+    "difficulty": 58,
+    "xpMin": 24,
+    "xpMax": 32,
+    "xpSuggested": 28,
+    "prompt": "Identify the most accurate term for this statement: It is an explosive death event of a massive star.",
+    "choices": [
+      "Supernova",
+      "Nebula",
+      "White Dwarf",
+      "Red Giant"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Supernova. It is an explosive death event of a massive star.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502167+00:00"
+  },
+  {
+    "id": "astronomy_L06_Q09",
+    "lessonId": "astronomy",
+    "level": 6,
+    "order": 9,
+    "difficulty": 59,
+    "xpMin": 24,
+    "xpMax": 32,
+    "xpSuggested": 28,
+    "prompt": "Identify the most accurate term for this statement: It is the hottest planet due to a strong greenhouse atmosphere.",
+    "choices": [
+      "Jupiter",
+      "Earth",
+      "Mars",
+      "Venus"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Venus. It is the hottest planet due to a strong greenhouse atmosphere.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502201+00:00"
+  },
+  {
+    "id": "astronomy_L06_Q10",
+    "lessonId": "astronomy",
+    "level": 6,
+    "order": 10,
+    "difficulty": 60,
+    "xpMin": 25,
+    "xpMax": 34,
+    "xpSuggested": 29,
+    "prompt": "Identify the most accurate term for this statement: It is a late stage of stellar evolution after core hydrogen is depleted.",
+    "choices": [
+      "Astronomical Unit",
+      "Red Giant",
+      "Light-year",
+      "White Dwarf"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Red Giant. It is a late stage of stellar evolution after core hydrogen is depleted.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502235+00:00"
+  },
+  {
+    "id": "astronomy_L07_Q01",
+    "lessonId": "astronomy",
+    "level": 7,
+    "order": 1,
+    "difficulty": 61,
+    "xpMin": 22,
+    "xpMax": 31,
+    "xpSuggested": 26,
+    "prompt": "Identify the most accurate term for this statement: It is an explosive death event of a massive star.",
+    "choices": [
+      "Nebula",
+      "Supernova",
+      "Red Giant",
+      "White Dwarf"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Supernova. It is an explosive death event of a massive star.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502269+00:00"
+  },
+  {
+    "id": "astronomy_L07_Q02",
+    "lessonId": "astronomy",
+    "level": 7,
+    "order": 2,
+    "difficulty": 62,
+    "xpMin": 23,
+    "xpMax": 32,
+    "xpSuggested": 27,
+    "prompt": "Identify the most accurate term for this statement: It is the hottest planet due to a strong greenhouse atmosphere.",
+    "choices": [
+      "Mars",
+      "Jupiter",
+      "Earth",
+      "Venus"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Venus. It is the hottest planet due to a strong greenhouse atmosphere.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502302+00:00"
+  },
+  {
+    "id": "astronomy_L07_Q03",
+    "lessonId": "astronomy",
+    "level": 7,
+    "order": 3,
+    "difficulty": 63,
+    "xpMin": 23,
+    "xpMax": 32,
+    "xpSuggested": 27,
+    "prompt": "Identify the most accurate term for this statement: It is a late stage of stellar evolution after core hydrogen is depleted.",
+    "choices": [
+      "Red Giant",
+      "Astronomical Unit",
+      "White Dwarf",
+      "Light-year"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Red Giant. It is a late stage of stellar evolution after core hydrogen is depleted.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502335+00:00"
+  },
+  {
+    "id": "astronomy_L07_Q04",
+    "lessonId": "astronomy",
+    "level": 7,
+    "order": 4,
+    "difficulty": 64,
+    "xpMin": 24,
+    "xpMax": 33,
+    "xpSuggested": 28,
+    "prompt": "Identify the most accurate term for this statement: It is known as the Red Planet.",
+    "choices": [
+      "Jupiter",
+      "Saturn",
+      "Mars",
+      "Uranus"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Mars. It is known as the Red Planet.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502368+00:00"
+  },
+  {
+    "id": "astronomy_L07_Q05",
+    "lessonId": "astronomy",
+    "level": 7,
+    "order": 5,
+    "difficulty": 65,
+    "xpMin": 24,
+    "xpMax": 33,
+    "xpSuggested": 28,
+    "prompt": "Identify the most accurate term for this statement: It is a distance unit equal to how far light travels in one year.",
+    "choices": [
+      "Astronomical Unit",
+      "Exoplanet",
+      "Light-year",
+      "Transit Method"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Light-year. It is a distance unit equal to how far light travels in one year.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502401+00:00"
+  },
+  {
+    "id": "astronomy_L07_Q06",
+    "lessonId": "astronomy",
+    "level": 7,
+    "order": 6,
+    "difficulty": 66,
+    "xpMin": 25,
+    "xpMax": 34,
+    "xpSuggested": 29,
+    "prompt": "Identify the most accurate term for this statement: It is famous for its prominent ring system.",
+    "choices": [
+      "Milky Way",
+      "Neptune",
+      "Saturn",
+      "Uranus"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Saturn. It is famous for its prominent ring system.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502434+00:00"
+  },
+  {
+    "id": "astronomy_L07_Q07",
+    "lessonId": "astronomy",
+    "level": 7,
+    "order": 7,
+    "difficulty": 67,
+    "xpMin": 25,
+    "xpMax": 34,
+    "xpSuggested": 29,
+    "prompt": "Identify the most accurate term for this statement: It is a planet that orbits a star outside our Solar System.",
+    "choices": [
+      "Spectroscopy",
+      "Transit Method",
+      "Event Horizon",
+      "Exoplanet"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Exoplanet. It is a planet that orbits a star outside our Solar System.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502467+00:00"
+  },
+  {
+    "id": "astronomy_L07_Q08",
+    "lessonId": "astronomy",
+    "level": 7,
+    "order": 8,
+    "difficulty": 68,
+    "xpMin": 26,
+    "xpMax": 35,
+    "xpSuggested": 30,
+    "prompt": "Identify the most accurate term for this statement: It is the farthest major planet from the Sun.",
+    "choices": [
+      "Milky Way",
+      "Neptune",
+      "Supernova",
+      "Black Hole"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Neptune. It is the farthest major planet from the Sun.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502500+00:00"
+  },
+  {
+    "id": "astronomy_L07_Q09",
+    "lessonId": "astronomy",
+    "level": 7,
+    "order": 9,
+    "difficulty": 69,
+    "xpMin": 26,
+    "xpMax": 35,
+    "xpSuggested": 30,
+    "prompt": "Identify the most accurate term for this statement: It studies light to infer composition and motion of celestial objects.",
+    "choices": [
+      "Venus",
+      "Spectroscopy",
+      "Mercury",
+      "Event Horizon"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Spectroscopy. It studies light to infer composition and motion of celestial objects.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502534+00:00"
+  },
+  {
+    "id": "astronomy_L07_Q10",
+    "lessonId": "astronomy",
+    "level": 7,
+    "order": 10,
+    "difficulty": 70,
+    "xpMin": 27,
+    "xpMax": 36,
+    "xpSuggested": 31,
+    "prompt": "Identify the most accurate term for this statement: It is an object with gravity so strong that light cannot escape.",
+    "choices": [
+      "Red Giant",
+      "Nebula",
+      "Black Hole",
+      "Supernova"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Black Hole. It is an object with gravity so strong that light cannot escape.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502567+00:00"
+  },
+  {
+    "id": "astronomy_L08_Q01",
+    "lessonId": "astronomy",
+    "level": 8,
+    "order": 1,
+    "difficulty": 71,
+    "xpMin": 24,
+    "xpMax": 33,
+    "xpSuggested": 28,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is the farthest major planet from the Sun.",
+    "choices": [
+      "Supernova",
+      "Black Hole",
+      "Milky Way",
+      "Neptune"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Neptune. It is the farthest major planet from the Sun.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502600+00:00"
+  },
+  {
+    "id": "astronomy_L08_Q02",
+    "lessonId": "astronomy",
+    "level": 8,
+    "order": 2,
+    "difficulty": 72,
+    "xpMin": 25,
+    "xpMax": 34,
+    "xpSuggested": 29,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It studies light to infer composition and motion of celestial objects.",
+    "choices": [
+      "Mercury",
+      "Spectroscopy",
+      "Venus",
+      "Event Horizon"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Spectroscopy. It studies light to infer composition and motion of celestial objects.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502634+00:00"
+  },
+  {
+    "id": "astronomy_L08_Q03",
+    "lessonId": "astronomy",
+    "level": 8,
+    "order": 3,
+    "difficulty": 73,
+    "xpMin": 25,
+    "xpMax": 34,
+    "xpSuggested": 29,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is an object with gravity so strong that light cannot escape.",
+    "choices": [
+      "Black Hole",
+      "Nebula",
+      "Red Giant",
+      "Supernova"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Black Hole. It is an object with gravity so strong that light cannot escape.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502667+00:00"
+  },
+  {
+    "id": "astronomy_L08_Q04",
+    "lessonId": "astronomy",
+    "level": 8,
+    "order": 4,
+    "difficulty": 74,
+    "xpMin": 26,
+    "xpMax": 35,
+    "xpSuggested": 30,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is the closest planet to the Sun.",
+    "choices": [
+      "Venus",
+      "Mercury",
+      "Mars",
+      "Earth"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Mercury. It is the closest planet to the Sun.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502700+00:00"
+  },
+  {
+    "id": "astronomy_L08_Q05",
+    "lessonId": "astronomy",
+    "level": 8,
+    "order": 5,
+    "difficulty": 75,
+    "xpMin": 26,
+    "xpMax": 36,
+    "xpSuggested": 31,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is an interstellar cloud where stars can form.",
+    "choices": [
+      "White Dwarf",
+      "Light-year",
+      "Nebula",
+      "Red Giant"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Nebula. It is an interstellar cloud where stars can form.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502733+00:00"
+  },
+  {
+    "id": "astronomy_L08_Q06",
+    "lessonId": "astronomy",
+    "level": 8,
+    "order": 6,
+    "difficulty": 76,
+    "xpMin": 27,
+    "xpMax": 37,
+    "xpSuggested": 32,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is the only known planet with stable surface liquid water.",
+    "choices": [
+      "Saturn",
+      "Mars",
+      "Earth",
+      "Jupiter"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Earth. It is the only known planet with stable surface liquid water.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502767+00:00"
+  },
+  {
+    "id": "astronomy_L08_Q07",
+    "lessonId": "astronomy",
+    "level": 8,
+    "order": 7,
+    "difficulty": 77,
+    "xpMin": 27,
+    "xpMax": 37,
+    "xpSuggested": 32,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is the dense stellar remnant of a low or medium mass star.",
+    "choices": [
+      "Astronomical Unit",
+      "Light-year",
+      "Exoplanet",
+      "White Dwarf"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: White Dwarf. It is the dense stellar remnant of a low or medium mass star.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502799+00:00"
+  },
+  {
+    "id": "astronomy_L08_Q08",
+    "lessonId": "astronomy",
+    "level": 8,
+    "order": 8,
+    "difficulty": 78,
+    "xpMin": 28,
+    "xpMax": 38,
+    "xpSuggested": 33,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is the largest planet in the Solar System.",
+    "choices": [
+      "Uranus",
+      "Jupiter",
+      "Saturn",
+      "Neptune"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Jupiter. It is the largest planet in the Solar System.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502833+00:00"
+  },
+  {
+    "id": "astronomy_L08_Q09",
+    "lessonId": "astronomy",
+    "level": 8,
+    "order": 9,
+    "difficulty": 79,
+    "xpMin": 28,
+    "xpMax": 38,
+    "xpSuggested": 33,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is approximately the average Earth-Sun distance.",
+    "choices": [
+      "Transit Method",
+      "Spectroscopy",
+      "Astronomical Unit",
+      "Exoplanet"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Astronomical Unit. It is approximately the average Earth-Sun distance.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502866+00:00"
+  },
+  {
+    "id": "astronomy_L08_Q10",
+    "lessonId": "astronomy",
+    "level": 8,
+    "order": 10,
+    "difficulty": 80,
+    "xpMin": 29,
+    "xpMax": 39,
+    "xpSuggested": 34,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It rotates on its side with an extreme axial tilt.",
+    "choices": [
+      "Black Hole",
+      "Neptune",
+      "Uranus",
+      "Milky Way"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Uranus. It rotates on its side with an extreme axial tilt.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502898+00:00"
+  },
+  {
+    "id": "astronomy_L09_Q01",
+    "lessonId": "astronomy",
+    "level": 9,
+    "order": 1,
+    "difficulty": 81,
+    "xpMin": 26,
+    "xpMax": 36,
+    "xpSuggested": 31,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is the largest planet in the Solar System.",
+    "choices": [
+      "Jupiter",
+      "Uranus",
+      "Neptune",
+      "Saturn"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Jupiter. It is the largest planet in the Solar System.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502931+00:00"
+  },
+  {
+    "id": "astronomy_L09_Q02",
+    "lessonId": "astronomy",
+    "level": 9,
+    "order": 2,
+    "difficulty": 82,
+    "xpMin": 27,
+    "xpMax": 37,
+    "xpSuggested": 32,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is approximately the average Earth-Sun distance.",
+    "choices": [
+      "Transit Method",
+      "Exoplanet",
+      "Spectroscopy",
+      "Astronomical Unit"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Astronomical Unit. It is approximately the average Earth-Sun distance.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502965+00:00"
+  },
+  {
+    "id": "astronomy_L09_Q03",
+    "lessonId": "astronomy",
+    "level": 9,
+    "order": 3,
+    "difficulty": 83,
+    "xpMin": 27,
+    "xpMax": 37,
+    "xpSuggested": 32,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It rotates on its side with an extreme axial tilt.",
+    "choices": [
+      "Neptune",
+      "Uranus",
+      "Black Hole",
+      "Milky Way"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Uranus. It rotates on its side with an extreme axial tilt.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.502998+00:00"
+  },
+  {
+    "id": "astronomy_L09_Q04",
+    "lessonId": "astronomy",
+    "level": 9,
+    "order": 4,
+    "difficulty": 84,
+    "xpMin": 28,
+    "xpMax": 38,
+    "xpSuggested": 33,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It detects planets when they pass in front of their star.",
+    "choices": [
+      "Mercury",
+      "Transit Method",
+      "Event Horizon",
+      "Spectroscopy"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Transit Method. It detects planets when they pass in front of their star.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503032+00:00"
+  },
+  {
+    "id": "astronomy_L09_Q05",
+    "lessonId": "astronomy",
+    "level": 9,
+    "order": 5,
+    "difficulty": 85,
+    "xpMin": 28,
+    "xpMax": 38,
+    "xpSuggested": 33,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is the galaxy that contains our Solar System.",
+    "choices": [
+      "Nebula",
+      "Milky Way",
+      "Supernova",
+      "Black Hole"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Milky Way. It is the galaxy that contains our Solar System.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503065+00:00"
+  },
+  {
+    "id": "astronomy_L09_Q06",
+    "lessonId": "astronomy",
+    "level": 9,
+    "order": 6,
+    "difficulty": 86,
+    "xpMin": 29,
+    "xpMax": 39,
+    "xpSuggested": 34,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is the boundary around a black hole beyond which escape is impossible.",
+    "choices": [
+      "Venus",
+      "Event Horizon",
+      "Mercury",
+      "Earth"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Event Horizon. It is the boundary around a black hole beyond which escape is impossible.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503098+00:00"
+  },
+  {
+    "id": "astronomy_L09_Q07",
+    "lessonId": "astronomy",
+    "level": 9,
+    "order": 7,
+    "difficulty": 87,
+    "xpMin": 29,
+    "xpMax": 39,
+    "xpSuggested": 34,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is an explosive death event of a massive star.",
+    "choices": [
+      "Nebula",
+      "White Dwarf",
+      "Supernova",
+      "Red Giant"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Supernova. It is an explosive death event of a massive star.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503131+00:00"
+  },
+  {
+    "id": "astronomy_L09_Q08",
+    "lessonId": "astronomy",
+    "level": 9,
+    "order": 8,
+    "difficulty": 88,
+    "xpMin": 30,
+    "xpMax": 40,
+    "xpSuggested": 35,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is the hottest planet due to a strong greenhouse atmosphere.",
+    "choices": [
+      "Earth",
+      "Jupiter",
+      "Venus",
+      "Mars"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Venus. It is the hottest planet due to a strong greenhouse atmosphere.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503185+00:00"
+  },
+  {
+    "id": "astronomy_L09_Q09",
+    "lessonId": "astronomy",
+    "level": 9,
+    "order": 9,
+    "difficulty": 89,
+    "xpMin": 30,
+    "xpMax": 40,
+    "xpSuggested": 35,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is a late stage of stellar evolution after core hydrogen is depleted.",
+    "choices": [
+      "Astronomical Unit",
+      "Red Giant",
+      "Light-year",
+      "White Dwarf"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Red Giant. It is a late stage of stellar evolution after core hydrogen is depleted.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503219+00:00"
+  },
+  {
+    "id": "astronomy_L09_Q10",
+    "lessonId": "astronomy",
+    "level": 9,
+    "order": 10,
+    "difficulty": 90,
+    "xpMin": 31,
+    "xpMax": 42,
+    "xpSuggested": 36,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is known as the Red Planet.",
+    "choices": [
+      "Mars",
+      "Jupiter",
+      "Saturn",
+      "Uranus"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Mars. It is known as the Red Planet.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503253+00:00"
+  },
+  {
+    "id": "astronomy_L10_Q01",
+    "lessonId": "astronomy",
+    "level": 10,
+    "order": 1,
+    "difficulty": 91,
+    "xpMin": 28,
+    "xpMax": 39,
+    "xpSuggested": 33,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is the hottest planet due to a strong greenhouse atmosphere.",
+    "choices": [
+      "Mars",
+      "Jupiter",
+      "Earth",
+      "Venus"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Venus. It is the hottest planet due to a strong greenhouse atmosphere.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503286+00:00"
+  },
+  {
+    "id": "astronomy_L10_Q02",
+    "lessonId": "astronomy",
+    "level": 10,
+    "order": 2,
+    "difficulty": 92,
+    "xpMin": 29,
+    "xpMax": 40,
+    "xpSuggested": 34,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is a late stage of stellar evolution after core hydrogen is depleted.",
+    "choices": [
+      "Red Giant",
+      "Astronomical Unit",
+      "Light-year",
+      "White Dwarf"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Red Giant. It is a late stage of stellar evolution after core hydrogen is depleted.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503319+00:00"
+  },
+  {
+    "id": "astronomy_L10_Q03",
+    "lessonId": "astronomy",
+    "level": 10,
+    "order": 3,
+    "difficulty": 93,
+    "xpMin": 29,
+    "xpMax": 40,
+    "xpSuggested": 34,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is known as the Red Planet.",
+    "choices": [
+      "Uranus",
+      "Mars",
+      "Jupiter",
+      "Saturn"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Mars. It is known as the Red Planet.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503352+00:00"
+  },
+  {
+    "id": "astronomy_L10_Q04",
+    "lessonId": "astronomy",
+    "level": 10,
+    "order": 4,
+    "difficulty": 94,
+    "xpMin": 30,
+    "xpMax": 41,
+    "xpSuggested": 35,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is a distance unit equal to how far light travels in one year.",
+    "choices": [
+      "Exoplanet",
+      "Transit Method",
+      "Astronomical Unit",
+      "Light-year"
+    ],
+    "correctIndex": 3,
+    "explanation": "Correct answer: Light-year. It is a distance unit equal to how far light travels in one year.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503386+00:00"
+  },
+  {
+    "id": "astronomy_L10_Q05",
+    "lessonId": "astronomy",
+    "level": 10,
+    "order": 5,
+    "difficulty": 95,
+    "xpMin": 30,
+    "xpMax": 41,
+    "xpSuggested": 35,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is famous for its prominent ring system.",
+    "choices": [
+      "Uranus",
+      "Saturn",
+      "Neptune",
+      "Milky Way"
+    ],
+    "correctIndex": 1,
+    "explanation": "Correct answer: Saturn. It is famous for its prominent ring system.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503420+00:00"
+  },
+  {
+    "id": "astronomy_L10_Q06",
+    "lessonId": "astronomy",
+    "level": 10,
+    "order": 6,
+    "difficulty": 96,
+    "xpMin": 31,
+    "xpMax": 42,
+    "xpSuggested": 36,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is a planet that orbits a star outside our Solar System.",
+    "choices": [
+      "Transit Method",
+      "Spectroscopy",
+      "Exoplanet",
+      "Event Horizon"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Exoplanet. It is a planet that orbits a star outside our Solar System.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503454+00:00"
+  },
+  {
+    "id": "astronomy_L10_Q07",
+    "lessonId": "astronomy",
+    "level": 10,
+    "order": 7,
+    "difficulty": 97,
+    "xpMin": 31,
+    "xpMax": 42,
+    "xpSuggested": 36,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is the farthest major planet from the Sun.",
+    "choices": [
+      "Neptune",
+      "Black Hole",
+      "Milky Way",
+      "Supernova"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Neptune. It is the farthest major planet from the Sun.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503487+00:00"
+  },
+  {
+    "id": "astronomy_L10_Q08",
+    "lessonId": "astronomy",
+    "level": 10,
+    "order": 8,
+    "difficulty": 98,
+    "xpMin": 32,
+    "xpMax": 43,
+    "xpSuggested": 37,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It studies light to infer composition and motion of celestial objects.",
+    "choices": [
+      "Spectroscopy",
+      "Venus",
+      "Event Horizon",
+      "Mercury"
+    ],
+    "correctIndex": 0,
+    "explanation": "Correct answer: Spectroscopy. It studies light to infer composition and motion of celestial objects.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503521+00:00"
+  },
+  {
+    "id": "astronomy_L10_Q09",
+    "lessonId": "astronomy",
+    "level": 10,
+    "order": 9,
+    "difficulty": 99,
+    "xpMin": 32,
+    "xpMax": 43,
+    "xpSuggested": 37,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is an object with gravity so strong that light cannot escape.",
+    "choices": [
+      "Nebula",
+      "Supernova",
+      "Black Hole",
+      "Red Giant"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Black Hole. It is an object with gravity so strong that light cannot escape.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503554+00:00"
+  },
+  {
+    "id": "astronomy_L10_Q10",
+    "lessonId": "astronomy",
+    "level": 10,
+    "order": 10,
+    "difficulty": 100,
+    "xpMin": 33,
+    "xpMax": 44,
+    "xpSuggested": 38,
+    "prompt": "Choose the best concept that explains the following scenario-level statement: It is the closest planet to the Sun.",
+    "choices": [
+      "Venus",
+      "Earth",
+      "Mercury",
+      "Mars"
+    ],
+    "correctIndex": 2,
+    "explanation": "Correct answer: Mercury. It is the closest planet to the Sun.",
+    "tags": [
+      "space",
+      "science"
+    ],
+    "isActive": true,
+    "createdAt": "2026-04-05T07:43:09.503588+00:00"
+  }
+]

@@ -135,33 +135,7 @@ struct LessonsView: View {
 
     // MARK: - Nav bar
     private var navBar: some View {
-        HStack {
-            HStack(spacing: 8) {
-                Image("EdVentureLogo")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 22, height: 22)
-                Text("EdVenture")
-                    .font(.system(size: 18, weight: .bold, design: .rounded))
-                    .foregroundColor(Color(hex: "0EB060"))
-            }
-            Spacer()
-            HStack(spacing: 10) {
-                EVLiquidGlassIconButton(systemName: "bell.fill") {}
-
-                Button { onProfile?() } label: {
-                    EVProfileAvatarView(
-                        size: 38,
-                        iconSize: 15,
-                        iconOpacity: 0.7,
-                        ringColor: Color.white.opacity(0.15),
-                        ringWidth: 0.5
-                    )
-                }
-            }
-        }
-        .padding(.horizontal, 20)
-        .padding(.top, 52)
+        EVScreenTopBar(onProfile: onProfile)
     }
 
     // MARK: - Search bar
@@ -249,20 +223,13 @@ struct LessonsView: View {
 
     // MARK: - Tab bar
     private var tabBar: some View {
-        EVMainTabBar(activeTab: .lessons) { tab in
-            switch tab {
-            case .home:
-                onHome?()
-            case .discovery:
-                onDiscovery?()
-            case .rank:
-                onRank?()
-            case .settings:
-                onSettings?()
-            default:
-                break
-            }
-        }
+        EVMainTabNavigationBar(
+            activeTab: .lessons,
+            onHome: onHome,
+            onDiscovery: onDiscovery,
+            onRank: onRank,
+            onSettings: onSettings
+        )
     }
 
     // MARK: - Add to practice handler
