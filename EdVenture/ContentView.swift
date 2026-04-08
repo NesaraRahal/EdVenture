@@ -50,6 +50,8 @@ struct ContentView: View {
             return "Rank screen. View leaderboard rankings and compare your progress with others."
         case .settings:
             return "Settings screen. Sections include preferences, accessibility, security, support, and sign out."
+        case .notificationSettings:
+            return "Notification settings screen. Manage push notifications and reminder preferences."
         case .accessibilitySettings:
             return "Accessibility settings screen. Toggles available for haptic feedback, sound effects, screen reader, and dynamic text."
         case .biometricsSettings:
@@ -189,9 +191,19 @@ struct ContentView: View {
                             onLessons:   { goToMainTab(.lessons) },
                             onDiscovery: { goToMainTab(.discovery) },
                             onRank:      { goToMainTab(.rank) },
+                            onNotifications: { path.append(AppRoute.notificationSettings) },
                             onAccessibility: { path.append(AppRoute.accessibilitySettings) },
                             onBiometricsAndPassword: { path.append(AppRoute.biometricsSettings) },
                             onProfile:   { path.append(AppRoute.profile) }
+                        )
+
+                    case .notificationSettings:
+                        NotificationSettingsView(
+                            onBack: {
+                                if !path.isEmpty {
+                                    path.removeLast()
+                                }
+                            }
                         )
 
                     case .biometricsSettings:

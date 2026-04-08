@@ -14,6 +14,7 @@ struct SettingsView: View {
     var onLessons:   (() -> Void)?
     var onDiscovery: (() -> Void)?
     var onRank:      (() -> Void)?
+    var onNotifications: (() -> Void)?
     var onAccessibility: (() -> Void)?
     var onBiometricsAndPassword: (() -> Void)?
     var onProfile:   (() -> Void)?
@@ -50,7 +51,7 @@ struct SettingsView: View {
                         // Preferences
                         sectionLabel("Preferences")
                         settingsGroup([
-                            RowConfig(icon: "bell",          label: "Notifications", action: nil),
+                            RowConfig(icon: "bell",          label: "Notifications", action: onNotifications),
                         ])
                         .padding(.bottom, 24)
 

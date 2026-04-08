@@ -28,60 +28,70 @@ struct RankView: View {
                             .multilineTextAlignment(.center)
                             .padding(.horizontal, 24)
                     } else {
-                        VStack(spacing: 14) {
-                            Image(systemName: "trophy.fill")
-                                .font(.system(size: 56, weight: .light))
-                                .foregroundColor(Color(hex: "0EB060").opacity(0.9))
+                        ScrollView(showsIndicators: false) {
+                            VStack(spacing: 14) {
+                                Image(systemName: "trophy.fill")
+                                    .font(.system(size: 56, weight: .light))
+                                    .foregroundColor(Color(hex: "0EB060").opacity(0.9))
 
-                            Text("Global Leaderboard")
-                                .font(.system(size: 34, weight: .bold, design: .rounded))
-                                .foregroundColor(.white)
+                                Text("Global Leaderboard")
+                                    .font(.system(size: 34, weight: .bold, design: .rounded))
+                                    .foregroundColor(.white)
 
-                            Text("Track the highest XP earners across all categories.")
-                                .font(.system(size: 15, design: .rounded))
-                                .foregroundColor(.white.opacity(0.6))
-                                .multilineTextAlignment(.center)
-                                .lineSpacing(3)
-                                .padding(.horizontal, 32)
+                                Text("Track the highest XP earners across all categories.")
+                                    .font(.system(size: 15, design: .rounded))
+                                    .foregroundColor(.white.opacity(0.6))
+                                    .multilineTextAlignment(.center)
+                                    .lineSpacing(3)
+                                    .padding(.horizontal, 32)
 
-                            VStack(spacing: 10) {
-                                ForEach(Array(vm.entries.enumerated()), id: \.element.id) { index, entry in
-                                    HStack(spacing: 12) {
-                                        Text("\(index + 1)")
-                                            .font(.system(size: 18, weight: .bold, design: .rounded))
-                                            .foregroundColor(index == 0 ? Color(hex: "F6CC2E") : Color.white.opacity(0.7))
-                                            .frame(width: 30)
-
-                                        leaderboardAvatar(for: entry)
-
-                                        VStack(alignment: .leading, spacing: 2) {
-                                            Text(entry.displayName)
-                                                .font(.system(size: 16, weight: .semibold, design: .rounded))
-                                                .foregroundColor(.white)
-                                            Text("\(entry.quizXP) quiz XP • \(entry.streak) streak")
-                                                .font(.system(size: 12, design: .rounded))
-                                                .foregroundColor(.white.opacity(0.55))
-                                        }
-
-                                        Spacer()
-
-                                        Text("\(entry.totalXP)")
-                                            .font(.system(size: 18, weight: .bold, design: .rounded))
-                                            .foregroundColor(Color(hex: "0EB060"))
-                                    }
-                                    .padding(.horizontal, 16)
-                                    .frame(height: 64)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                            .fill(Color.white.opacity(0.05))
-                                            .overlay(
-                                                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                                    .stroke(index == 0 ? Color(hex: "F6CC2E").opacity(0.2) : Color.white.opacity(0.08), lineWidth: 0.6)
-                                            )
-                                    )
+                                if vm.entries.count >= 3 {
+                                    podiumSection
+                                        .padding(.horizontal, 20)
                                 }
+
+                                if !listEntries.isEmpty {
+                                    VStack(spacing: 10) {
+                                        ForEach(Array(listEntries.enumerated()), id: \.element.id) { index, entry in
+                                            HStack(spacing: 12) {
+                                                Text("\(listStartRank + index)")
+                                                    .font(.system(size: 18, weight: .bold, design: .rounded))
+                                                    .foregroundColor((listStartRank + index) == 1 ? Color(hex: "F6CC2E") : Color.white.opacity(0.7))
+                                                    .frame(width: 30)
+
+                                                leaderboardAvatar(for: entry)
+
+                                                VStack(alignment: .leading, spacing: 2) {
+                                                    Text(entry.displayName)
+                                                        .font(.system(size: 16, weight: .semibold, design: .rounded))
+                                                        .foregroundColor(.white)
+                                                    Text("\(entry.quizXP) quiz XP • \(entry.streak) streak")
+                                                        .font(.system(size: 12, design: .rounded))
+                                                        .foregroundColor(.white.opacity(0.55))
+                                                }
+
+                                                Spacer()
+
+                                                Text("\(entry.totalXP)")
+                                                    .font(.system(size: 18, weight: .bold, design: .rounded))
+                                                    .foregroundColor(Color(hex: "0EB060"))
+                                            }
+                                            .padding(.horizontal, 16)
+                                            .frame(height: 64)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                                    .fill(Color.white.opacity(0.05))
+                                                    .overlay(
+                                                        RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                                            .stroke((listStartRank + index) == 1 ? Color(hex: "F6CC2E").opacity(0.2) : Color.white.opacity(0.08), lineWidth: 0.6)
+                                                    )
+                                            )
+                                        }
+                                    }
+                                    .padding(.horizontal, 20)
+                                }
+                                Spacer(minLength: 130)
                             }
-                            .padding(.horizontal, 20)
                         }
                     }
                 }
@@ -112,7 +122,73 @@ struct RankView: View {
         EVScreenTopBar(onProfile: onProfile)
     }
 
+    private var listEntries: [EVLeaderboardEntry] {
+        vm.entries.count >= 3 ? Array(vm.entries.dropFirst(3)) : vm.entries
+    }
+
+    private var listStartRank: Int {
+        vm.entries.count >= 3 ? 4 : 1
+    }
+
+    private var podiumSection: some View {
+        HStack(alignment: .bottom, spacing: 14) {
+            podiumItem(rank: 2, entry: vm.entries[1], avatarSize: 62, pedestalHeight: 56)
+            podiumItem(rank: 1, entry: vm.entries[0], avatarSize: 84, pedestalHeight: 82)
+            podiumItem(rank: 3, entry: vm.entries[2], avatarSize: 62, pedestalHeight: 46)
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private func podiumItem(rank: Int, entry: EVLeaderboardEntry, avatarSize: CGFloat, pedestalHeight: CGFloat) -> some View {
+        VStack(spacing: 8) {
+            ZStack(alignment: .bottomTrailing) {
+                leaderboardAvatar(for: entry, size: avatarSize)
+                    .overlay(
+                        Circle()
+                            .stroke(rank == 1 ? Color(hex: "F6CC2E") : Color(hex: "0EB060"), lineWidth: rank == 1 ? 2.2 : 1.2)
+                    )
+
+                Circle()
+                    .fill(rank == 1 ? Color(hex: "F6CC2E") : Color(hex: "0EB060"))
+                    .frame(width: 26, height: 26)
+                    .overlay(
+                        Text("\(rank)")
+                            .font(.system(size: 12, weight: .bold, design: .rounded))
+                            .foregroundColor(Color(hex: "0A0F0D"))
+                    )
+            }
+
+            Text(entry.displayName)
+                .font(.system(size: rank == 1 ? 18 : 14, weight: .bold, design: .rounded))
+                .foregroundColor(.white)
+                .lineLimit(1)
+
+            Text("\(entry.totalXP) XP")
+                .font(.system(size: 12, weight: .semibold, design: .rounded))
+                .foregroundColor(.white.opacity(0.7))
+
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: [Color(hex: "0EB060").opacity(0.22), Color.white.opacity(0.04)],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .stroke(Color.white.opacity(0.10), lineWidth: 0.7)
+                )
+                .frame(height: pedestalHeight)
+        }
+        .frame(maxWidth: .infinity)
+    }
+
     private func leaderboardAvatar(for entry: EVLeaderboardEntry) -> some View {
+        leaderboardAvatar(for: entry, size: 34)
+    }
+
+    private func leaderboardAvatar(for entry: EVLeaderboardEntry, size: CGFloat) -> some View {
         Group {
             if let base64 = entry.profileImageBase64,
                let data = Data(base64Encoded: base64),
@@ -153,7 +229,7 @@ struct RankView: View {
                     .clipShape(Circle())
             }
         }
-        .frame(width: 34, height: 34)
+        .frame(width: size, height: size)
         .overlay(
             Circle()
                 .stroke(Color.white.opacity(0.14), lineWidth: 0.8)

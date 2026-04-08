@@ -85,6 +85,7 @@ class GeminiAPIService: ObservableObject {
         "gemini-1.5-flash-latest",
         "gemini-1.5-pro"
     ]
+    private var discoveredModelCandidates: [String] = []
     
     private init() {
         // Get API key from environment or use placeholder
@@ -121,16 +122,26 @@ class GeminiAPIService: ObservableObject {
         let prompt = buildEducationalPrompt(from: extractedText)
         let request = buildRequest(with: prompt)
 
+        if discoveredModelCandidates.isEmpty {
+            discoveredModelCandidates = await fetchAvailableGeminiModels(key: key)
+        }
+
+        let modelsToTry = discoveredModelCandidates.isEmpty ? modelCandidates : discoveredModelCandidates
+
         var lastStatusCode: Int?
+        var sawRateLimit = false
 
         for version in apiVersions {
-            for model in modelCandidates {
+            for model in modelsToTry {
                 do {
                     let responseText = try await requestCompletionTextWithRetry(version: version, model: model, key: key, request: request)
                     let content = try parseEducationalContent(responseText, extractedText: extractedText)
                     return content
                 } catch GeminiError.apiError(let statusCode) {
                     lastStatusCode = statusCode
+                    if statusCode == 429 {
+                        sawRateLimit = true
+                    }
                     // Keep trying on model/version misses and transient server/rate-limit failures.
                     if statusCode == 404 || isRetryableStatus(statusCode) { continue }
                     throw GeminiError.apiError(statusCode: statusCode)
@@ -138,6 +149,9 @@ class GeminiAPIService: ObservableObject {
             }
         }
 
+        if sawRateLimit {
+            throw GeminiError.apiError(statusCode: 429)
+        }
         throw GeminiError.apiError(statusCode: lastStatusCode ?? 404)
     }
     
@@ -202,8 +216,13 @@ class GeminiAPIService: ObservableObject {
     }
 
     private func requestCompletionText(version: String, model: String, key: String, request: GeminiRequest) async throws -> String {
-        let baseURL = "https://generativelanguage.googleapis.com/\(version)/models/\(model):generateContent"
-        guard let url = URL(string: "\(baseURL)?key=\(key)") else {
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = "generativelanguage.googleapis.com"
+        components.path = "/\(version)/models/\(model):generateContent"
+        components.queryItems = [URLQueryItem(name: "key", value: key)]
+
+        guard let url = components.url else {
             throw GeminiError.invalidResponse
         }
 
@@ -266,6 +285,43 @@ class GeminiAPIService: ObservableObject {
 
     private func isRetryableStatus(_ statusCode: Int) -> Bool {
         statusCode == 429 || (500...599).contains(statusCode)
+    }
+
+    private func fetchAvailableGeminiModels(key: String) async -> [String] {
+        var discovered: [String] = []
+
+        for version in apiVersions {
+            do {
+                var components = URLComponents()
+                components.scheme = "https"
+                components.host = "generativelanguage.googleapis.com"
+                components.path = "/\(version)/models"
+                components.queryItems = [URLQueryItem(name: "key", value: key)]
+
+                guard let url = components.url else { continue }
+
+                let (data, response) = try await URLSession.shared.data(from: url)
+                guard let http = response as? HTTPURLResponse,
+                      (200...299).contains(http.statusCode) else {
+                    continue
+                }
+
+                let payload = try JSONDecoder().decode(GeminiModelsListResponse.self, from: data)
+                let models = payload.models
+                    .filter { $0.supportedGenerationMethods.contains("generateContent") }
+                    .map { $0.name.replacingOccurrences(of: "models/", with: "") }
+                    .filter { $0.lowercased().contains("gemini") }
+
+                if !models.isEmpty {
+                    discovered = models
+                    break
+                }
+            } catch {
+                continue
+            }
+        }
+
+        return discovered
     }
     
     private func parseEducationalContent(_ jsonText: String, extractedText: String) throws -> EducationalContent {
@@ -338,6 +394,15 @@ struct QuizQuestionDict: Codable {
     let options: [String]
     let correctAnswerIndex: Int
     let explanation: String
+}
+
+private struct GeminiModelsListResponse: Codable {
+    let models: [GeminiModel]
+
+    struct GeminiModel: Codable {
+        let name: String
+        let supportedGenerationMethods: [String]
+    }
 }
 
 // MARK: - Error Handling
