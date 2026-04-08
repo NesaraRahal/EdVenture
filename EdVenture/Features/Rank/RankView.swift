@@ -92,21 +92,15 @@ struct RankView: View {
                 Spacer()
             }
 
-            EVMainTabBar(activeTab: .rank) { tab in
-                switch tab {
-                case .home:
-                    onHome?()
-                case .lessons:
-                    onLessons?()
-                case .discovery:
-                    onDiscovery?()
-                case .settings:
-                    onSettings?()
-                default:
-                    break
-                }
-            }
+            EVMainTabNavigationBar(
+                activeTab: .rank,
+                onHome: onHome,
+                onLessons: onLessons,
+                onDiscovery: onDiscovery,
+                onSettings: onSettings
+            )
         }
+        .ignoresSafeArea(edges: .bottom)
         .navigationBarHidden(true)
         .onAppear {
             appeared = true
@@ -115,34 +109,7 @@ struct RankView: View {
     }
 
     private var navBar: some View {
-        HStack {
-            HStack(spacing: 8) {
-                Image("EdVentureLogo")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 22, height: 22)
-                Text("EdVenture")
-                    .font(.system(size: 18, weight: .bold, design: .rounded))
-                    .foregroundColor(Color(hex: "0EB060"))
-            }
-
-            Spacer()
-
-            HStack(spacing: 10) {
-                EVLiquidGlassIconButton(systemName: "bell.fill") {}
-                Button { onProfile?() } label: {
-                    EVProfileAvatarView(
-                        size: 38,
-                        iconSize: 15,
-                        iconOpacity: 0.7,
-                        ringColor: Color.white.opacity(0.15),
-                        ringWidth: 0.5
-                    )
-                }
-            }
-        }
-        .padding(.horizontal, 20)
-        .padding(.top, 52)
+        EVScreenTopBar(onProfile: onProfile)
     }
 
     private func leaderboardAvatar(for entry: EVLeaderboardEntry) -> some View {

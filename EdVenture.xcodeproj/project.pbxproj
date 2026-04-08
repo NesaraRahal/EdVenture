@@ -10,6 +10,7 @@
 		037BA76E2F7BA3960087C670 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 037BA76D2F7BA3960087C670 /* FirebaseAuth */; };
 		037BA7702F7BA3A40087C670 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 037BA76F2F7BA3A40087C670 /* FirebaseCore */; };
 		037BA7722F7BA3B00087C670 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 037BA7712F7BA3B00087C670 /* FirebaseFirestore */; };
+		03A855D82F861BCB00D0ABA2 /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 03A855D72F861BCB00D0ABA2 /* FirebaseRemoteConfig */; };
 		58D91D7E2FB4000200ABC001 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 58D91D7D2FB4000200ABC001 /* FirebaseStorage */; };
 /* End PBXBuildFile section */
 
@@ -34,6 +35,7 @@
 				037BA7702F7BA3A40087C670 /* FirebaseCore in Frameworks */,
 				037BA76E2F7BA3960087C670 /* FirebaseAuth in Frameworks */,
 				037BA7722F7BA3B00087C670 /* FirebaseFirestore in Frameworks */,
+				03A855D82F861BCB00D0ABA2 /* FirebaseRemoteConfig in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -88,6 +90,7 @@
 				037BA76F2F7BA3A40087C670 /* FirebaseCore */,
 				037BA7712F7BA3B00087C670 /* FirebaseFirestore */,
 				58D91D7D2FB4000200ABC001 /* FirebaseStorage */,
+				03A855D72F861BCB00D0ABA2 /* FirebaseRemoteConfig */,
 			);
 			productName = EdVenture;
 			productReference = 037BA73D2F7B8FB10087C670 /* EdVenture.app */;
@@ -280,13 +283,15 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = W3CBD9RD5Z;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSCameraUsageDescription = "Allow camera access to capture your profile photo.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Allow camera access to capture your profile photo and scan educational materials to unlock learning content.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Allow photo library access to choose your profile photo.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiredDeviceCapabilities = "arkit camera";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -313,13 +318,15 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = W3CBD9RD5Z;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSCameraUsageDescription = "Allow camera access to capture your profile photo.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Allow camera access to capture your profile photo and scan educational materials to unlock learning content.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Allow photo library access to choose your profile photo.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiredDeviceCapabilities = "arkit camera";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -388,6 +395,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 037BA7682F7B9F650087C670 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
+		};
+		03A855D72F861BCB00D0ABA2 /* FirebaseRemoteConfig */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 037BA7682F7B9F650087C670 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseRemoteConfig;
 		};
 		58D91D7D2FB4000200ABC001 /* FirebaseStorage */ = {
 			isa = XCSwiftPackageProductDependency;

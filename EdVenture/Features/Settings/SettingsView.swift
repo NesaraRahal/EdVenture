@@ -112,34 +112,7 @@ struct SettingsView: View {
 
     // MARK: - Nav bar (matches HomeView / LessonsView exactly)
     private var navBar: some View {
-        HStack {
-            HStack(spacing: 8) {
-                Image("EdVentureLogo")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 22, height: 22)
-                Text("EdVenture")
-                    .font(.system(size: 18, weight: .bold, design: .rounded))
-                    .foregroundColor(Color(hex: "0EB060"))
-            }
-            Spacer()
-            HStack(spacing: 10) {
-                EVLiquidGlassIconButton(systemName: "bell.fill") {}
-
-                // Avatar (active — green ring on settings page)
-                Button { onProfile?() } label: {
-                    EVProfileAvatarView(
-                        size: 38,
-                        iconSize: 15,
-                        iconOpacity: 0.7,
-                        ringColor: Color(hex: "0EB060").opacity(0.7),
-                        ringWidth: 1.5
-                    )
-                }
-            }
-        }
-        .padding(.horizontal, 20)
-        .padding(.top, 52)
+        EVScreenTopBar(onProfile: onProfile)
         .opacity(appeared ? 1 : 0)
         .animation(.easeOut(duration: 0.35), value: appeared)
     }
@@ -309,20 +282,13 @@ struct SettingsView: View {
 
     // MARK: - Tab bar (Settings tab active)
     private var tabBar: some View {
-        EVMainTabBar(activeTab: .settings) { tab in
-            switch tab {
-            case .home:
-                onHome?()
-            case .lessons:
-                onLessons?()
-            case .discovery:
-                onDiscovery?()
-            case .rank:
-                onRank?()
-            default:
-                break
-            }
-        }
+        EVMainTabNavigationBar(
+            activeTab: .settings,
+            onHome: onHome,
+            onLessons: onLessons,
+            onDiscovery: onDiscovery,
+            onRank: onRank
+        )
     }
 
     // MARK: - Sign out

@@ -24,6 +24,15 @@ struct EdVentureApp: App {
     
     // Register AppDelegate for Firebase
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    
+    init() {
+        // Initialize API keys on app launch
+        Task {
+            await MainActor.run {
+                APIConfigurationService.shared.setupAPIKeys()
+            }
+        }
+    }
 
     var body: some Scene {
         WindowGroup {

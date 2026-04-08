@@ -6,14 +6,17 @@ import SwiftUI
 
 struct ContentView: View {
 
-    @State private var path            = NavigationPath()
+    @State private var path: [AppRoute] = []
     @State private var registeredEmail = ""
     @State private var pendingLessonFilter: String?
     @AppStorage("accessibility.dynamicText") private var dynamicText = true
+    private let mainTabAnimation = Animation.easeInOut(duration: 0.22)
 
     private func goToMainTab(_ route: AppRoute) {
-        path = NavigationPath()
-        path.append(route)
+        if path.count == 1, path.first == route { return }
+        withAnimation(mainTabAnimation) {
+            path = [route]
+        }
     }
 
     private func goToLessons(filter: String? = nil) {
@@ -181,7 +184,7 @@ struct ContentView: View {
 
                     case .settings:
                         SettingsView(
-                            onSignOut: { path = NavigationPath() },
+                            onSignOut: { path = [] },
                             onHome:      { goToMainTab(.home) },
                             onLessons:   { goToMainTab(.lessons) },
                             onDiscovery: { goToMainTab(.discovery) },

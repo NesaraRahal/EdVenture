@@ -89,3 +89,29 @@ struct EVMainTabBar: View {
         .shadow(color: .black.opacity(0.45), radius: 22, y: -4)
     }
 }
+
+struct EVMainTabNavigationBar: View {
+    let activeTab: EVMainTab
+    var onHome: (() -> Void)? = nil
+    var onLessons: (() -> Void)? = nil
+    var onDiscovery: (() -> Void)? = nil
+    var onRank: (() -> Void)? = nil
+    var onSettings: (() -> Void)? = nil
+
+    var body: some View {
+        EVMainTabBar(activeTab: activeTab) { tab in
+            switch tab {
+            case .home:
+                onHome?()
+            case .lessons:
+                onLessons?()
+            case .discovery:
+                onDiscovery?()
+            case .rank:
+                onRank?()
+            case .settings:
+                onSettings?()
+            }
+        }
+    }
+}
