@@ -24,6 +24,24 @@ struct ContentView: View {
         goToMainTab(.lessons)
     }
 
+    private func activeMainTab(for route: AppRoute?) -> EVMainTab? {
+        guard let route else { return nil }
+        switch route {
+        case .home:
+            return .home
+        case .lessons:
+            return .lessons
+        case .discovery:
+            return .discovery
+        case .rank:
+            return .rank
+        case .settings:
+            return .settings
+        default:
+            return nil
+        }
+    }
+
     private func accessibilityAnnouncement(for route: AppRoute) -> String {
         switch route {
         case .login:
@@ -268,6 +286,18 @@ struct ContentView: View {
             // Hide the system nav bar globally — each screen
             // draws its own liquid glass nav bar
             .navigationBarHidden(true)
+        }
+        .overlay(alignment: .bottom) {
+            if let tab = activeMainTab(for: path.last) {
+                EVMainTabNavigationBar(
+                    activeTab: tab,
+                    onHome: { goToMainTab(.home) },
+                    onLessons: { goToMainTab(.lessons) },
+                    onDiscovery: { goToMainTab(.discovery) },
+                    onRank: { goToMainTab(.rank) },
+                    onSettings: { goToMainTab(.settings) }
+                )
+            }
         }
         .dynamicTypeSize(dynamicText ? DynamicTypeSize.xSmall ... DynamicTypeSize.accessibility5
                                      : DynamicTypeSize.xSmall ... DynamicTypeSize.large)

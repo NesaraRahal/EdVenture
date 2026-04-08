@@ -102,14 +102,6 @@ struct RankView: View {
 
                 Spacer()
             }
-
-            EVMainTabNavigationBar(
-                activeTab: .rank,
-                onHome: onHome,
-                onLessons: onLessons,
-                onDiscovery: onDiscovery,
-                onSettings: onSettings
-            )
         }
         .ignoresSafeArea(edges: .bottom)
         .navigationBarHidden(true)

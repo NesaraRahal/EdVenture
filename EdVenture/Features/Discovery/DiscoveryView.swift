@@ -43,14 +43,6 @@ struct DiscoveryView: View {
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-                EVMainTabNavigationBar(
-                    activeTab: .discovery,
-                    onHome: onHome,
-                    onLessons: onLessons,
-                    onRank: onRank,
-                    onSettings: onSettings
-                )
             }
         }
         .navigationBarHidden(true)

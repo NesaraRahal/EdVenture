@@ -73,6 +73,9 @@ struct LevelQuizView: View {
         .task(id: lessonId) {
             await vm.load(lessonId: lessonId, startIndex: questionIndex)
         }
+        .onDisappear {
+            vm.stopTimer()
+        }
     }
 
     private var topBar: some View {
@@ -92,6 +95,21 @@ struct LevelQuizView: View {
                 .background(Color.white.opacity(0.1))
                 .clipShape(Capsule())
             }
+
+            Spacer()
+
+            HStack(spacing: 6) {
+                Image(systemName: "timer")
+                    .font(.system(size: 13, weight: .semibold))
+                Text(vm.timerText)
+                    .font(.system(size: 14, weight: .bold, design: .rounded))
+                    .monospacedDigit()
+            }
+            .foregroundColor(.white.opacity(0.9))
+            .padding(.horizontal, 12)
+            .frame(height: 36)
+            .background(Color.white.opacity(0.1))
+            .clipShape(Capsule())
 
             Spacer()
 
@@ -121,7 +139,7 @@ struct LevelQuizView: View {
                 Spacer()
 
                 VStack(alignment: .trailing, spacing: 4) {
-                    Text("\(vm.sessionUnlockedCount) UNLOCKED")
+                    Text("\(vm.completedQuestionsCount) COMPLETED")
                         .font(.system(size: 11, weight: .bold, design: .rounded))
                         .foregroundColor(Color(hex: "0EB060"))
                     Text("\(vm.sessionStreak) WIN STREAK")
@@ -462,11 +480,13 @@ final class LevelQuizViewModel: ObservableObject {
     @Published var showHint = false
     @Published var showLevelComplete = false
     @Published var lockMessage: String?
+    @Published var remainingSeconds: Int = 1800
 
     private let store = EVQuizStore()
     private var userId: String?
     private var displayName: String = "Learner"
     private var totalQuestions = 0
+    private var timerCancellable: AnyCancellable?
 
     var lessonTitle: String = "Lesson"
 
@@ -479,10 +499,6 @@ final class LevelQuizViewModel: ObservableObject {
         currentQuestion == nil ? 0 : currentIndex
     }
 
-    var sessionUnlockedCount: Int {
-        session?.unlockedCount ?? 0
-    }
-
     var sessionStreak: Int {
         session?.consecutiveWins ?? 0
     }
@@ -491,8 +507,18 @@ final class LevelQuizViewModel: ObservableObject {
         session?.totalXP ?? 0
     }
 
+    var completedQuestionsCount: Int {
+        Set(session?.completedQuestionIDs ?? []).count
+    }
+
     var lockUntil: Date? {
         session?.lockedUntil
+    }
+
+    var timerText: String {
+        let minutes = remainingSeconds / 60
+        let seconds = remainingSeconds % 60
+        return String(format: "%02d:%02d", minutes, seconds)
     }
 
     var progressWidth: CGFloat {
@@ -511,7 +537,7 @@ final class LevelQuizViewModel: ObservableObject {
     var primaryActionTitle: String {
         if showLevelComplete { return "Done" }
         if didSubmit {
-            if currentIndex + 1 < min(session?.unlockedCount ?? 1, questions.count) {
+            if currentIndex + 1 < questions.count {
                 return "Next Question"
             }
             if currentIndex + 1 >= questions.count {
@@ -555,13 +581,16 @@ final class LevelQuizViewModel: ObservableObject {
             lessonTitle = lessonId.replacingOccurrences(of: "_", with: " ").capitalized
 
             let loadedSession = try await store.loadSession(userId: user.uid, lessonId: lessonId, level: 1, totalQuestions: loadedQuestions.count)
-            session = loadedSession
+            var sanitizedSession = loadedSession
+            sanitizedSession.unlockedCount = loadedQuestions.count
+            sanitizedSession.lockedUntil = nil
+            session = sanitizedSession
 
-            let safeIndex = min(max(0, startIndex), max(loadedSession.unlockedCount - 1, 0))
+            let safeIndex = min(max(0, startIndex), max(loadedQuestions.count - 1, 0))
             currentIndex = min(safeIndex, loadedQuestions.count - 1)
-            if let lockedUntil = loadedSession.lockedUntil, lockedUntil > Date() {
-                lockMessage = "Come back in about \(lockedUntil.relativeTimeDescription) to continue this category."
-            }
+            startTimerForCurrentQuestion()
+
+            try await store.persistSession(userId: user.uid, session: sanitizedSession)
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -576,7 +605,7 @@ final class LevelQuizViewModel: ObservableObject {
         }
 
         if didSubmit {
-            if currentIndex + 1 < min(session?.unlockedCount ?? 1, questions.count) {
+            if currentIndex + 1 < questions.count {
                 moveToNextQuestion()
                 return
             }
@@ -593,6 +622,7 @@ final class LevelQuizViewModel: ObservableObject {
         guard let selectedAnswerIndex else { return }
         guard let userId else { return }
 
+        stopTimer()
         isLoading = true
         defer { isLoading = false }
 
@@ -617,10 +647,7 @@ final class LevelQuizViewModel: ObservableObject {
                 feedbackMessage = "Great work. You earned \(result.earnedXP) XP."
             } else {
                 EVAccessibilitySupport.playSound(.wrong)
-                feedbackMessage = "That answer is locked in for this round. Try again after the cooldown."
-                if let lockUntil = result.lockUntil {
-                    lockMessage = "This category is locked until \(lockUntil.relativeTimeDescription)."
-                }
+                feedbackMessage = "Not quite. Review the hint and continue to the next question."
             }
 
             if result.isCorrect {
@@ -646,6 +673,7 @@ final class LevelQuizViewModel: ObservableObject {
         feedbackIsCorrect = false
         showHint = false
         lockMessage = nil
+        startTimerForCurrentQuestion()
 
         if var session {
             session.currentQuestionIndex = currentIndex
@@ -660,6 +688,77 @@ final class LevelQuizViewModel: ObservableObject {
                 await MainActor.run {
                     errorMessage = error.localizedDescription
                 }
+            }
+        }
+    }
+
+    func stopTimer() {
+        timerCancellable?.cancel()
+        timerCancellable = nil
+    }
+
+    private func startTimer() {
+        stopTimer()
+
+        timerCancellable = Timer.publish(every: 1, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                guard let self else { return }
+                guard self.remainingSeconds > 0 else {
+                    self.stopTimer()
+                    self.timeoutCurrentQuestion()
+                    return
+                }
+                self.remainingSeconds -= 1
+            }
+    }
+
+    private func startTimerForCurrentQuestion() {
+        let difficulty = currentQuestion?.difficulty ?? 1
+        remainingSeconds = timeLimitSeconds(for: difficulty)
+        startTimer()
+    }
+
+    private func timeLimitSeconds(for difficulty: Int) -> Int {
+        let clamped = max(1, min(difficulty, 100))
+        switch clamped {
+        case ...33:
+            return 60
+        case ...66:
+            return 120
+        default:
+            return 180
+        }
+    }
+
+    private func timeoutCurrentQuestion() {
+        guard !didSubmit, !showLevelComplete else { return }
+        guard let question = currentQuestion else { return }
+        guard let userId else { return }
+
+        Task {
+            isLoading = true
+            defer { isLoading = false }
+
+            do {
+                let result = try await store.submitRound(
+                    userId: userId,
+                    displayName: displayName,
+                    session: session ?? EVQuizSessionState.initial(lessonId: question.lessonId, level: question.level, totalQuestions: questions.count),
+                    question: question,
+                    selectedIndex: -1,
+                    questionIndex: currentIndex,
+                    totalQuestions: questions.count
+                )
+
+                session = result.updatedSession
+                feedbackIsCorrect = false
+                didSubmit = true
+                showHint = false
+                feedbackMessage = "Time's up. This question was marked incorrect."
+                EVAccessibilitySupport.playSound(.wrong)
+            } catch {
+                errorMessage = error.localizedDescription
             }
         }
     }

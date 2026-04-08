@@ -75,7 +75,6 @@ struct HomeView: View {
                 }
             }
 
-            tabBar
         }
         .ignoresSafeArea(edges: .bottom)
         .navigationBarHidden(true)
@@ -228,18 +227,6 @@ struct HomeView: View {
         }
     }
 
-    // MARK: - Tab bar
-    private var tabBar: some View {
-        EVMainTabNavigationBar(
-            activeTab: .home,
-            onLessons: onLessons,
-            onDiscovery: onDiscovery,
-            onRank: onRank,
-            onSettings: onSettings
-        )
-        .opacity(appeared ? 1 : 0)
-        .animation(.easeOut(duration: 0.4).delay(0.2), value: appeared)
-    }
 }
 
 // MARK: - Supporting models

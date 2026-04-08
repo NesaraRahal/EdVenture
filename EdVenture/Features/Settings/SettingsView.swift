@@ -95,7 +95,6 @@ struct SettingsView: View {
                 }
             }
 
-            tabBar
         }
         .ignoresSafeArea(edges: .bottom)
         .navigationBarHidden(true)
@@ -280,17 +279,6 @@ struct SettingsView: View {
         .buttonStyle(ScaleButtonStyle())
         .opacity(appeared ? 1 : 0)
         .animation(.easeOut(duration: 0.35).delay(0.25), value: appeared)
-    }
-
-    // MARK: - Tab bar (Settings tab active)
-    private var tabBar: some View {
-        EVMainTabNavigationBar(
-            activeTab: .settings,
-            onHome: onHome,
-            onLessons: onLessons,
-            onDiscovery: onDiscovery,
-            onRank: onRank
-        )
     }
 
     // MARK: - Sign out

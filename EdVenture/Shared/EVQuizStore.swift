@@ -69,7 +69,7 @@ struct EVQuizSessionState {
         EVQuizSessionState(
             lessonId: lessonId,
             level: level,
-            unlockedCount: min(3, max(totalQuestions, 1)),
+            unlockedCount: max(totalQuestions, 1),
             consecutiveWins: 0,
             correctInWindow: 0,
             windowStartsAt: Date(),
@@ -114,19 +114,13 @@ struct EVQuizSessionState {
         correctInWindow += 1
         completedQuestionIDs.append(questionId)
 
-        if correctInWindow >= 3 {
-            unlockedCount = min(totalQuestions, unlockedCount + 1)
-            correctInWindow = 0
-            windowStartsAt = now
-        }
+        unlockedCount = max(totalQuestions, 1)
     }
 
     mutating func applyWrongAnswer(now: Date = Date()) {
         attemptedCount += 1
         consecutiveWins = 0
-        correctInWindow = 0
-        windowStartsAt = now
-        lockedUntil = now.addingTimeInterval(3600)
+        lockedUntil = nil
     }
 
     var dictionary: [String: Any] {
@@ -223,7 +217,7 @@ final class EVQuizStore {
             return EVQuizSessionState.initial(lessonId: lessonId, level: level, totalQuestions: totalQuestions)
         }
 
-        let unlockedCount = data["unlockedCount"] as? Int ?? min(3, max(totalQuestions, 1))
+        let unlockedCount = data["unlockedCount"] as? Int ?? max(totalQuestions, 1)
         let consecutiveWins = data["consecutiveWins"] as? Int ?? 0
         let correctInWindow = data["correctInWindow"] as? Int ?? 0
         let windowStartsAt = (data["windowStartsAt"] as? Timestamp)?.dateValue() ?? Date()
@@ -282,8 +276,19 @@ final class EVQuizStore {
         let userRef = db.collection("users").document(userId)
         let sessionRef = userRef.collection("quizSessions").document(session.lessonId)
         let attemptRef = userRef.collection("quizAttempts").document()
+        let activeLessonRef = userRef.collection("activeLessons").document(session.lessonId)
+        let questionProgressRef = userRef
+            .collection("activeLessons")
+            .document(session.lessonId)
+            .collection("questions")
+            .document(question.id)
         let leaderboardRef = db.collection("leaderboards").document("global").collection("entries").document(userId)
         let streakValue: Any = isCorrect ? FieldValue.increment(Int64(1)) : 0
+        let uniqueCompleted = Set(updatedSession.completedQuestionIDs)
+        let completedCount = uniqueCompleted.count
+        let normalizedTotal = max(totalQuestions, 1)
+        let progress = min(Double(completedCount) / Double(normalizedTotal), 1.0)
+        let levelCompleted = completedCount >= normalizedTotal
 
         let batch = db.batch()
         batch.setData([
@@ -294,6 +299,24 @@ final class EVQuizStore {
         ], forDocument: userRef, merge: true)
 
         batch.setData(updatedSession.dictionary, forDocument: sessionRef, merge: true)
+        batch.setData([
+            "lessonId": session.lessonId,
+            "progress": progress,
+            "completedQuestionIDs": Array(uniqueCompleted),
+            "completedQuestionsCount": completedCount,
+            "totalQuestions": normalizedTotal,
+            "isCompleted": levelCompleted,
+            "lastQuestionIndex": questionIndex,
+            "updatedAt": Timestamp(date: now),
+            "completedAt": levelCompleted ? Timestamp(date: now) : FieldValue.delete()
+        ], forDocument: activeLessonRef, merge: true)
+        batch.setData([
+            "questionId": question.id,
+            "questionIndex": questionIndex,
+            "isCompleted": isCorrect,
+            "answeredAt": Timestamp(date: now),
+            "updatedAt": Timestamp(date: now)
+        ], forDocument: questionProgressRef, merge: true)
         batch.setData([
             "lessonId": session.lessonId,
             "level": session.level,

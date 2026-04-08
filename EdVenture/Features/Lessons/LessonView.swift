@@ -97,8 +97,6 @@ struct LessonsView: View {
                 }
             }
 
-            // ── Tab bar ───────────────────────────────────────────────
-            tabBar
         }
         .ignoresSafeArea(edges: .bottom)
         .navigationBarHidden(true)
@@ -220,17 +218,6 @@ struct LessonsView: View {
             }
             .padding(.horizontal, 20)
         }
-    }
-
-    // MARK: - Tab bar
-    private var tabBar: some View {
-        EVMainTabNavigationBar(
-            activeTab: .lessons,
-            onHome: onHome,
-            onDiscovery: onDiscovery,
-            onRank: onRank,
-            onSettings: onSettings
-        )
     }
 
     // MARK: - Add to practice handler
