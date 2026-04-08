@@ -25,6 +25,7 @@ struct LessonsView: View {
     var onDiscovery: (() -> Void)?
     var onRank:      (() -> Void)?
     var onSettings:  (() -> Void)?
+    var onNotifications: (() -> Void)?
     var onProfile:   (() -> Void)?
 
     var body: some View {
@@ -135,7 +136,7 @@ struct LessonsView: View {
 
     // MARK: - Nav bar
     private var navBar: some View {
-        EVScreenTopBar(onProfile: onProfile)
+        EVScreenTopBar(onProfile: onProfile, onNotifications: onNotifications)
     }
 
     // MARK: - Search bar

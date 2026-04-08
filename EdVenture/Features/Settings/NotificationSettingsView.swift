@@ -7,6 +7,8 @@ struct NotificationSettingsView: View {
     @AppStorage("notifications.weeklySummary") private var weeklySummary = true
     @AppStorage("notifications.newContentAlerts") private var newContentAlerts = false
 
+    @State private var showPermissionAlert = false
+
     var onBack: (() -> Void)?
 
     var body: some View {
@@ -39,6 +41,68 @@ struct NotificationSettingsView: View {
             }
         }
         .navigationBarHidden(true)
+        .onAppear {
+            Task {
+                await applyPreferences(requestAuthorizationIfNeeded: false)
+            }
+        }
+        .onChange(of: pushEnabled) { _ in
+            Task {
+                await applyPreferences(requestAuthorizationIfNeeded: true)
+            }
+        }
+        .onChange(of: dailyReminders) { _ in
+            Task {
+                await applyPreferences(requestAuthorizationIfNeeded: false)
+            }
+        }
+        .onChange(of: streakReminders) { _ in
+            Task {
+                await applyPreferences(requestAuthorizationIfNeeded: false)
+            }
+        }
+        .onChange(of: weeklySummary) { _ in
+            Task {
+                await applyPreferences(requestAuthorizationIfNeeded: false)
+            }
+        }
+        .onChange(of: newContentAlerts) { _ in
+            Task {
+                await applyPreferences(requestAuthorizationIfNeeded: false)
+            }
+        }
+        .alert("Notifications Permission Required", isPresented: $showPermissionAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("Enable notifications in iOS Settings to receive reminders and alerts.")
+        }
+    }
+
+    private func applyPreferences(requestAuthorizationIfNeeded: Bool) async {
+        let prefs = EVNotificationPreferences(
+            pushEnabled: pushEnabled,
+            dailyReminders: dailyReminders,
+            streakReminders: streakReminders,
+            weeklySummary: weeklySummary,
+            newContentAlerts: newContentAlerts
+        )
+
+        let result = await EVNotificationService.shared.applyPreferences(
+            prefs,
+            requestAuthorizationIfNeeded: requestAuthorizationIfNeeded
+        )
+
+        switch result {
+        case .success:
+            break
+        case .permissionDenied:
+            if pushEnabled {
+                pushEnabled = false
+            }
+            showPermissionAlert = true
+        case .permissionNotDetermined:
+            break
+        }
     }
 
     private var header: some View {

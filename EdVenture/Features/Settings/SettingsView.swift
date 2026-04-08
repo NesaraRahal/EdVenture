@@ -15,6 +15,7 @@ struct SettingsView: View {
     var onDiscovery: (() -> Void)?
     var onRank:      (() -> Void)?
     var onNotifications: (() -> Void)?
+    var onNotificationSettings: (() -> Void)?
     var onAccessibility: (() -> Void)?
     var onBiometricsAndPassword: (() -> Void)?
     var onProfile:   (() -> Void)?
@@ -51,7 +52,7 @@ struct SettingsView: View {
                         // Preferences
                         sectionLabel("Preferences")
                         settingsGroup([
-                            RowConfig(icon: "bell",          label: "Notifications", action: onNotifications),
+                            RowConfig(icon: "bell",          label: "Notifications", action: onNotificationSettings),
                         ])
                         .padding(.bottom, 24)
 
@@ -113,7 +114,7 @@ struct SettingsView: View {
 
     // MARK: - Nav bar (matches HomeView / LessonsView exactly)
     private var navBar: some View {
-        EVScreenTopBar(onProfile: onProfile)
+        EVScreenTopBar(onProfile: onProfile, onNotifications: onNotifications)
         .opacity(appeared ? 1 : 0)
         .animation(.easeOut(duration: 0.35), value: appeared)
     }

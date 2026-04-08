@@ -8,6 +8,7 @@ struct RankView: View {
     var onLessons: (() -> Void)?
     var onDiscovery: (() -> Void)?
     var onSettings: (() -> Void)?
+    var onNotifications: (() -> Void)?
     var onProfile: (() -> Void)?
 
     var body: some View {
@@ -119,7 +120,7 @@ struct RankView: View {
     }
 
     private var navBar: some View {
-        EVScreenTopBar(onProfile: onProfile)
+        EVScreenTopBar(onProfile: onProfile, onNotifications: onNotifications)
     }
 
     private var listEntries: [EVLeaderboardEntry] {

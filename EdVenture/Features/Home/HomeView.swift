@@ -19,6 +19,7 @@ struct HomeView: View {
     var onRank:      (() -> Void)?
     var onSettings:  (() -> Void)?
     var onOpenLesson: ((String) -> Void)?
+    var onNotifications: (() -> Void)?
     var onProfile:   (() -> Void)?
 
     // MARK: - Data
@@ -89,7 +90,7 @@ struct HomeView: View {
 
     // MARK: - Top bar
     private var topBar: some View {
-        EVScreenTopBar(onProfile: onProfile)
+        EVScreenTopBar(onProfile: onProfile, onNotifications: onNotifications)
         .opacity(appeared ? 1 : 0)
         .animation(.easeOut(duration: 0.4), value: appeared)
     }

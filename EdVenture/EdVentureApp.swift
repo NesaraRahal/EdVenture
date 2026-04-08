@@ -1,7 +1,8 @@
 import SwiftUI
 import Firebase
+import UserNotifications
 
-class AppDelegate: NSObject, UIApplicationDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
   func application(_ application: UIApplication,
                    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         if FirebaseApp.app() == nil {
@@ -15,8 +16,16 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                 assertionFailure("Firebase config plist not found in app bundle.")
             }
         }
+
+        UNUserNotificationCenter.current().delegate = self
     return true
   }
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.banner, .list, .sound, .badge])
+    }
 }
 
 @main
@@ -31,14 +40,18 @@ struct EdVentureApp: App {
             await MainActor.run {
                 APIConfigurationService.shared.setupAPIKeys()
             }
+
+            let prefs = EVNotificationPreferences.fromDefaults()
+            _ = await EVNotificationService.shared.applyPreferences(
+                prefs,
+                requestAuthorizationIfNeeded: false
+            )
         }
     }
 
     var body: some Scene {
         WindowGroup {
-            NavigationView {
-                ContentView()
-            }
+            ContentView()
         }
     }
 }

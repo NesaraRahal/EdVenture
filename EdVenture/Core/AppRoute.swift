@@ -11,6 +11,7 @@ enum AppRoute: Hashable {
     case discovery
     case rank
     case settings
+    case notifications
     case notificationSettings
     case biometricsSettings
     case accessibilitySettings

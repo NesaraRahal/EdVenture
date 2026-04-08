@@ -50,6 +50,8 @@ struct ContentView: View {
             return "Rank screen. View leaderboard rankings and compare your progress with others."
         case .settings:
             return "Settings screen. Sections include preferences, accessibility, security, support, and sign out."
+        case .notifications:
+            return "Notifications screen. View all notifications or unread ones. Notifications include leaderboard milestones, new lessons, rewards, and lesson additions."
         case .notificationSettings:
             return "Notification settings screen. Manage push notifications and reminder preferences."
         case .accessibilitySettings:
@@ -112,6 +114,7 @@ struct ContentView: View {
                             onOpenLesson: { lessonId in
                                 path.append(AppRoute.lessonDetail(lessonId))
                             },
+                            onNotifications: { path.append(AppRoute.notifications) },
                             onProfile:   { path.append(AppRoute.profile) }
                         )
 
@@ -122,6 +125,7 @@ struct ContentView: View {
                             onDiscovery: { goToMainTab(.discovery) },
                             onRank:      { goToMainTab(.rank) },
                             onSettings:  { goToMainTab(.settings) },
+                            onNotifications: { path.append(AppRoute.notifications) },
                             onProfile:   { path.append(AppRoute.profile) }
                         )
 
@@ -172,6 +176,7 @@ struct ContentView: View {
                             onLessons:  { goToMainTab(.lessons) },
                             onRank:     { goToMainTab(.rank) },
                             onSettings: { goToMainTab(.settings) },
+                            onNotifications: { path.append(AppRoute.notifications) },
                             onProfile:  { path.append(AppRoute.profile) }
                         )
 
@@ -181,6 +186,7 @@ struct ContentView: View {
                             onLessons:   { goToMainTab(.lessons) },
                             onDiscovery: { goToMainTab(.discovery) },
                             onSettings:  { goToMainTab(.settings) },
+                            onNotifications: { path.append(AppRoute.notifications) },
                             onProfile:   { path.append(AppRoute.profile) }
                         )
 
@@ -191,7 +197,8 @@ struct ContentView: View {
                             onLessons:   { goToMainTab(.lessons) },
                             onDiscovery: { goToMainTab(.discovery) },
                             onRank:      { goToMainTab(.rank) },
-                            onNotifications: { path.append(AppRoute.notificationSettings) },
+                            onNotifications: { path.append(AppRoute.notifications) },
+                            onNotificationSettings: { path.append(AppRoute.notificationSettings) },
                             onAccessibility: { path.append(AppRoute.accessibilitySettings) },
                             onBiometricsAndPassword: { path.append(AppRoute.biometricsSettings) },
                             onProfile:   { path.append(AppRoute.profile) }
@@ -205,6 +212,9 @@ struct ContentView: View {
                                 }
                             }
                         )
+
+                    case .notifications:
+                        NotificationsView()
 
                     case .biometricsSettings:
                         BiometricsPasswordView(
