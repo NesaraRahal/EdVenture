@@ -3,10 +3,10 @@ import FirebaseAuth
 import FirebaseFirestore
 import Combine
 
-struct ContactUsView: View {
+struct SupportView: View {
     var onBack: (() -> Void)?
 
-    @StateObject private var vm = ContactUsViewModel()
+    @StateObject private var vm = SupportViewModel()
 
     var body: some View {
         ZStack {
@@ -18,7 +18,7 @@ struct ContactUsView: View {
                         .padding(.top, 52)
                         .padding(.horizontal, 20)
 
-                    Text("Contact Us")
+                    Text("Support")
                         .font(.system(size: 30, weight: .bold, design: .rounded))
                         .foregroundColor(.white)
                         .padding(.horizontal, 20)
@@ -139,7 +139,7 @@ struct ContactUsView: View {
 }
 
 @MainActor
-final class ContactUsViewModel: ObservableObject {
+final class SupportViewModel: ObservableObject {
     @Published var subject = ""
     @Published var message = ""
     @Published var isSubmitting = false
@@ -191,5 +191,5 @@ final class ContactUsViewModel: ObservableObject {
 }
 
 #Preview {
-    ContactUsView()
+    SupportView()
 }

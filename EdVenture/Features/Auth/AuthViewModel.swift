@@ -100,7 +100,8 @@ final class AuthViewModel: ObservableObject {
         defer { isLoading = false }
 
         do {
-            try await Auth.auth().signIn(withEmail: email, password: password)
+            let result = try await Auth.auth().signIn(withEmail: email, password: password)
+            try await ensureUserProfileDefaults(for: result.user)
             isAuthenticated = true
         } catch {
             errorMessage = error.localizedDescription
@@ -134,7 +135,8 @@ final class AuthViewModel: ObservableObject {
 
         do {
             try await Auth.auth().currentUser?.reload()
-            if Auth.auth().currentUser?.isEmailVerified == true {
+            if let user = Auth.auth().currentUser, user.isEmailVerified {
+                try await ensureUserProfileDefaults(for: user)
                 isAuthenticated = true
             } else {
                 errorMessage = "Email not verified yet. Please check your inbox."
@@ -158,5 +160,74 @@ final class AuthViewModel: ObservableObject {
     func signOut() {
         try? Auth.auth().signOut()
         isAuthenticated = false
+    }
+
+    private func ensureUserProfileDefaults(for user: FirebaseAuth.User) async throws {
+        let docRef = db.collection("users").document(user.uid)
+        let snapshot = try await docRef.getDocument()
+
+        let email = user.email ?? ""
+        let trimmedDisplayName = user.displayName?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let username = trimmedDisplayName.isEmpty
+            ? (email.components(separatedBy: "@").first ?? "Learner")
+            : trimmedDisplayName
+
+        if let data = snapshot.data() {
+            var updates: [String: Any] = [:]
+
+            if data["dailyGoalMinutes"] == nil {
+                updates["dailyGoalMinutes"] = 10
+            }
+            if data["dailyProgressSeconds"] == nil {
+                updates["dailyProgressSeconds"] = 0
+            }
+            if data["dailyProgressDate"] == nil {
+                updates["dailyProgressDate"] = dayKey(Date())
+            }
+            if data["dailyGoalCompleted"] == nil {
+                updates["dailyGoalCompleted"] = false
+            }
+            if data["onboardingPreferencesCompleted"] == nil {
+                updates["onboardingPreferencesCompleted"] = false
+            }
+            if data["isEmailVerified"] == nil || (data["isEmailVerified"] as? Bool) != user.isEmailVerified {
+                updates["isEmailVerified"] = user.isEmailVerified
+            }
+
+            if !updates.isEmpty {
+                updates["updatedAt"] = Timestamp(date: Date())
+                try await docRef.setData(updates, merge: true)
+            }
+            return
+        }
+
+        try await docRef.setData([
+            "fullName": username,
+            "username": username,
+            "email": email,
+            "phone": "",
+            "bio": "",
+            "interests": ["General Knowledge"],
+            "dailyGoalMinutes": 10,
+            "dailyProgressSeconds": 0,
+            "dailyProgressDate": dayKey(Date()),
+            "dailyGoalCompleted": false,
+            "onboardingPreferencesCompleted": false,
+            "profileImagePath": "",
+            "profileImageURL": "",
+            "profileImageBase64": "",
+            "telemetryConsentPending": true,
+            "isEmailVerified": user.isEmailVerified,
+            "createdAt": Timestamp(date: Date()),
+            "updatedAt": Timestamp(date: Date())
+        ], merge: true)
+    }
+
+    private func dayKey(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.string(from: date)
     }
 }

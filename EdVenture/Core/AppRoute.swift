@@ -15,7 +15,7 @@ enum AppRoute: Hashable {
     case notifications
     case notificationSettings
     case helpCenter
-    case contactUs
+    case support
     case termsPrivacy
     case biometricsSettings
     case accessibilitySettings

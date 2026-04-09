@@ -93,8 +93,8 @@ struct ContentView: View {
             return "Notification settings screen. Manage push notifications and reminder preferences."
         case .helpCenter:
             return "Help Center screen. Browse common questions and support guidance."
-        case .contactUs:
-            return "Contact Us screen. Send a support request to the EdVenture team."
+        case .support:
+            return "Support screen. Send a support request to the EdVenture team."
         case .termsPrivacy:
             return "Terms and privacy screen. Review policy details and manage telemetry sharing preferences."
         case .accessibilitySettings:
@@ -315,7 +315,7 @@ struct ContentView: View {
                             onNotifications: { path.append(AppRoute.notifications) },
                             onNotificationSettings: { path.append(AppRoute.notificationSettings) },
                             onHelpCenter: { path.append(AppRoute.helpCenter) },
-                            onContactUs: { path.append(AppRoute.contactUs) },
+                            onSupport: { path.append(AppRoute.support) },
                             onTermsAndPrivacy: { path.append(AppRoute.termsPrivacy) },
                             onAccessibility: { path.append(AppRoute.accessibilitySettings) },
                             onBiometricsAndPassword: { path.append(AppRoute.biometricsSettings) },
@@ -331,8 +331,8 @@ struct ContentView: View {
                             }
                         )
 
-                    case .contactUs:
-                        ContactUsView(
+                    case .support:
+                        SupportView(
                             onBack: {
                                 if !path.isEmpty {
                                     path.removeLast()
