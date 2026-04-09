@@ -114,6 +114,16 @@ final class LessonsViewModel: ObservableObject {
 
             // Frontend state mirrors backend success
             activePracticeLessonIDs.insert(lessonId)
+
+            // Get lesson title for notification
+            if let lesson = lessons.first(where: { $0.id == lessonId }) {
+                // Add to in-app list and trigger one system notification
+                NotificationsStore.shared.addNotification(
+                    title: "Lesson Added to Practice",
+                    description: "\(lesson.title) is ready to practice",
+                    type: .lessonAdded
+                )
+            }
         } catch {
             errorMessage = error.localizedDescription
         }

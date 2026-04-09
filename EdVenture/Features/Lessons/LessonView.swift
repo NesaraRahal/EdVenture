@@ -25,6 +25,7 @@ struct LessonsView: View {
     var onDiscovery: (() -> Void)?
     var onRank:      (() -> Void)?
     var onSettings:  (() -> Void)?
+    var onNotifications: (() -> Void)?
     var onProfile:   (() -> Void)?
 
     var body: some View {
@@ -96,8 +97,6 @@ struct LessonsView: View {
                 }
             }
 
-            // ── Tab bar ───────────────────────────────────────────────
-            tabBar
         }
         .ignoresSafeArea(edges: .bottom)
         .navigationBarHidden(true)
@@ -135,7 +134,7 @@ struct LessonsView: View {
 
     // MARK: - Nav bar
     private var navBar: some View {
-        EVScreenTopBar(onProfile: onProfile)
+        EVScreenTopBar(onProfile: onProfile, onNotifications: onNotifications)
     }
 
     // MARK: - Search bar
@@ -219,17 +218,6 @@ struct LessonsView: View {
             }
             .padding(.horizontal, 20)
         }
-    }
-
-    // MARK: - Tab bar
-    private var tabBar: some View {
-        EVMainTabNavigationBar(
-            activeTab: .lessons,
-            onHome: onHome,
-            onDiscovery: onDiscovery,
-            onRank: onRank,
-            onSettings: onSettings
-        )
     }
 
     // MARK: - Add to practice handler

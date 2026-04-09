@@ -191,8 +191,7 @@ struct LessonDetailView: View {
             ForEach(Array(vm.items.enumerated()), id: \.element.id) { index, item in
                 Button {
                     guard !item.isLocked else { return }
-                    // One-round gameplay starts from first question for now.
-                    onStartQuiz?(lesson.id, 0)
+                    onStartQuiz?(lesson.id, item.questionIndex)
                 } label: {
                     HStack(spacing: 14) {
                         Text(String(format: "%02d", index + 1))
@@ -205,6 +204,13 @@ struct LessonDetailView: View {
                                 .font(.system(size: 20, weight: .semibold, design: .rounded))
                                 .foregroundColor(item.isLocked ? .white.opacity(0.35) : .white)
                                 .lineLimit(2)
+
+                            if item.status == .completed {
+                                Text("COMPLETED")
+                                    .font(.system(size: 10, weight: .bold, design: .rounded))
+                                    .foregroundColor(Color(hex: "0EB060"))
+                                    .tracking(1.1)
+                            }
 
                             Text(item.meta)
                                 .font(.system(size: 13, weight: .semibold, design: .rounded))
@@ -290,14 +296,33 @@ final class LessonDetailViewModel: ObservableObject {
             let icon = resolveIcon(iconRaw)
 
             var progress: Double = 0
+            var completedQuestionIDs: [String] = []
+            var completedQuestionIndices: Set<Int> = []
+            var currentQuestionIndex = 0
             if let uid = Auth.auth().currentUser?.uid {
                 let active = try await db.collection("users").document(uid)
                     .collection("activeLessons").document(lessonId).getDocument()
                 progress = min(max(active.data()?["progress"] as? Double ?? 0, 0), 1)
+
+                let questionProgress = try await db.collection("users").document(uid)
+                    .collection("activeLessons").document(lessonId)
+                    .collection("questions")
+                    .whereField("isCompleted", isEqualTo: true)
+                    .getDocuments()
+                completedQuestionIndices = Set(questionProgress.documents.compactMap { doc in
+                    doc.data()["questionIndex"] as? Int
+                })
+
+                let session = try await db.collection("users").document(uid)
+                    .collection("quizSessions").document(lessonId).getDocument()
+                let sessionData = session.data()
+                completedQuestionIDs = sessionData?["completedQuestionIDs"] as? [String] ?? []
+                currentQuestionIndex = sessionData?["currentQuestionIndex"] as? Int ?? 0
             }
 
-            let completed = min(Int((progress * Double(totalLevels)).rounded(.down)), totalLevels)
-            let pending = min(max(totalLevels - completed, 0), 3)
+            let completedFromSession = completedQuestionIDs.count
+            let completed = min(max(completedFromSession, Int((progress * Double(totalLevels)).rounded(.down))), totalLevels)
+            let pending = max(totalLevels - completed, 0)
             let locked = max(totalLevels - completed - pending, 0)
 
             lesson = LessonDetail(
@@ -313,7 +338,14 @@ final class LessonDetailViewModel: ObservableObject {
                 lockedCount: locked
             )
 
-            items = buildCurriculumItems(totalLevels: totalLevels, completed: completed, pending: pending, xpReward: xpReward, lessonTitle: lesson?.title ?? "Lesson")
+            items = buildCurriculumItems(
+                totalLevels: totalLevels,
+                completedQuestionIDs: completedQuestionIDs,
+                completedQuestionIndices: completedQuestionIndices,
+                currentQuestionIndex: currentQuestionIndex,
+                xpReward: xpReward,
+                lessonTitle: lesson?.title ?? "Lesson"
+            )
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -325,29 +357,52 @@ final class LessonDetailViewModel: ObservableObject {
     }
 
     private func buildCurriculumItems(totalLevels: Int,
-                                      completed: Int,
-                                      pending: Int,
+                                      completedQuestionIDs: [String],
+                                      completedQuestionIndices: Set<Int>,
+                                      currentQuestionIndex: Int,
                                       xpReward: Int,
                                       lessonTitle: String) -> [LessonCurriculumItem] {
         let displayCount = min(max(totalLevels, 4), 12)
+        let completedByID = Set(completedQuestionIDs.compactMap(parseQuestionOrder).map { max(0, $0 - 1) })
+        let completedIndices = completedQuestionIndices.union(completedByID)
+        let safeCurrentIndex = min(max(0, currentQuestionIndex), max(displayCount - 1, 0))
 
         return (1...displayCount).map { index in
             let status: LessonItemStatus
-            if index <= completed {
+            let itemIndex = index - 1
+
+            if completedIndices.contains(itemIndex) {
                 status = .completed
-            } else if index <= completed + pending {
-                status = index == completed + 1 ? .inProgress : .pending
+            } else if itemIndex == safeCurrentIndex {
+                status = .inProgress
             } else {
-                status = .locked
+                status = .pending
             }
 
             return LessonCurriculumItem(
                 id: "\(index)",
+                questionIndex: itemIndex,
                 title: "\(lessonTitle) Quiz \(index)",
                 meta: "\(xpReward) XP • \(index <= 2 ? "1" : "3") MIN",
                 status: status
             )
         }
+    }
+
+    private func parseQuestionOrder(from questionId: String) -> Int? {
+        let pattern = #"_Q(\d+)$"#
+        guard let regex = try? NSRegularExpression(pattern: pattern) else {
+            return nil
+        }
+
+        let range = NSRange(questionId.startIndex..<questionId.endIndex, in: questionId)
+        guard let match = regex.firstMatch(in: questionId, options: [], range: range),
+              let valueRange = Range(match.range(at: 1), in: questionId)
+        else {
+            return nil
+        }
+
+        return Int(questionId[valueRange])
     }
 }
 
@@ -366,6 +421,7 @@ struct LessonDetail {
 
 struct LessonCurriculumItem: Identifiable {
     let id: String
+    let questionIndex: Int
     let title: String
     let meta: String
     let status: LessonItemStatus

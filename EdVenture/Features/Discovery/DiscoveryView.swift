@@ -15,6 +15,7 @@ struct DiscoveryView: View {
     var onLessons: (() -> Void)?
     var onRank: (() -> Void)?
     var onSettings: (() -> Void)?
+    var onNotifications: (() -> Void)?
     var onProfile: (() -> Void)?
 
     var body: some View {
@@ -22,7 +23,7 @@ struct DiscoveryView: View {
             Color(hex: "0A0F0D").ignoresSafeArea()
 
             VStack(spacing: 0) {
-                EVScreenTopBar(onProfile: onProfile)
+                EVScreenTopBar(onProfile: onProfile, onNotifications: onNotifications)
 
                 ZStack {
                     if viewModel.scannedImage != nil {
@@ -42,14 +43,6 @@ struct DiscoveryView: View {
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-                EVMainTabNavigationBar(
-                    activeTab: .discovery,
-                    onHome: onHome,
-                    onLessons: onLessons,
-                    onRank: onRank,
-                    onSettings: onSettings
-                )
             }
         }
         .navigationBarHidden(true)

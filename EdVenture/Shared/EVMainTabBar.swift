@@ -68,7 +68,7 @@ struct EVMainTabBar: View {
             }
         }
         .padding(.top, 14)
-        .padding(.bottom, 22)
+        .padding(.bottom, 10)
         .padding(.horizontal, 10)
         .background(
             ZStack {

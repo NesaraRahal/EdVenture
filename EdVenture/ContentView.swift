@@ -24,6 +24,24 @@ struct ContentView: View {
         goToMainTab(.lessons)
     }
 
+    private func activeMainTab(for route: AppRoute?) -> EVMainTab? {
+        guard let route else { return nil }
+        switch route {
+        case .home:
+            return .home
+        case .lessons:
+            return .lessons
+        case .discovery:
+            return .discovery
+        case .rank:
+            return .rank
+        case .settings:
+            return .settings
+        default:
+            return nil
+        }
+    }
+
     private func accessibilityAnnouncement(for route: AppRoute) -> String {
         switch route {
         case .login:
@@ -50,6 +68,10 @@ struct ContentView: View {
             return "Rank screen. View leaderboard rankings and compare your progress with others."
         case .settings:
             return "Settings screen. Sections include preferences, accessibility, security, support, and sign out."
+        case .notifications:
+            return "Notifications screen. View all notifications or unread ones. Notifications include leaderboard milestones, new lessons, rewards, and lesson additions."
+        case .notificationSettings:
+            return "Notification settings screen. Manage push notifications and reminder preferences."
         case .accessibilitySettings:
             return "Accessibility settings screen. Toggles available for haptic feedback, sound effects, screen reader, and dynamic text."
         case .biometricsSettings:
@@ -110,6 +132,7 @@ struct ContentView: View {
                             onOpenLesson: { lessonId in
                                 path.append(AppRoute.lessonDetail(lessonId))
                             },
+                            onNotifications: { path.append(AppRoute.notifications) },
                             onProfile:   { path.append(AppRoute.profile) }
                         )
 
@@ -120,6 +143,7 @@ struct ContentView: View {
                             onDiscovery: { goToMainTab(.discovery) },
                             onRank:      { goToMainTab(.rank) },
                             onSettings:  { goToMainTab(.settings) },
+                            onNotifications: { path.append(AppRoute.notifications) },
                             onProfile:   { path.append(AppRoute.profile) }
                         )
 
@@ -170,6 +194,7 @@ struct ContentView: View {
                             onLessons:  { goToMainTab(.lessons) },
                             onRank:     { goToMainTab(.rank) },
                             onSettings: { goToMainTab(.settings) },
+                            onNotifications: { path.append(AppRoute.notifications) },
                             onProfile:  { path.append(AppRoute.profile) }
                         )
 
@@ -179,6 +204,7 @@ struct ContentView: View {
                             onLessons:   { goToMainTab(.lessons) },
                             onDiscovery: { goToMainTab(.discovery) },
                             onSettings:  { goToMainTab(.settings) },
+                            onNotifications: { path.append(AppRoute.notifications) },
                             onProfile:   { path.append(AppRoute.profile) }
                         )
 
@@ -189,10 +215,24 @@ struct ContentView: View {
                             onLessons:   { goToMainTab(.lessons) },
                             onDiscovery: { goToMainTab(.discovery) },
                             onRank:      { goToMainTab(.rank) },
+                            onNotifications: { path.append(AppRoute.notifications) },
+                            onNotificationSettings: { path.append(AppRoute.notificationSettings) },
                             onAccessibility: { path.append(AppRoute.accessibilitySettings) },
                             onBiometricsAndPassword: { path.append(AppRoute.biometricsSettings) },
                             onProfile:   { path.append(AppRoute.profile) }
                         )
+
+                    case .notificationSettings:
+                        NotificationSettingsView(
+                            onBack: {
+                                if !path.isEmpty {
+                                    path.removeLast()
+                                }
+                            }
+                        )
+
+                    case .notifications:
+                        NotificationsView()
 
                     case .biometricsSettings:
                         BiometricsPasswordView(
@@ -246,6 +286,18 @@ struct ContentView: View {
             // Hide the system nav bar globally — each screen
             // draws its own liquid glass nav bar
             .navigationBarHidden(true)
+        }
+        .overlay(alignment: .bottom) {
+            if let tab = activeMainTab(for: path.last) {
+                EVMainTabNavigationBar(
+                    activeTab: tab,
+                    onHome: { goToMainTab(.home) },
+                    onLessons: { goToMainTab(.lessons) },
+                    onDiscovery: { goToMainTab(.discovery) },
+                    onRank: { goToMainTab(.rank) },
+                    onSettings: { goToMainTab(.settings) }
+                )
+            }
         }
         .dynamicTypeSize(dynamicText ? DynamicTypeSize.xSmall ... DynamicTypeSize.accessibility5
                                      : DynamicTypeSize.xSmall ... DynamicTypeSize.large)

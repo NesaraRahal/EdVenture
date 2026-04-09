@@ -2,6 +2,7 @@ import SwiftUI
 
 struct EVScreenTopBar: View {
     var onProfile: (() -> Void)?
+    var onNotifications: (() -> Void)?
     var showNotifications: Bool = true
 
     var body: some View {
@@ -20,7 +21,9 @@ struct EVScreenTopBar: View {
 
             HStack(spacing: 10) {
                 if showNotifications {
-                    EVLiquidGlassIconButton(systemName: "bell.fill") {}
+                    EVLiquidGlassIconButton(systemName: "bell.fill") {
+                        onNotifications?()
+                    }
                 }
 
                 Button { onProfile?() } label: {

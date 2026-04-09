@@ -19,6 +19,7 @@ struct HomeView: View {
     var onRank:      (() -> Void)?
     var onSettings:  (() -> Void)?
     var onOpenLesson: ((String) -> Void)?
+    var onNotifications: (() -> Void)?
     var onProfile:   (() -> Void)?
 
     // MARK: - Data
@@ -74,7 +75,6 @@ struct HomeView: View {
                 }
             }
 
-            tabBar
         }
         .ignoresSafeArea(edges: .bottom)
         .navigationBarHidden(true)
@@ -89,7 +89,7 @@ struct HomeView: View {
 
     // MARK: - Top bar
     private var topBar: some View {
-        EVScreenTopBar(onProfile: onProfile)
+        EVScreenTopBar(onProfile: onProfile, onNotifications: onNotifications)
         .opacity(appeared ? 1 : 0)
         .animation(.easeOut(duration: 0.4), value: appeared)
     }
@@ -227,18 +227,6 @@ struct HomeView: View {
         }
     }
 
-    // MARK: - Tab bar
-    private var tabBar: some View {
-        EVMainTabNavigationBar(
-            activeTab: .home,
-            onLessons: onLessons,
-            onDiscovery: onDiscovery,
-            onRank: onRank,
-            onSettings: onSettings
-        )
-        .opacity(appeared ? 1 : 0)
-        .animation(.easeOut(duration: 0.4).delay(0.2), value: appeared)
-    }
 }
 
 // MARK: - Supporting models
