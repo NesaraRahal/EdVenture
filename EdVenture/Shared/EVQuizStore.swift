@@ -253,6 +253,7 @@ final class EVQuizStore {
                      session: EVQuizSessionState,
                      question: EVQuizQuestion,
                      selectedIndex: Int,
+                     timeSpentSeconds: Int,
                      questionIndex: Int,
                      totalQuestions: Int) async throws -> EVQuizRoundResult {
         var updatedSession = session.withLoadedWindow()
@@ -284,6 +285,7 @@ final class EVQuizStore {
             .document(question.id)
         let leaderboardRef = db.collection("leaderboards").document("global").collection("entries").document(userId)
         let streakValue: Any = isCorrect ? FieldValue.increment(Int64(1)) : 0
+        let safeTimeSpent = max(0, timeSpentSeconds)
         let uniqueCompleted = Set(updatedSession.completedQuestionIDs)
         let completedCount = uniqueCompleted.count
         let normalizedTotal = max(totalQuestions, 1)
@@ -294,6 +296,8 @@ final class EVQuizStore {
         batch.setData([
             "totalXP": FieldValue.increment(Int64(earnedXP)),
             "quizXP": FieldValue.increment(Int64(earnedXP)),
+            "totalPlaySeconds": FieldValue.increment(Int64(safeTimeSpent)),
+            "totalQuizRounds": FieldValue.increment(Int64(1)),
             "currentQuizStreak": streakValue,
             "updatedAt": Timestamp(date: now)
         ], forDocument: userRef, merge: true)
@@ -334,6 +338,8 @@ final class EVQuizStore {
             "displayName": displayName,
             "totalXP": FieldValue.increment(Int64(earnedXP)),
             "quizXP": FieldValue.increment(Int64(earnedXP)),
+            "totalPlaySeconds": FieldValue.increment(Int64(safeTimeSpent)),
+            "totalQuizRounds": FieldValue.increment(Int64(1)),
             "lastLessonId": session.lessonId,
             "lastLevel": session.level,
             "streak": updatedSession.consecutiveWins,

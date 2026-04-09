@@ -633,6 +633,7 @@ final class LevelQuizViewModel: ObservableObject {
                 session: session ?? EVQuizSessionState.initial(lessonId: question.lessonId, level: question.level, totalQuestions: questions.count),
                 question: question,
                 selectedIndex: selectedAnswerIndex,
+                timeSpentSeconds: timeSpentForCurrentQuestion(),
                 questionIndex: currentIndex,
                 totalQuestions: questions.count
             )
@@ -719,6 +720,13 @@ final class LevelQuizViewModel: ObservableObject {
         startTimer()
     }
 
+    private func timeSpentForCurrentQuestion() -> Int {
+        let difficulty = currentQuestion?.difficulty ?? 1
+        let totalTime = timeLimitSeconds(for: difficulty)
+        let elapsed = totalTime - remainingSeconds
+        return max(0, min(totalTime, elapsed))
+    }
+
     private func timeLimitSeconds(for difficulty: Int) -> Int {
         let clamped = max(1, min(difficulty, 100))
         switch clamped {
@@ -747,6 +755,7 @@ final class LevelQuizViewModel: ObservableObject {
                     session: session ?? EVQuizSessionState.initial(lessonId: question.lessonId, level: question.level, totalQuestions: questions.count),
                     question: question,
                     selectedIndex: -1,
+                    timeSpentSeconds: timeSpentForCurrentQuestion(),
                     questionIndex: currentIndex,
                     totalQuestions: questions.count
                 )

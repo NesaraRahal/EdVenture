@@ -16,6 +16,7 @@ struct SettingsView: View {
     var onRank:      (() -> Void)?
     var onNotifications: (() -> Void)?
     var onNotificationSettings: (() -> Void)?
+    var onTermsAndPrivacy: (() -> Void)?
     var onAccessibility: (() -> Void)?
     var onBiometricsAndPassword: (() -> Void)?
     var onProfile:   (() -> Void)?
@@ -75,7 +76,7 @@ struct SettingsView: View {
                         settingsGroup([
                             RowConfig(icon: "questionmark.circle", label: "Help Center", action: nil),
                             RowConfig(icon: "envelope",             label: "Contact Us", action: nil),
-                            RowConfig(icon: "doc.text",             label: "Terms and Privacy", action: nil),
+                            RowConfig(icon: "doc.text",             label: "Terms and Privacy", action: onTermsAndPrivacy),
                         ])
                         .padding(.bottom, 32)
 

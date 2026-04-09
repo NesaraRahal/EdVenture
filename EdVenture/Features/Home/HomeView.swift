@@ -22,13 +22,6 @@ struct HomeView: View {
     var onNotifications: (() -> Void)?
     var onProfile:   (() -> Void)?
 
-    // MARK: - Data
-    let stats: [StatItem] = [
-        StatItem(icon: "timer",       label: "PLAY TIME", value: "2 Hours"),
-        StatItem(icon: "person.fill", label: "RANK",      value: "Polymath", isHighlighted: true),
-        StatItem(icon: "star",        label: "ACTIVE",    value: "10 Lessons"),
-    ]
-
     let challenges: [Challenge] = [
         Challenge(
             tag: "TIMED CHALLENGE",
@@ -82,7 +75,7 @@ struct HomeView: View {
             withAnimation { appeared = true }
 
             Task {
-                await vm.fetchActiveLessonsForCurrentUser()
+                await vm.refreshDashboardForCurrentUser()
             }
         }
     }
@@ -98,7 +91,7 @@ struct HomeView: View {
     private var greeting: some View {
         VStack(alignment: .leading, spacing: 5) {
             HStack {
-                Text("Hi Nesara,")
+                Text("Hi \(vm.greetingName),")
                     .font(.system(size: 30, weight: .bold, design: .rounded))
                     .foregroundColor(.white)
                 Spacer()
@@ -115,7 +108,7 @@ struct HomeView: View {
     // MARK: - Stats row
     private var statsRow: some View {
         HStack(spacing: 12) {
-            ForEach(Array(stats.enumerated()), id: \.element.id) { i, stat in
+            ForEach(Array(vm.stats.enumerated()), id: \.element.id) { i, stat in
                 StatCard(stat: stat)
                     .opacity(appeared ? 1 : 0)
                     .offset(y: appeared ? 0 : 16)
@@ -257,14 +250,38 @@ struct HomeActiveLesson: Identifiable {
 
 @MainActor
 final class HomeViewModel: ObservableObject {
+    @Published var greetingName = "Learner"
+    @Published var stats: [StatItem] = [
+        StatItem(icon: "timer", label: "PLAY TIME", value: "0m"),
+        StatItem(icon: "person.fill", label: "RANK", value: "Amateur", isHighlighted: true),
+        StatItem(icon: "star", label: "ACTIVE", value: "0 Lessons")
+    ]
     @Published var activeLessons: [HomeActiveLesson] = []
     @Published var isLoadingActiveLessons = false
 
     private let db = Firestore.firestore()
 
+    func refreshDashboardForCurrentUser() async {
+        guard Auth.auth().currentUser?.uid != nil else {
+            greetingName = "Learner"
+            activeLessons = []
+            stats = [
+                StatItem(icon: "timer", label: "PLAY TIME", value: "0m"),
+                StatItem(icon: "person.fill", label: "RANK", value: "Amateur", isHighlighted: true),
+                StatItem(icon: "star", label: "ACTIVE", value: "0 Lessons")
+            ]
+            return
+        }
+
+        async let lessonsTask: Void = fetchActiveLessonsForCurrentUser()
+        async let profileTask: Void = fetchDashboardProfileMetrics()
+        _ = await (lessonsTask, profileTask)
+    }
+
     func fetchActiveLessonsForCurrentUser() async {
         guard let uid = Auth.auth().currentUser?.uid else {
             activeLessons = []
+            updateStats(activeLessonsCount: 0)
             return
         }
 
@@ -309,9 +326,97 @@ final class HomeViewModel: ObservableObject {
             }
 
             activeLessons = mapped
+            updateStats(activeLessonsCount: mapped.count)
         } catch {
             activeLessons = []
+            updateStats(activeLessonsCount: 0)
         }
+    }
+
+    private func fetchDashboardProfileMetrics() async {
+        guard let user = Auth.auth().currentUser else {
+            greetingName = "Learner"
+            return
+        }
+
+        do {
+            let doc = try await db.collection("users").document(user.uid).getDocument()
+            let data = doc.data() ?? [:]
+
+            let fullName = (data["fullName"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
+            let username = (data["username"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
+            let authName = user.displayName?.trimmingCharacters(in: .whitespacesAndNewlines)
+
+            let preferredName = [fullName, username, authName]
+                .compactMap { $0 }
+                .first(where: { !$0.isEmpty }) ?? "Learner"
+
+            greetingName = firstName(
+                from: preferredName
+            )
+
+            let totalXP = data["totalXP"] as? Int ?? 0
+            let totalPlaySeconds = data["totalPlaySeconds"] as? Int ?? 0
+            updateStats(totalXP: totalXP, totalPlaySeconds: totalPlaySeconds)
+        } catch {
+            let authName = user.displayName?.trimmingCharacters(in: .whitespacesAndNewlines)
+            greetingName = firstName(from: (authName?.isEmpty == false ? authName! : "Learner"))
+        }
+    }
+
+    private func updateStats(totalXP: Int? = nil,
+                             totalPlaySeconds: Int? = nil,
+                             activeLessonsCount: Int? = nil) {
+        let existingRank = stats.first(where: { $0.label == "RANK" })?.value ?? "Amateur"
+        let existingPlay = stats.first(where: { $0.label == "PLAY TIME" })?.value ?? "0m"
+        let existingActive = stats.first(where: { $0.label == "ACTIVE" })?.value ?? "0 Lessons"
+
+        let rankTitle = totalXP.map(rankTitleForXP) ?? existingRank
+        let playText = totalPlaySeconds.map(formatPlayTime) ?? existingPlay
+        let activeText = activeLessonsCount.map { "\($0) Lessons" } ?? existingActive
+
+        stats = [
+            StatItem(icon: "timer", label: "PLAY TIME", value: playText),
+            StatItem(icon: "person.fill", label: "RANK", value: rankTitle, isHighlighted: true),
+            StatItem(icon: "star", label: "ACTIVE", value: activeText)
+        ]
+    }
+
+    private func firstName(from rawName: String) -> String {
+        let cleaned = rawName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !cleaned.isEmpty else { return "Learner" }
+
+        let firstToken = cleaned
+            .split(whereSeparator: { $0.isWhitespace })
+            .first
+            .map(String.init)
+            ?? cleaned
+
+        return firstToken.prefix(1).uppercased() + firstToken.dropFirst()
+    }
+
+    private func rankTitleForXP(_ xp: Int) -> String {
+        switch xp {
+        case ..<100: return "Amateur"
+        case ..<200: return "Adept"
+        case ..<400: return "Polymath"
+        case ..<700: return "Scholar"
+        case ..<1100: return "Strategist"
+        case ..<1600: return "Sage"
+        case ..<2300: return "Grandmaster"
+        default: return "Legend"
+        }
+    }
+
+    private func formatPlayTime(_ seconds: Int) -> String {
+        let safeSeconds = max(seconds, 0)
+        let hours = safeSeconds / 3600
+        let minutes = (safeSeconds % 3600) / 60
+
+        if hours > 0 {
+            return minutes > 0 ? "\(hours)h \(minutes)m" : "\(hours)h"
+        }
+        return "\(max(minutes, 0))m"
     }
 
     private func resolveIcon(_ icon: String?) -> String {
@@ -332,41 +437,99 @@ final class HomeViewModel: ObservableObject {
 // MARK: - StatCard
 private struct StatCard: View {
     let stat: StatItem
+
+    private var accent: Color {
+        switch stat.label {
+        case "PLAY TIME": return Color(hex: "F59E0B")
+        case "RANK": return Color(hex: "0EB060")
+        case "ACTIVE": return Color(hex: "38BDF8")
+        default: return Color(hex: "0EB060")
+        }
+    }
+
+    private var softAccent: Color {
+        switch stat.label {
+        case "PLAY TIME": return Color(hex: "FDE68A")
+        case "RANK": return Color(hex: "86EFAC")
+        case "ACTIVE": return Color(hex: "7DD3FC")
+        default: return Color.white
+        }
+    }
+
+    private var iconColor: Color {
+        accent
+    }
+
+    private var iconBackgroundColor: Color {
+        accent.opacity(0.16)
+    }
+
     var body: some View {
         VStack(spacing: 8) {
-            Image(systemName: stat.icon)
-                .font(.system(size: 17, weight: .medium))
-                .foregroundColor(stat.isHighlighted ? .white : .white.opacity(0.5))
-                .frame(width: 36, height: 36)
-                .background(
-                    Circle()
-                        .fill(stat.isHighlighted
-                              ? Color(hex: "0EB060").opacity(0.18)
-                              : Color.white.opacity(0.07))
-                )
+            ZStack {
+                Circle()
+                    .fill(iconBackgroundColor)
+                    .frame(width: 46, height: 46)
+
+                Circle()
+                    .stroke(accent.opacity(0.35), lineWidth: 1)
+                    .frame(width: 46, height: 46)
+
+                Image(systemName: stat.icon)
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundColor(iconColor)
+            }
+            .shadow(color: accent.opacity(0.28), radius: 10, x: 0, y: 3)
+
             Text(stat.label)
-                .font(.system(size: 9, weight: .semibold, design: .rounded))
-                .foregroundColor(.white.opacity(0.35))
-                .tracking(0.8)
+                .font(.system(size: 10, weight: .bold, design: .rounded))
+                .foregroundColor(.white.opacity(0.45))
+                .tracking(1.1)
+
             Text(stat.value)
-                .font(.system(size: 14, weight: .bold, design: .rounded))
+                .font(.system(size: 15, weight: .heavy, design: .rounded))
                 .foregroundColor(.white)
+                .shadow(color: softAccent.opacity(0.25), radius: 6, x: 0, y: 1)
+
+            Capsule()
+                .fill(
+                    LinearGradient(
+                        colors: [accent.opacity(0.95), softAccent.opacity(0.9)],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                )
+                .frame(width: 44, height: 4)
+                .padding(.top, 4)
         }
         .frame(maxWidth: .infinity)
+        .frame(minHeight: 142)
         .padding(.vertical, 16)
         .background(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(Color.white.opacity(0.04))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .stroke(
-                            stat.isHighlighted
-                                ? Color(hex: "0EB060").opacity(0.55)
-                                : Color.white.opacity(0.08),
-                            lineWidth: stat.isHighlighted ? 1.5 : 0.5
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .background(
+                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    Color.white.opacity(0.04),
+                                    accent.opacity(0.07)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                                .stroke(accent.opacity(0.38), lineWidth: 1.05)
                         )
                 )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        .stroke(Color.white.opacity(0.1), lineWidth: 0.5)
+                )
         )
+        .shadow(color: accent.opacity(0.16), radius: 14, x: 0, y: 5)
     }
 }
 

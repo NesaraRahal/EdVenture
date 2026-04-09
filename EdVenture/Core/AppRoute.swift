@@ -13,6 +13,7 @@ enum AppRoute: Hashable {
     case settings
     case notifications
     case notificationSettings
+    case termsPrivacy
     case biometricsSettings
     case accessibilitySettings
     case lessonDetail(String)
