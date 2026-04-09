@@ -1,4 +1,5 @@
 import SwiftUI
+import FirebaseAuth
 
 // MARK: - ContentView
 // App/ContentView.swift
@@ -9,6 +10,9 @@ struct ContentView: View {
     @State private var path: [AppRoute] = []
     @State private var registeredEmail = ""
     @State private var pendingLessonFilter: String?
+    @State private var showTelemetryConsentPrompt = false
+    @State private var isSavingTelemetryConsent = false
+    @State private var telemetryConsentErrorMessage: String?
     @AppStorage("accessibility.dynamicText") private var dynamicText = true
     private let mainTabAnimation = Animation.easeInOut(duration: 0.22)
 
@@ -60,6 +64,10 @@ struct ContentView: View {
             return "Lesson detail screen. Overview card shows XP per question and progress stats. Curriculum list below contains lesson quiz items with play buttons."
         case .question:
             return "Question screen. Timer at top, question content in the center, answer options below, hint button, and next question button at the bottom."
+        case .levelSummary:
+            return "Level summary screen. Review score, earned XP, rank progress, and continue to next actions."
+        case .reviewAnswers:
+            return "Review answers screen. Inspect each question with your selected answer and the correct answer."
         case .tutorialQuestion:
             return "Tutorial question screen. A guided demo shows wrong answer feedback, hint usage, then correct answer flow."
         case .discovery:
@@ -72,6 +80,8 @@ struct ContentView: View {
             return "Notifications screen. View all notifications or unread ones. Notifications include leaderboard milestones, new lessons, rewards, and lesson additions."
         case .notificationSettings:
             return "Notification settings screen. Manage push notifications and reminder preferences."
+        case .termsPrivacy:
+            return "Terms and privacy screen. Review policy details and manage telemetry sharing preferences."
         case .accessibilitySettings:
             return "Accessibility settings screen. Toggles available for haptic feedback, sound effects, screen reader, and dynamic text."
         case .biometricsSettings:
@@ -164,6 +174,62 @@ struct ContentView: View {
                         LevelQuizView(
                             lessonId: lessonId,
                             questionIndex: questionIndex,
+                            onShowSummary: { lessonId, score, total, earnedXP, attemptSessionId, totalTimeSeconds in
+                                path.append(
+                                    AppRoute.levelSummary(
+                                        lessonId: lessonId,
+                                        score: score,
+                                        total: total,
+                                        earnedXP: earnedXP,
+                                        attemptSessionId: attemptSessionId,
+                                        totalTimeSeconds: totalTimeSeconds
+                                    )
+                                )
+                            },
+                            onBack: {
+                                if !path.isEmpty {
+                                    path.removeLast()
+                                }
+                            }
+                        )
+
+                    case .levelSummary(let lessonId, let score, let total, let earnedXP, let attemptSessionId, let totalTimeSeconds):
+                        LevelSummaryView(
+                            lessonId: lessonId,
+                            score: score,
+                            totalQuestions: total,
+                            earnedXP: earnedXP,
+                            totalTimeSeconds: totalTimeSeconds,
+                            onBackToLesson: {
+                                if path.count >= 2 {
+                                    path.removeLast(2)
+                                } else if !path.isEmpty {
+                                    path.removeLast()
+                                }
+                            },
+                            onReviewAnswers: {
+                                path.append(
+                                    AppRoute.reviewAnswers(
+                                        lessonId: lessonId,
+                                        attemptSessionId: attemptSessionId,
+                                        score: score,
+                                        total: total,
+                                        totalTimeSeconds: totalTimeSeconds
+                                    )
+                                )
+                            },
+                            onReturnHome: {
+                                goToMainTab(.home)
+                            }
+                        )
+
+                    case .reviewAnswers(let lessonId, let attemptSessionId, let score, let total, let totalTimeSeconds):
+                        ReviewAnswersView(
+                            lessonId: lessonId,
+                            attemptSessionId: attemptSessionId,
+                            score: score,
+                            totalQuestions: total,
+                            totalTimeSeconds: totalTimeSeconds,
                             onBack: {
                                 if !path.isEmpty {
                                     path.removeLast()
@@ -217,9 +283,19 @@ struct ContentView: View {
                             onRank:      { goToMainTab(.rank) },
                             onNotifications: { path.append(AppRoute.notifications) },
                             onNotificationSettings: { path.append(AppRoute.notificationSettings) },
+                            onTermsAndPrivacy: { path.append(AppRoute.termsPrivacy) },
                             onAccessibility: { path.append(AppRoute.accessibilitySettings) },
                             onBiometricsAndPassword: { path.append(AppRoute.biometricsSettings) },
                             onProfile:   { path.append(AppRoute.profile) }
+                        )
+
+                    case .termsPrivacy:
+                        TermsPrivacyView(
+                            onBack: {
+                                if !path.isEmpty {
+                                    path.removeLast()
+                                }
+                            }
                         )
 
                     case .notificationSettings:
@@ -275,6 +351,12 @@ struct ContentView: View {
                 }
                 .onAppear {
                     EVAccessibilitySupport.announce(accessibilityAnnouncement(for: route))
+
+                    if route == .home {
+                        Task {
+                            await evaluateTelemetryConsentPrompt()
+                        }
+                    }
                 }
                 // ── iOS standard slide transition ──────────────────
                 // .navigationTransition is iOS 18+
@@ -301,10 +383,153 @@ struct ContentView: View {
         }
         .dynamicTypeSize(dynamicText ? DynamicTypeSize.xSmall ... DynamicTypeSize.accessibility5
                                      : DynamicTypeSize.xSmall ... DynamicTypeSize.large)
+        .sheet(isPresented: $showTelemetryConsentPrompt) {
+            EVTelemetryConsentPromptSheet(
+                isSaving: isSavingTelemetryConsent,
+                errorMessage: telemetryConsentErrorMessage,
+                onChooseImportantOnly: {
+                    Task {
+                        await saveTelemetryConsent(mode: .importantOnly)
+                    }
+                },
+                onChooseBusinessValue: {
+                    Task {
+                        await saveTelemetryConsent(mode: .businessValue)
+                    }
+                }
+            )
+            .interactiveDismissDisabled(true)
+            .presentationDetents([.medium])
+        }
         // iOS 16+ NavigationStack uses the correct push/pop
         // slide transition with velocity-matched spring by default.
         // The liquid glass morph on the nav bar is automatic when
         // .ultraThinMaterial is used consistently across screens.
+    }
+
+    private func evaluateTelemetryConsentPrompt() async {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        guard !showTelemetryConsentPrompt else { return }
+
+        do {
+            let shouldPresent = try await EVTelemetryManager.shouldPresentConsentPrompt(for: uid)
+            if shouldPresent {
+                telemetryConsentErrorMessage = nil
+                showTelemetryConsentPrompt = true
+            }
+        } catch {
+            telemetryConsentErrorMessage = error.localizedDescription
+        }
+    }
+
+    private func saveTelemetryConsent(mode: EVTelemetryMode) async {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+
+        isSavingTelemetryConsent = true
+        telemetryConsentErrorMessage = nil
+        defer { isSavingTelemetryConsent = false }
+
+        do {
+            try await EVTelemetryManager.savePreferences(
+                for: uid,
+                mode: mode,
+                source: "first_register_prompt"
+            )
+
+            await EVTelemetryManager.collectImportant(
+                event: "telemetry_prompt_response",
+                metadata: ["mode": mode.rawValue]
+            )
+
+            if mode == .businessValue {
+                await EVTelemetryManager.collectBusiness(
+                    event: "telemetry_prompt_business_opt_in",
+                    metadata: ["mode": mode.rawValue]
+                )
+            }
+
+            showTelemetryConsentPrompt = false
+        } catch {
+            telemetryConsentErrorMessage = error.localizedDescription
+        }
+    }
+}
+
+private struct EVTelemetryConsentPromptSheet: View {
+    let isSaving: Bool
+    let errorMessage: String?
+    let onChooseImportantOnly: () -> Void
+    let onChooseBusinessValue: () -> Void
+
+    var body: some View {
+        ZStack {
+            Color(hex: "0A0F0D").ignoresSafeArea()
+
+            VStack(alignment: .leading, spacing: 14) {
+                Text("Telemetry Preference")
+                    .font(.system(size: 26, weight: .bold, design: .rounded))
+                    .foregroundColor(.white)
+
+                Text("Essential reliability logs are always collected. Choose whether to share additional business-value usage insights.")
+                    .font(.system(size: 13, design: .rounded))
+                    .foregroundColor(.white.opacity(0.64))
+
+                Button {
+                    onChooseImportantOnly()
+                } label: {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Important Logs Only")
+                            .font(.system(size: 15, weight: .semibold, design: .rounded))
+                        Text("Recommended for privacy-first users.")
+                            .font(.system(size: 12, design: .rounded))
+                    }
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(14)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .fill(Color.white.opacity(0.06))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                    .stroke(Color.white.opacity(0.1), lineWidth: 0.6)
+                            )
+                    )
+                }
+                .disabled(isSaving)
+
+                Button {
+                    onChooseBusinessValue()
+                } label: {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Important + Business")
+                            .font(.system(size: 15, weight: .semibold, design: .rounded))
+                        Text("Help improve features with anonymized product insights.")
+                            .font(.system(size: 12, design: .rounded))
+                    }
+                    .foregroundColor(.black)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(14)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .fill(Color(hex: "0EB060"))
+                    )
+                }
+                .disabled(isSaving)
+
+                if isSaving {
+                    ProgressView()
+                        .tint(Color(hex: "0EB060"))
+                        .frame(maxWidth: .infinity, alignment: .center)
+                }
+
+                if let errorMessage {
+                    Text(errorMessage)
+                        .font(.system(size: 12, design: .rounded))
+                        .foregroundColor(Color(hex: "FF453A"))
+                }
+            }
+            .padding(22)
+        }
     }
 }
 

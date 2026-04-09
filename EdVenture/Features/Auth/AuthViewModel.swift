@@ -68,6 +68,7 @@ final class AuthViewModel: ObservableObject {
                 "profileImagePath": "",
                 "profileImageURL": "",
                 "profileImageBase64": "",
+                "telemetryConsentPending": true,
                 "isEmailVerified": result.user.isEmailVerified,
                 "createdAt": Timestamp(date: Date()),
                 "updatedAt": Timestamp(date: Date())
