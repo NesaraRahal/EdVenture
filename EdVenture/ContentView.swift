@@ -64,6 +64,10 @@ struct ContentView: View {
             return "Lesson detail screen. Overview card shows XP per question and progress stats. Curriculum list below contains lesson quiz items with play buttons."
         case .question:
             return "Question screen. Timer at top, question content in the center, answer options below, hint button, and next question button at the bottom."
+        case .levelSummary:
+            return "Level summary screen. Review score, earned XP, rank progress, and continue to next actions."
+        case .reviewAnswers:
+            return "Review answers screen. Inspect each question with your selected answer and the correct answer."
         case .tutorialQuestion:
             return "Tutorial question screen. A guided demo shows wrong answer feedback, hint usage, then correct answer flow."
         case .discovery:
@@ -170,6 +174,62 @@ struct ContentView: View {
                         LevelQuizView(
                             lessonId: lessonId,
                             questionIndex: questionIndex,
+                            onShowSummary: { lessonId, score, total, earnedXP, attemptSessionId, totalTimeSeconds in
+                                path.append(
+                                    AppRoute.levelSummary(
+                                        lessonId: lessonId,
+                                        score: score,
+                                        total: total,
+                                        earnedXP: earnedXP,
+                                        attemptSessionId: attemptSessionId,
+                                        totalTimeSeconds: totalTimeSeconds
+                                    )
+                                )
+                            },
+                            onBack: {
+                                if !path.isEmpty {
+                                    path.removeLast()
+                                }
+                            }
+                        )
+
+                    case .levelSummary(let lessonId, let score, let total, let earnedXP, let attemptSessionId, let totalTimeSeconds):
+                        LevelSummaryView(
+                            lessonId: lessonId,
+                            score: score,
+                            totalQuestions: total,
+                            earnedXP: earnedXP,
+                            totalTimeSeconds: totalTimeSeconds,
+                            onBackToLesson: {
+                                if path.count >= 2 {
+                                    path.removeLast(2)
+                                } else if !path.isEmpty {
+                                    path.removeLast()
+                                }
+                            },
+                            onReviewAnswers: {
+                                path.append(
+                                    AppRoute.reviewAnswers(
+                                        lessonId: lessonId,
+                                        attemptSessionId: attemptSessionId,
+                                        score: score,
+                                        total: total,
+                                        totalTimeSeconds: totalTimeSeconds
+                                    )
+                                )
+                            },
+                            onReturnHome: {
+                                goToMainTab(.home)
+                            }
+                        )
+
+                    case .reviewAnswers(let lessonId, let attemptSessionId, let score, let total, let totalTimeSeconds):
+                        ReviewAnswersView(
+                            lessonId: lessonId,
+                            attemptSessionId: attemptSessionId,
+                            score: score,
+                            totalQuestions: total,
+                            totalTimeSeconds: totalTimeSeconds,
                             onBack: {
                                 if !path.isEmpty {
                                     path.removeLast()

@@ -253,6 +253,7 @@ final class EVQuizStore {
                      session: EVQuizSessionState,
                      question: EVQuizQuestion,
                      selectedIndex: Int,
+                     attemptSessionId: String,
                      timeSpentSeconds: Int,
                      questionIndex: Int,
                      totalQuestions: Int) async throws -> EVQuizRoundResult {
@@ -322,6 +323,7 @@ final class EVQuizStore {
             "updatedAt": Timestamp(date: now)
         ], forDocument: questionProgressRef, merge: true)
         batch.setData([
+            "attemptSessionId": attemptSessionId,
             "lessonId": session.lessonId,
             "level": session.level,
             "questionId": question.id,
@@ -330,6 +332,7 @@ final class EVQuizStore {
             "correctIndex": question.correctIndex,
             "isCorrect": isCorrect,
             "earnedXP": earnedXP,
+            "timeSpentSeconds": safeTimeSpent,
             "answeredAt": Timestamp(date: now),
             "createdAt": Timestamp(date: now)
         ], forDocument: attemptRef, merge: false)

@@ -6,6 +6,7 @@ import Combine
 struct LevelQuizView: View {
     let lessonId: String
     let questionIndex: Int
+    var onShowSummary: ((String, Int, Int, Int, String, Int) -> Void)?
     var onBack: (() -> Void)?
 
     @StateObject private var vm = LevelQuizViewModel()
@@ -59,10 +60,6 @@ struct LevelQuizView: View {
                         }
                     }
                 }
-            }
-
-            if vm.showLevelComplete {
-                completionOverlay
             }
 
             if let lockMessage = vm.lockMessage {
@@ -319,6 +316,16 @@ struct LevelQuizView: View {
         Button {
             Task {
                 await vm.primaryAction(onBack: onBack)
+                if let summary = vm.consumePendingSummary() {
+                    onShowSummary?(
+                        summary.lessonId,
+                        summary.score,
+                        summary.totalQuestions,
+                        summary.earnedXP,
+                        summary.attemptSessionId,
+                        summary.totalTimeSeconds
+                    )
+                }
             }
         } label: {
             Text(vm.primaryActionTitle)
@@ -343,45 +350,6 @@ struct LevelQuizView: View {
                 .foregroundColor(.white.opacity(0.72))
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 30)
-        }
-    }
-
-    private var completionOverlay: some View {
-        ZStack {
-            Color.black.opacity(0.72).ignoresSafeArea()
-            VStack(spacing: 14) {
-                Image(systemName: "checkmark.seal.fill")
-                    .font(.system(size: 42, weight: .bold))
-                    .foregroundColor(Color(hex: "0EB060"))
-                Text("Level Complete")
-                    .font(.system(size: 24, weight: .bold, design: .rounded))
-                    .foregroundColor(.white)
-                Text("Your XP and leaderboard contribution were saved.")
-                    .font(.system(size: 14, design: .rounded))
-                    .foregroundColor(.white.opacity(0.75))
-                    .multilineTextAlignment(.center)
-                Button {
-                    onBack?()
-                } label: {
-                    Text("Back to Lesson")
-                        .font(.system(size: 16, weight: .semibold, design: .rounded))
-                        .foregroundColor(.black)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 52)
-                        .background(Color(hex: "0EB060"))
-                        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-                }
-            }
-            .padding(22)
-            .background(
-                RoundedRectangle(cornerRadius: 22, style: .continuous)
-                    .fill(Color(hex: "1A2420"))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 22, style: .continuous)
-                            .stroke(Color(hex: "0EB060").opacity(0.24), lineWidth: 1)
-                    )
-            )
-            .padding(.horizontal, 22)
         }
     }
 
@@ -487,6 +455,9 @@ final class LevelQuizViewModel: ObservableObject {
     private var displayName: String = "Learner"
     private var totalQuestions = 0
     private var timerCancellable: AnyCancellable?
+    private var pendingSummary: EVLevelSummaryPayload?
+    private var attemptSessionId: String = UUID().uuidString
+    private var totalElapsedSecondsForRun: Int = 0
 
     var lessonTitle: String = "Lesson"
 
@@ -550,6 +521,12 @@ final class LevelQuizViewModel: ObservableObject {
 
     var didSubmit = false
 
+    func consumePendingSummary() -> EVLevelSummaryPayload? {
+        let payload = pendingSummary
+        pendingSummary = nil
+        return payload
+    }
+
     func load(lessonId: String, startIndex: Int) async {
         isLoading = true
         errorMessage = nil
@@ -558,6 +535,9 @@ final class LevelQuizViewModel: ObservableObject {
         showLevelComplete = false
         didSubmit = false
         selectedAnswerIndex = nil
+        pendingSummary = nil
+        attemptSessionId = UUID().uuidString
+        totalElapsedSecondsForRun = 0
 
         defer { isLoading = false }
 
@@ -600,7 +580,7 @@ final class LevelQuizViewModel: ObservableObject {
         guard let question = currentQuestion else { return }
 
         if showLevelComplete {
-            onBack?()
+            prepareSummaryIfNeeded()
             return
         }
 
@@ -611,7 +591,7 @@ final class LevelQuizViewModel: ObservableObject {
             }
 
             if currentIndex + 1 >= questions.count {
-                showLevelComplete = true
+                prepareSummaryIfNeeded()
                 return
             }
 
@@ -623,6 +603,8 @@ final class LevelQuizViewModel: ObservableObject {
         guard let userId else { return }
 
         stopTimer()
+        let elapsed = timeSpentForCurrentQuestion()
+        totalElapsedSecondsForRun += elapsed
         isLoading = true
         defer { isLoading = false }
 
@@ -633,7 +615,8 @@ final class LevelQuizViewModel: ObservableObject {
                 session: session ?? EVQuizSessionState.initial(lessonId: question.lessonId, level: question.level, totalQuestions: questions.count),
                 question: question,
                 selectedIndex: selectedAnswerIndex,
-                timeSpentSeconds: timeSpentForCurrentQuestion(),
+                attemptSessionId: attemptSessionId,
+                timeSpentSeconds: elapsed,
                 questionIndex: currentIndex,
                 totalQuestions: questions.count
             )
@@ -651,10 +634,8 @@ final class LevelQuizViewModel: ObservableObject {
                 feedbackMessage = "Not quite. Review the hint and continue to the next question."
             }
 
-            if result.isCorrect {
-                if currentIndex + 1 >= questions.count {
-                    showLevelComplete = true
-                }
+            if currentIndex + 1 >= questions.count {
+                prepareSummaryIfNeeded()
             }
         } catch {
             errorMessage = error.localizedDescription
@@ -663,7 +644,7 @@ final class LevelQuizViewModel: ObservableObject {
 
     private func moveToNextQuestion() {
         guard currentIndex + 1 < questions.count else {
-            showLevelComplete = true
+            prepareSummaryIfNeeded()
             return
         }
 
@@ -745,6 +726,8 @@ final class LevelQuizViewModel: ObservableObject {
         guard let userId else { return }
 
         Task {
+            let elapsed = timeSpentForCurrentQuestion()
+            totalElapsedSecondsForRun += elapsed
             isLoading = true
             defer { isLoading = false }
 
@@ -755,7 +738,8 @@ final class LevelQuizViewModel: ObservableObject {
                     session: session ?? EVQuizSessionState.initial(lessonId: question.lessonId, level: question.level, totalQuestions: questions.count),
                     question: question,
                     selectedIndex: -1,
-                    timeSpentSeconds: timeSpentForCurrentQuestion(),
+                    attemptSessionId: attemptSessionId,
+                    timeSpentSeconds: elapsed,
                     questionIndex: currentIndex,
                     totalQuestions: questions.count
                 )
@@ -766,11 +750,43 @@ final class LevelQuizViewModel: ObservableObject {
                 showHint = false
                 feedbackMessage = "Time's up. This question was marked incorrect."
                 EVAccessibilitySupport.playSound(.wrong)
+
+                if currentIndex + 1 >= questions.count {
+                    prepareSummaryIfNeeded()
+                }
             } catch {
                 errorMessage = error.localizedDescription
             }
         }
     }
+
+    private func prepareSummaryIfNeeded() {
+        guard pendingSummary == nil else { return }
+
+        let score = completedQuestionsCount
+        let total = max(questions.count, totalQuestions, 1)
+        pendingSummary = EVLevelSummaryPayload(
+            lessonId: lessonIdFromSession,
+            score: score,
+            totalQuestions: total,
+            earnedXP: sessionXP,
+            attemptSessionId: attemptSessionId,
+            totalTimeSeconds: totalElapsedSecondsForRun
+        )
+    }
+
+    private var lessonIdFromSession: String {
+        session?.lessonId ?? currentQuestion?.lessonId ?? "lesson"
+    }
+}
+
+struct EVLevelSummaryPayload {
+    let lessonId: String
+    let score: Int
+    let totalQuestions: Int
+    let earnedXP: Int
+    let attemptSessionId: String
+    let totalTimeSeconds: Int
 }
 
 private struct EVQuestionVisualView: View {

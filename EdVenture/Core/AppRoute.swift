@@ -18,6 +18,8 @@ enum AppRoute: Hashable {
     case accessibilitySettings
     case lessonDetail(String)
     case question(lessonId: String, questionIndex: Int)
+    case levelSummary(lessonId: String, score: Int, total: Int, earnedXP: Int, attemptSessionId: String, totalTimeSeconds: Int)
+    case reviewAnswers(lessonId: String, attemptSessionId: String, score: Int, total: Int, totalTimeSeconds: Int)
     case tutorialQuestion
     case profile
     case insights
