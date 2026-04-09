@@ -15,6 +15,8 @@ struct UserProfile {
     var profileImagePath: String
     var profileImageURL: String
     var profileImageBase64: String
+    var dailyGoalMinutes: Int
+    var dailyProgressSeconds: Int
     var isEmailVerified: Bool
 
     static let empty = UserProfile(
@@ -27,6 +29,8 @@ struct UserProfile {
         profileImagePath: "",
         profileImageURL: "",
         profileImageBase64: "",
+        dailyGoalMinutes: 10,
+        dailyProgressSeconds: 0,
         isEmailVerified: false
     )
 
@@ -39,6 +43,8 @@ struct UserProfile {
          profileImagePath: String,
          profileImageURL: String,
          profileImageBase64: String,
+         dailyGoalMinutes: Int,
+         dailyProgressSeconds: Int,
          isEmailVerified: Bool) {
         self.fullName = fullName
         self.username = username
@@ -49,6 +55,8 @@ struct UserProfile {
         self.profileImagePath = profileImagePath
         self.profileImageURL = profileImageURL
         self.profileImageBase64 = profileImageBase64
+        self.dailyGoalMinutes = dailyGoalMinutes
+        self.dailyProgressSeconds = dailyProgressSeconds
         self.isEmailVerified = isEmailVerified
     }
 
@@ -62,6 +70,8 @@ struct UserProfile {
         self.profileImagePath = data["profileImagePath"] as? String ?? ""
         self.profileImageURL = data["profileImageURL"] as? String ?? ""
         self.profileImageBase64 = data["profileImageBase64"] as? String ?? ""
+        self.dailyGoalMinutes = data["dailyGoalMinutes"] as? Int ?? 10
+        self.dailyProgressSeconds = data["dailyProgressSeconds"] as? Int ?? 0
         self.isEmailVerified = data["isEmailVerified"] as? Bool ?? verified
     }
 
@@ -76,6 +86,8 @@ struct UserProfile {
             "profileImagePath": profileImagePath,
             "profileImageURL": profileImageURL,
             "profileImageBase64": profileImageBase64,
+            "dailyGoalMinutes": dailyGoalMinutes,
+            "dailyProgressSeconds": dailyProgressSeconds,
             "isEmailVerified": isEmailVerified,
             "updatedAt": Timestamp(date: Date())
         ]
@@ -130,6 +142,8 @@ final class UserProfileViewModel: ObservableObject {
                     profileImagePath: "",
                     profileImageURL: "",
                     profileImageBase64: "",
+                    dailyGoalMinutes: 10,
+                    dailyProgressSeconds: 0,
                     isEmailVerified: user.isEmailVerified
                 )
 

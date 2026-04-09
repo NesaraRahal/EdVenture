@@ -44,6 +44,10 @@ struct EditProfileView: View {
                         .padding(.top, 28)
                         .padding(.horizontal, 20)
 
+                    dailyGoalBlock
+                        .padding(.top, 16)
+                        .padding(.horizontal, 20)
+
                     interestsBlock
                         .padding(.top, 16)
                         .padding(.horizontal, 20)
@@ -313,6 +317,45 @@ struct EditProfileView: View {
                         .background(Color.white.opacity(0.06))
                         .clipShape(Capsule())
                         .overlay(Capsule().stroke(Color.white.opacity(0.08), lineWidth: 0.6))
+                }
+            }
+        }
+    }
+
+    private var dailyGoalBlock: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text("DAILY GOAL")
+                .font(.system(size: 11, weight: .semibold, design: .rounded))
+                .foregroundColor(.white.opacity(0.5))
+                .tracking(1.2)
+
+            HStack(spacing: 10) {
+                ForEach([5, 10, 15, 20], id: \.self) { goal in
+                    let selected = vm.profile.dailyGoalMinutes == goal
+
+                    Button {
+                        vm.profile.dailyGoalMinutes = goal
+                    } label: {
+                        VStack(spacing: 2) {
+                            Text("\(goal)")
+                                .font(.system(size: 22, weight: .bold, design: .rounded))
+                            Text("MIN")
+                                .font(.system(size: 10, weight: .bold, design: .rounded))
+                                .tracking(1)
+                        }
+                        .foregroundColor(selected ? Color(hex: "0A0F0D") : .white.opacity(0.8))
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 74)
+                        .background(
+                            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                .fill(selected ? Color(hex: "0EB060") : Color.white.opacity(0.06))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                        .stroke(selected ? Color.clear : Color.white.opacity(0.08), lineWidth: 0.6)
+                                )
+                        )
+                    }
+                    .buttonStyle(ScaleButtonStyle())
                 }
             }
         }

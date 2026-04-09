@@ -358,6 +358,8 @@ final class HomeViewModel: ObservableObject {
             let totalXP = data["totalXP"] as? Int ?? 0
             let totalPlaySeconds = data["totalPlaySeconds"] as? Int ?? 0
             updateStats(totalXP: totalXP, totalPlaySeconds: totalPlaySeconds)
+
+            await EVNotificationService.shared.refreshDailyGoalReminderForCurrentUser()
         } catch {
             let authName = user.displayName?.trimmingCharacters(in: .whitespacesAndNewlines)
             greetingName = firstName(from: (authName?.isEmpty == false ? authName! : "Learner"))
