@@ -18,6 +18,12 @@ struct UserProfile {
     var dailyGoalMinutes: Int
     var dailyProgressSeconds: Int
     var isEmailVerified: Bool
+    // Stats
+    var currentStreak: Int
+    var totalXP: Int
+    var accuracyPercent: Int
+    var quizzesCompleted: Int
+    var strongestSubject: String
 
     static let empty = UserProfile(
         fullName: "",
@@ -31,7 +37,12 @@ struct UserProfile {
         profileImageBase64: "",
         dailyGoalMinutes: 10,
         dailyProgressSeconds: 0,
-        isEmailVerified: false
+        isEmailVerified: false,
+        currentStreak: 0,
+        totalXP: 0,
+        accuracyPercent: 0,
+        quizzesCompleted: 0,
+        strongestSubject: ""
     )
 
     init(fullName: String,
@@ -45,7 +56,12 @@ struct UserProfile {
          profileImageBase64: String,
          dailyGoalMinutes: Int,
          dailyProgressSeconds: Int,
-         isEmailVerified: Bool) {
+            isEmailVerified: Bool,
+            currentStreak: Int = 0,
+            totalXP: Int = 0,
+            accuracyPercent: Int = 0,
+            quizzesCompleted: Int = 0,
+            strongestSubject: String = "") {
         self.fullName = fullName
         self.username = username
         self.email = email
@@ -58,6 +74,11 @@ struct UserProfile {
         self.dailyGoalMinutes = dailyGoalMinutes
         self.dailyProgressSeconds = dailyProgressSeconds
         self.isEmailVerified = isEmailVerified
+        self.currentStreak = currentStreak
+        self.totalXP = totalXP
+        self.accuracyPercent = accuracyPercent
+        self.quizzesCompleted = quizzesCompleted
+        self.strongestSubject = strongestSubject
     }
 
     init(data: [String: Any], fallbackEmail: String, fallbackUsername: String, verified: Bool) {
@@ -73,6 +94,11 @@ struct UserProfile {
         self.dailyGoalMinutes = data["dailyGoalMinutes"] as? Int ?? 10
         self.dailyProgressSeconds = data["dailyProgressSeconds"] as? Int ?? 0
         self.isEmailVerified = data["isEmailVerified"] as? Bool ?? verified
+        self.currentStreak = data["currentQuizStreak"] as? Int ?? 0
+        self.totalXP = data["totalXP"] as? Int ?? 0
+        self.accuracyPercent = data["accuracyPercent"] as? Int ?? 0
+        self.quizzesCompleted = data["quizzesCompleted"] as? Int ?? 0
+        self.strongestSubject = data["strongestSubject"] as? String ?? ""
     }
 
     var dictionary: [String: Any] {
@@ -156,6 +182,9 @@ final class UserProfileViewModel: ObservableObject {
         }
 
         isLoading = false
+        
+        // Calculate stats from quiz attempts
+        await calculateStats(userId: user.uid)
     }
 
     func saveProfile() async {
@@ -294,6 +323,84 @@ final class UserProfileViewModel: ObservableObject {
                     ))
                 }
             }
+        }
+    }
+
+    private func calculateStats(userId: String) async {
+        do {
+            let attemptsSnapshot = try await db.collection("users")
+                .document(userId)
+                .collection("quizAttempts")
+                .getDocuments()
+
+            var totalCorrect = 0
+            var totalAttempts = 0
+            var totalXP = 0
+            var lessonAttempts: [String: (correct: Int, total: Int)] = [:]
+
+            for doc in attemptsSnapshot.documents {
+                let data = doc.data()
+                let isCorrect = data["isCorrect"] as? Bool ?? false
+                let earnedXP = data["earnedXP"] as? Int ?? 0
+                let lessonId = data["lessonId"] as? String ?? "general"
+
+                totalAttempts += 1
+                totalXP += earnedXP
+
+                if isCorrect {
+                    totalCorrect += 1
+                }
+
+                if lessonAttempts[lessonId] == nil {
+                    lessonAttempts[lessonId] = (correct: 0, total: 0)
+                }
+                lessonAttempts[lessonId]?.total += 1
+                if isCorrect {
+                    lessonAttempts[lessonId]?.correct += 1
+                }
+            }
+
+            let accuracy = totalAttempts > 0 ? (totalCorrect * 100) / totalAttempts : 0
+
+            var strongestSubject = ""
+            var bestAccuracy = 0
+            for (lesson, stats) in lessonAttempts {
+                let lessonAccuracy = stats.total > 0 ? (stats.correct * 100) / stats.total : 0
+                if lessonAccuracy > bestAccuracy {
+                    bestAccuracy = lessonAccuracy
+                    strongestSubject = lesson.replacingOccurrences(of: "_", with: " ").capitalized
+                }
+            }
+
+            let sessionsSnapshot = try await db.collection("users")
+                .document(userId)
+                .collection("quizSessions")
+                .getDocuments()
+
+            var maxStreak = 0
+            for doc in sessionsSnapshot.documents {
+                let data = doc.data()
+                if let streak = data["consecutiveWins"] as? Int {
+                    maxStreak = max(maxStreak, streak)
+                }
+            }
+
+            profile.totalXP = totalXP
+            profile.accuracyPercent = accuracy
+            profile.quizzesCompleted = totalAttempts
+            profile.currentStreak = maxStreak
+            profile.strongestSubject = strongestSubject
+
+            try await db.collection("users").document(userId).setData([
+                "totalXP": totalXP,
+                "accuracyPercent": accuracy,
+                "quizzesCompleted": totalAttempts,
+                "currentQuizStreak": maxStreak,
+                "strongestSubject": strongestSubject,
+                "statsUpdatedAt": Timestamp(date: Date())
+            ], merge: true)
+        } catch {
+            print("Failed to calculate stats: \(error.localizedDescription)")
         }
     }
 }

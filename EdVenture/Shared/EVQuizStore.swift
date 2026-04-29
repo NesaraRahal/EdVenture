@@ -50,6 +50,38 @@ struct EVQuizQuestion: Identifiable, Hashable {
 
         guard choices.indices.contains(correctIndex) else { return nil }
     }
+
+    init(id: String,
+         lessonId: String,
+         level: Int,
+         order: Int,
+         difficulty: Int,
+         xpMin: Int,
+         xpMax: Int,
+         xpSuggested: Int,
+         prompt: String,
+         choices: [String],
+         correctIndex: Int,
+         explanation: String,
+         tags: [String] = [],
+         isActive: Bool = true) {
+        precondition(choices.indices.contains(correctIndex), "correctIndex must point to a valid choice")
+
+        self.id = id
+        self.lessonId = lessonId
+        self.level = level
+        self.order = order
+        self.difficulty = difficulty
+        self.xpMin = xpMin
+        self.xpMax = xpMax
+        self.xpSuggested = xpSuggested
+        self.prompt = prompt
+        self.choices = choices
+        self.correctIndex = correctIndex
+        self.explanation = explanation
+        self.tags = tags
+        self.isActive = isActive
+    }
 }
 
 struct EVQuizSessionState {

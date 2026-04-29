@@ -6,10 +6,29 @@ import Combine
 struct LevelQuizView: View {
     let lessonId: String
     let questionIndex: Int
+    let sessionLessonId: String?
+    let questionsOverride: [EVQuizQuestion]?
+    let lessonTitleOverride: String?
     var onShowSummary: ((String, Int, Int, Int, String, Int) -> Void)?
     var onBack: (() -> Void)?
 
     @StateObject private var vm = LevelQuizViewModel()
+
+    init(lessonId: String,
+         questionIndex: Int,
+         sessionLessonId: String? = nil,
+         questionsOverride: [EVQuizQuestion]? = nil,
+         lessonTitleOverride: String? = nil,
+         onShowSummary: ((String, Int, Int, Int, String, Int) -> Void)? = nil,
+         onBack: (() -> Void)? = nil) {
+        self.lessonId = lessonId
+        self.questionIndex = questionIndex
+        self.sessionLessonId = sessionLessonId
+        self.questionsOverride = questionsOverride
+        self.lessonTitleOverride = lessonTitleOverride
+        self.onShowSummary = onShowSummary
+        self.onBack = onBack
+    }
 
     var body: some View {
         ZStack {
@@ -68,7 +87,13 @@ struct LevelQuizView: View {
         }
         .navigationBarHidden(true)
         .task(id: lessonId) {
-            await vm.load(lessonId: lessonId, startIndex: questionIndex)
+            await vm.load(
+                lessonId: lessonId,
+                startIndex: questionIndex,
+                sessionLessonId: sessionLessonId,
+                questionsOverride: questionsOverride,
+                lessonTitleOverride: lessonTitleOverride
+            )
         }
         .onDisappear {
             vm.stopTimer()
@@ -454,6 +479,9 @@ final class LevelQuizViewModel: ObservableObject {
     private var userId: String?
     private var displayName: String = "Learner"
     private var totalQuestions = 0
+    private var sessionLessonId: String?
+    private var questionsOverride: [EVQuizQuestion]?
+    private var lessonTitleOverride: String?
     private var timerCancellable: AnyCancellable?
     private var pendingSummary: EVLevelSummaryPayload?
     private var attemptSessionId: String = UUID().uuidString
@@ -527,7 +555,11 @@ final class LevelQuizViewModel: ObservableObject {
         return payload
     }
 
-    func load(lessonId: String, startIndex: Int) async {
+    func load(lessonId: String,
+              startIndex: Int,
+              sessionLessonId: String? = nil,
+              questionsOverride: [EVQuizQuestion]? = nil,
+              lessonTitleOverride: String? = nil) async {
         isLoading = true
         errorMessage = nil
         feedbackMessage = nil
@@ -538,6 +570,9 @@ final class LevelQuizViewModel: ObservableObject {
         pendingSummary = nil
         attemptSessionId = UUID().uuidString
         totalElapsedSecondsForRun = 0
+        self.sessionLessonId = sessionLessonId
+        self.questionsOverride = questionsOverride
+        self.lessonTitleOverride = lessonTitleOverride
 
         defer { isLoading = false }
 
@@ -550,7 +585,13 @@ final class LevelQuizViewModel: ObservableObject {
         displayName = user.displayName?.trimmingCharacters(in: .whitespacesAndNewlines).nonEmpty ?? "Learner"
 
         do {
-            let loadedQuestions = try await store.loadLevelQuestions(lessonId: lessonId, level: 1)
+            let sourceLessonId = sessionLessonId ?? lessonId
+            let loadedQuestions: [EVQuizQuestion]
+            if let questionsOverride {
+                loadedQuestions = questionsOverride
+            } else {
+                loadedQuestions = try await store.loadLevelQuestions(lessonId: lessonId, level: 1)
+            }
             guard !loadedQuestions.isEmpty else {
                 errorMessage = "No questions were found for this level."
                 return
@@ -558,9 +599,9 @@ final class LevelQuizViewModel: ObservableObject {
 
             questions = loadedQuestions
             totalQuestions = loadedQuestions.count
-            lessonTitle = lessonId.replacingOccurrences(of: "_", with: " ").capitalized
+            lessonTitle = self.lessonTitleOverride ?? sourceLessonId.replacingOccurrences(of: "_", with: " ").capitalized
 
-            let loadedSession = try await store.loadSession(userId: user.uid, lessonId: lessonId, level: 1, totalQuestions: loadedQuestions.count)
+            let loadedSession = try await store.loadSession(userId: user.uid, lessonId: sourceLessonId, level: 1, totalQuestions: loadedQuestions.count)
             var sanitizedSession = loadedSession
             sanitizedSession.unlockedCount = loadedQuestions.count
             sanitizedSession.lockedUntil = nil
@@ -612,7 +653,7 @@ final class LevelQuizViewModel: ObservableObject {
             let result = try await store.submitRound(
                 userId: userId,
                 displayName: displayName,
-                session: session ?? EVQuizSessionState.initial(lessonId: question.lessonId, level: question.level, totalQuestions: questions.count),
+                session: session ?? EVQuizSessionState.initial(lessonId: sessionLessonId ?? question.lessonId, level: question.level, totalQuestions: questions.count),
                 question: question,
                 selectedIndex: selectedAnswerIndex,
                 attemptSessionId: attemptSessionId,
@@ -776,7 +817,7 @@ final class LevelQuizViewModel: ObservableObject {
     }
 
     private var lessonIdFromSession: String {
-        session?.lessonId ?? currentQuestion?.lessonId ?? "lesson"
+        session?.lessonId ?? sessionLessonId ?? currentQuestion?.lessonId ?? "lesson"
     }
 }
 

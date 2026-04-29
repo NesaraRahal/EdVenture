@@ -21,27 +21,7 @@ struct HomeView: View {
     var onOpenLesson: ((String) -> Void)?
     var onNotifications: (() -> Void)?
     var onProfile:   (() -> Void)?
-
-    let challenges: [Challenge] = [
-        Challenge(
-            tag: "TIMED CHALLENGE",
-            title: "NEURO-SYNC\nDRIFT",
-            description: "Synchronize your neural pathways in this high-intensity cognitive race.",
-            gradient: [Color(hex: "4FC3A1"), Color(hex: "3B82C4"), Color(hex: "6C63D8")]
-        ),
-        Challenge(
-            tag: "DAILY QUEST",
-            title: "QUANTUM\nLEAP",
-            description: "Push your limits across physics, logic and spatial reasoning.",
-            gradient: [Color(hex: "F59E0B"), Color(hex: "EF4444"), Color(hex: "8B5CF6")]
-        ),
-        Challenge(
-            tag: "SPEED RUN",
-            title: "FLASH\nFACTS",
-            description: "60 seconds. 20 questions. How fast can your brain fire?",
-            gradient: [Color(hex: "10B981"), Color(hex: "059669"), Color(hex: "0EB060")]
-        ),
-    ]
+    var onChallenge: ((String) -> Void)?
 
     // MARK: - Body
     var body: some View {
@@ -122,8 +102,10 @@ struct HomeView: View {
     private var challengeCarousel: some View {
         VStack(spacing: 10) {
             TabView(selection: $challengePage) {
-                ForEach(Array(challenges.enumerated()), id: \.element.id) { i, challenge in
-                    ChallengeCard(challenge: challenge)
+                ForEach(Array(vm.challenges.enumerated()), id: \.element.id) { i, challenge in
+                    ChallengeCard(challenge: challenge) {
+                        onChallenge?(challenge.id)
+                    }
                         .tag(i)
                         .padding(.horizontal, 20)
                 }
@@ -132,7 +114,7 @@ struct HomeView: View {
             .frame(height: 200)
 
             HStack(spacing: 6) {
-                ForEach(0..<challenges.count, id: \.self) { i in
+                ForEach(0..<max(vm.challenges.count, 1), id: \.self) { i in
                     Circle()
                         .fill(i == challengePage ? Color.white : Color.white.opacity(0.3))
                         .frame(
@@ -232,11 +214,23 @@ struct StatItem: Identifiable {
 }
 
 struct Challenge: Identifiable {
-    let id = UUID()
+    let id: String
     let tag: String
     let title: String
     let description: String
     let gradient: [Color]
+
+    init(id: String = UUID().uuidString,
+         tag: String,
+         title: String,
+         description: String,
+         gradient: [Color]) {
+        self.id = id
+        self.tag = tag
+        self.title = title
+        self.description = description
+        self.gradient = gradient
+    }
 }
 
 struct HomeActiveLesson: Identifiable {
@@ -256,15 +250,18 @@ final class HomeViewModel: ObservableObject {
         StatItem(icon: "person.fill", label: "RANK", value: "Amateur", isHighlighted: true),
         StatItem(icon: "star", label: "ACTIVE", value: "0 Lessons")
     ]
+    @Published var challenges: [Challenge] = []
     @Published var activeLessons: [HomeActiveLesson] = []
     @Published var isLoadingActiveLessons = false
 
     private let db = Firestore.firestore()
+    private let challengeStore = GlobalChallengeStore()
 
     func refreshDashboardForCurrentUser() async {
         guard Auth.auth().currentUser?.uid != nil else {
             greetingName = "Learner"
             activeLessons = []
+            challenges = Self.seededChallenges
             stats = [
                 StatItem(icon: "timer", label: "PLAY TIME", value: "0m"),
                 StatItem(icon: "person.fill", label: "RANK", value: "Amateur", isHighlighted: true),
@@ -275,7 +272,29 @@ final class HomeViewModel: ObservableObject {
 
         async let lessonsTask: Void = fetchActiveLessonsForCurrentUser()
         async let profileTask: Void = fetchDashboardProfileMetrics()
+        async let challengeTask: Void = fetchGlobalChallenges()
         _ = await (lessonsTask, profileTask)
+        _ = await challengeTask
+    }
+
+    private func fetchGlobalChallenges() async {
+        do {
+            let loaded = try await challengeStore.loadActiveChallenges()
+            challenges = loaded.map { challenge in
+                Challenge(
+                    id: challenge.id,
+                    tag: challenge.tag,
+                    title: challenge.title,
+                    description: challenge.description,
+                    gradient: challenge.gradient.map { Color(hex: $0) }
+                )
+            }
+            if challenges.isEmpty {
+                challenges = Self.seededChallenges
+            }
+        } catch {
+            challenges = Self.seededChallenges
+        }
     }
 
     func fetchActiveLessonsForCurrentUser() async {
@@ -383,6 +402,30 @@ final class HomeViewModel: ObservableObject {
             StatItem(icon: "star", label: "ACTIVE", value: activeText)
         ]
     }
+
+    private static let seededChallenges: [Challenge] = [
+        Challenge(
+            id: "weekly-neuro-sync-drift",
+            tag: "TIMED CHALLENGE",
+            title: "NEURO-SYNC\nDRIFT",
+            description: "Synchronize your neural pathways in this high-intensity cognitive race.",
+            gradient: [Color(hex: "4FC3A1"), Color(hex: "3B82C4"), Color(hex: "6C63D8")]
+        ),
+        Challenge(
+            id: "weekly-quantum-leap",
+            tag: "DAILY QUEST",
+            title: "QUANTUM\nLEAP",
+            description: "Push your limits across physics, logic and spatial reasoning.",
+            gradient: [Color(hex: "F59E0B"), Color(hex: "EF4444"), Color(hex: "8B5CF6")]
+        ),
+        Challenge(
+            id: "weekly-flash-facts",
+            tag: "SPEED RUN",
+            title: "FLASH\nFACTS",
+            description: "60 seconds. 20 questions. How fast can your brain fire?",
+            gradient: [Color(hex: "10B981"), Color(hex: "059669"), Color(hex: "0EB060")]
+        )
+    ]
 
     private func firstName(from rawName: String) -> String {
         let cleaned = rawName.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -538,6 +581,7 @@ private struct StatCard: View {
 // MARK: - ChallengeCard
 private struct ChallengeCard: View {
     let challenge: Challenge
+    let onJoin: () -> Void
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             LinearGradient(
@@ -572,7 +616,9 @@ private struct ChallengeCard: View {
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    Button("Join Now") {}
+                    Button("Join Now") {
+                        onJoin()
+                    }
                         .font(.system(size: 13, weight: .bold, design: .rounded))
                         .foregroundColor(.black)
                         .padding(.horizontal, 16)
