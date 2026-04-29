@@ -181,8 +181,14 @@ struct LoginView: View {
 
                     // ── Social buttons ────────────────────────────────
                     VStack(spacing: 12) {
-                        EVSocialButton(icon: "applelogo", title: "Sign In with Apple") {}
-                        EVSocialButton(icon: "g.circle", title: "Sign In with Google", isGoogle: true) {}
+                        EVSocialButton(icon: "g.circle", title: "Sign In with Google", isGoogle: true) {
+                            Task {
+                                await vm.signInWithGoogle()
+                                if vm.isAuthenticated {
+                                    onAuthenticated?()
+                                }
+                            }
+                        }
                     }
                     .padding(.horizontal, 24)
                     .padding(.top, 16)
