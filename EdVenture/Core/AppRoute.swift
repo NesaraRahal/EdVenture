@@ -6,6 +6,7 @@ enum AppRoute: Hashable {
     case register
     case forgotPassword
     case otp
+    case preferencesOnboarding
     case home
     case lessons
     case discovery
@@ -13,6 +14,8 @@ enum AppRoute: Hashable {
     case settings
     case notifications
     case notificationSettings
+    case helpCenter
+    case support
     case termsPrivacy
     case biometricsSettings
     case accessibilitySettings

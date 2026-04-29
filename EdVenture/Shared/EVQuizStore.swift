@@ -274,8 +274,14 @@ final class EVQuizStore {
         }
 
         updatedSession.currentQuestionIndex = max(0, questionIndex)
+        let safeTimeSpent = max(0, timeSpentSeconds)
 
         let userRef = db.collection("users").document(userId)
+        let (dailyGoalMinutes, updatedDailyProgressSeconds, didReachDailyGoalNow, isDailyGoalCompleted) = try await computeDailyGoalUpdate(
+            userRef: userRef,
+            incrementSeconds: safeTimeSpent,
+            now: now
+        )
         let sessionRef = userRef.collection("quizSessions").document(session.lessonId)
         let attemptRef = userRef.collection("quizAttempts").document()
         let activeLessonRef = userRef.collection("activeLessons").document(session.lessonId)
@@ -286,7 +292,6 @@ final class EVQuizStore {
             .document(question.id)
         let leaderboardRef = db.collection("leaderboards").document("global").collection("entries").document(userId)
         let streakValue: Any = isCorrect ? FieldValue.increment(Int64(1)) : 0
-        let safeTimeSpent = max(0, timeSpentSeconds)
         let uniqueCompleted = Set(updatedSession.completedQuestionIDs)
         let completedCount = uniqueCompleted.count
         let normalizedTotal = max(totalQuestions, 1)
@@ -299,6 +304,11 @@ final class EVQuizStore {
             "quizXP": FieldValue.increment(Int64(earnedXP)),
             "totalPlaySeconds": FieldValue.increment(Int64(safeTimeSpent)),
             "totalQuizRounds": FieldValue.increment(Int64(1)),
+            "dailyGoalMinutes": dailyGoalMinutes,
+            "dailyProgressDate": dayKey(now),
+            "dailyProgressSeconds": updatedDailyProgressSeconds,
+            "dailyGoalCompleted": isDailyGoalCompleted,
+            "dailyGoalCompletedAt": isDailyGoalCompleted ? Timestamp(date: now) : FieldValue.delete(),
             "currentQuizStreak": streakValue,
             "updatedAt": Timestamp(date: now)
         ], forDocument: userRef, merge: true)
@@ -350,6 +360,16 @@ final class EVQuizStore {
         ], forDocument: leaderboardRef, merge: true)
         try await batch.commit()
 
+        if didReachDailyGoalNow {
+            await EVNotificationService.shared.sendDailyGoalCompletedNotification(goalMinutes: dailyGoalMinutes)
+        }
+
+        await EVNotificationService.shared.updateDailyGoalReminder(
+            goalMinutes: dailyGoalMinutes,
+            progressSeconds: updatedDailyProgressSeconds,
+            completed: isDailyGoalCompleted
+        )
+
         return EVQuizRoundResult(
             isCorrect: isCorrect,
             earnedXP: earnedXP,
@@ -357,6 +377,33 @@ final class EVQuizStore {
             lockUntil: updatedSession.lockedUntil,
             updatedSession: updatedSession
         )
+    }
+
+    private func computeDailyGoalUpdate(userRef: DocumentReference,
+                                        incrementSeconds: Int,
+                                        now: Date) async throws -> (Int, Int, Bool, Bool) {
+        let snapshot = try await userRef.getDocument()
+        let data = snapshot.data() ?? [:]
+
+        let goalMinutes = max(1, data["dailyGoalMinutes"] as? Int ?? 10)
+        let today = dayKey(now)
+        let storedDay = data["dailyProgressDate"] as? String ?? today
+        let priorProgress = storedDay == today ? (data["dailyProgressSeconds"] as? Int ?? 0) : 0
+        let wasCompleted = storedDay == today ? (data["dailyGoalCompleted"] as? Bool ?? false) : false
+
+        let updatedProgress = max(0, priorProgress + incrementSeconds)
+        let completed = updatedProgress >= goalMinutes * 60
+        let reachedNow = !wasCompleted && completed
+
+        return (goalMinutes, updatedProgress, reachedNow, completed)
+    }
+
+    private func dayKey(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.string(from: date)
     }
 }
 

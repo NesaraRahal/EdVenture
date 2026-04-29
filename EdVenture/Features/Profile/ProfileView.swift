@@ -42,6 +42,10 @@ struct ProfileView: View {
                     header
                         .padding(.top, 28)
 
+                    dailyGoalCard
+                        .padding(.top, 22)
+                        .padding(.horizontal, 20)
+
                     statsGrid
                         .padding(.top, 28)
                         .padding(.horizontal, 20)
@@ -206,6 +210,46 @@ struct ProfileView: View {
                 )
                 .padding(.top, 10)
         }
+    }
+
+    private var dailyGoalCard: some View {
+        let goal = max(vm.profile.dailyGoalMinutes, 1)
+        let progressMinutes = vm.profile.dailyProgressSeconds / 60
+        let progressRatio = min(max(Double(vm.profile.dailyProgressSeconds) / Double(goal * 60), 0.0), 1.0)
+
+        return VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Label("DAILY GOAL", systemImage: "target")
+                    .font(.system(size: 12, weight: .bold, design: .rounded))
+                    .foregroundColor(.white.opacity(0.8))
+                    .tracking(1)
+
+                Spacer()
+
+                Text("\(goal) min")
+                    .font(.system(size: 16, weight: .bold, design: .rounded))
+                    .foregroundColor(Color(hex: "7EF5A8"))
+            }
+
+            Text("Progress today: \(progressMinutes) / \(goal) minutes")
+                .font(.system(size: 14, design: .rounded))
+                .foregroundColor(.white.opacity(0.65))
+
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    Capsule()
+                        .fill(Color.white.opacity(0.16))
+                        .frame(height: 10)
+
+                    Capsule()
+                        .fill(Color(hex: "0EB060"))
+                        .frame(width: geo.size.width * progressRatio, height: 10)
+                }
+            }
+            .frame(height: 10)
+        }
+        .padding(16)
+        .background(statCardBackground)
     }
 
     private var statsGrid: some View {

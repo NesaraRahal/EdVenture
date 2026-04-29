@@ -13,8 +13,17 @@ struct ContentView: View {
     @State private var showTelemetryConsentPrompt = false
     @State private var isSavingTelemetryConsent = false
     @State private var telemetryConsentErrorMessage: String?
+    @AppStorage("onboarding.hasSeenWelcome") private var hasSeenWelcome = false
     @AppStorage("accessibility.dynamicText") private var dynamicText = true
     private let mainTabAnimation = Animation.easeInOut(duration: 0.22)
+
+    private var loginRootView: some View {
+        LoginView(
+            onAuthenticated:  { path.append(AppRoute.home) },
+            onCreateAccount:  { path.append(AppRoute.register) },
+            onForgotPassword: { path.append(AppRoute.forgotPassword) }
+        )
+    }
 
     private func goToMainTab(_ route: AppRoute) {
         if path.count == 1, path.first == route { return }
@@ -56,6 +65,8 @@ struct ContentView: View {
             return "Forgot password screen. Enter your email to receive a reset link."
         case .otp:
             return "Verification screen. Enter the code sent to your email to complete sign up."
+        case .preferencesOnboarding:
+            return "Preferences onboarding screen. Select interests and daily goal before entering home."
         case .home:
             return "Home screen. Top navigation and profile avatar at the top. Main area shows active lessons, progress, and quick access to tabs."
         case .lessons:
@@ -80,6 +91,10 @@ struct ContentView: View {
             return "Notifications screen. View all notifications or unread ones. Notifications include leaderboard milestones, new lessons, rewards, and lesson additions."
         case .notificationSettings:
             return "Notification settings screen. Manage push notifications and reminder preferences."
+        case .helpCenter:
+            return "Help Center screen. Browse common questions and support guidance."
+        case .support:
+            return "Support screen. Send a support request to the EdVenture team."
         case .termsPrivacy:
             return "Terms and privacy screen. Review policy details and manage telemetry sharing preferences."
         case .accessibilitySettings:
@@ -97,8 +112,18 @@ struct ContentView: View {
 
     var body: some View {
         NavigationStack(path: $path) {
-            WelcomeView {
-                path.append(AppRoute.login)
+            Group {
+                if hasSeenWelcome {
+                    loginRootView
+                } else {
+                    WelcomeView {
+                        hasSeenWelcome = true
+                    }
+                    .onAppear {
+                        // Mark as seen on first presentation so welcome is truly one-time.
+                        hasSeenWelcome = true
+                    }
+                }
             }
             .navigationDestination(for: AppRoute.self) { route in
                 Group {
@@ -106,11 +131,7 @@ struct ContentView: View {
 
                     // ── Auth flow ──────────────────────────────────
                     case .login:
-                        LoginView(
-                            onAuthenticated:  { path.append(AppRoute.home) },
-                            onCreateAccount:  { path.append(AppRoute.register) },
-                            onForgotPassword: { path.append(AppRoute.forgotPassword) }
-                        )
+                        loginRootView
 
                     case .register:
                         RegisterView(
@@ -129,7 +150,14 @@ struct ContentView: View {
                     case .otp:
                         OTPView(
                             email:      registeredEmail,
-                            onVerified: { path.append(AppRoute.home) }
+                            onVerified: { path.append(AppRoute.preferencesOnboarding) }
+                        )
+
+                    case .preferencesOnboarding:
+                        PreferencesOnboardingView(
+                            onCompleted: {
+                                path.append(AppRoute.home)
+                            }
                         )
 
                     // ── Main app ───────────────────────────────────
@@ -276,17 +304,40 @@ struct ContentView: View {
 
                     case .settings:
                         SettingsView(
-                            onSignOut: { path = [] },
+                            onSignOut: {
+                                hasSeenWelcome = true
+                                path = []
+                            },
                             onHome:      { goToMainTab(.home) },
                             onLessons:   { goToMainTab(.lessons) },
                             onDiscovery: { goToMainTab(.discovery) },
                             onRank:      { goToMainTab(.rank) },
                             onNotifications: { path.append(AppRoute.notifications) },
                             onNotificationSettings: { path.append(AppRoute.notificationSettings) },
+                            onHelpCenter: { path.append(AppRoute.helpCenter) },
+                            onSupport: { path.append(AppRoute.support) },
                             onTermsAndPrivacy: { path.append(AppRoute.termsPrivacy) },
                             onAccessibility: { path.append(AppRoute.accessibilitySettings) },
                             onBiometricsAndPassword: { path.append(AppRoute.biometricsSettings) },
                             onProfile:   { path.append(AppRoute.profile) }
+                        )
+
+                    case .helpCenter:
+                        HelpCenterView(
+                            onBack: {
+                                if !path.isEmpty {
+                                    path.removeLast()
+                                }
+                            }
+                        )
+
+                    case .support:
+                        SupportView(
+                            onBack: {
+                                if !path.isEmpty {
+                                    path.removeLast()
+                                }
+                            }
                         )
 
                     case .termsPrivacy:

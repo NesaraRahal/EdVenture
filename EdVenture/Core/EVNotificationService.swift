@@ -1,5 +1,7 @@
 import Foundation
 import UserNotifications
+import FirebaseAuth
+import FirebaseFirestore
 
 enum EVNotificationApplyResult {
     case success
@@ -35,6 +37,7 @@ final class EVNotificationService {
         static let streak = "ev.notifications.streak"
         static let weekly = "ev.notifications.weekly"
         static let newContent = "ev.notifications.newcontent"
+        static let dailyGoalReminderPrefix = "ev.notifications.dailygoal.reminder"
 
         static let all = [daily, streak, weekly, newContent]
     }
@@ -216,5 +219,93 @@ final class EVNotificationService {
             identifierPrefix: "ev.notifications.lesson.added",
             delaySeconds: 2.0
         )
+    }
+
+    func sendDailyGoalCompletedNotification(goalMinutes: Int) async {
+        _ = await sendInstantNotification(
+            title: "Daily Goal Completed",
+            body: "Great work. You reached your \(goalMinutes)-minute learning goal today.",
+            identifierPrefix: "ev.notifications.dailygoal.completed",
+            delaySeconds: 1.5
+        )
+    }
+
+    func updateDailyGoalReminder(goalMinutes: Int,
+                                 progressSeconds: Int,
+                                 completed: Bool) async {
+        let pushEnabled = UserDefaults.standard.object(forKey: "notifications.pushEnabled") as? Bool ?? true
+        let dailyRemindersEnabled = UserDefaults.standard.object(forKey: "notifications.dailyReminders") as? Bool ?? true
+
+        guard pushEnabled, dailyRemindersEnabled else {
+            await cancelTodayDailyGoalReminder()
+            return
+        }
+
+        if completed || progressSeconds >= goalMinutes * 60 {
+            await cancelTodayDailyGoalReminder()
+        } else {
+            await scheduleToday8PMDailyGoalReminder(goalMinutes: goalMinutes)
+        }
+    }
+
+    func refreshDailyGoalReminderForCurrentUser() async {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+
+        do {
+            let snapshot = try await Firestore.firestore().collection("users").document(uid).getDocument()
+            let data = snapshot.data() ?? [:]
+
+            let goalMinutes = data["dailyGoalMinutes"] as? Int ?? 10
+            let progressSeconds = data["dailyProgressSeconds"] as? Int ?? 0
+            let completed = data["dailyGoalCompleted"] as? Bool ?? false
+
+            await updateDailyGoalReminder(
+                goalMinutes: goalMinutes,
+                progressSeconds: progressSeconds,
+                completed: completed
+            )
+        } catch {
+            // Keep silent to avoid breaking app flows.
+        }
+    }
+
+    private func scheduleToday8PMDailyGoalReminder(goalMinutes: Int) async {
+        let now = Date()
+        let calendar = Calendar.current
+
+        guard let today8PM = calendar.date(bySettingHour: 20, minute: 0, second: 0, of: now),
+              today8PM > now else {
+            return
+        }
+
+        let content = UNMutableNotificationContent()
+        content.title = "Daily Goal Reminder"
+        content.body = "It is 8:00 PM. You still have time to hit your \(goalMinutes)-minute goal today."
+        content.sound = .default
+
+        let trigger = UNCalendarNotificationTrigger(
+            dateMatching: calendar.dateComponents([.year, .month, .day, .hour, .minute], from: today8PM),
+            repeats: false
+        )
+
+        let request = UNNotificationRequest(
+            identifier: todayDailyGoalReminderId(),
+            content: content,
+            trigger: trigger
+        )
+
+        try? await center.add(request)
+    }
+
+    private func cancelTodayDailyGoalReminder() async {
+        center.removePendingNotificationRequests(withIdentifiers: [todayDailyGoalReminderId()])
+    }
+
+    private func todayDailyGoalReminderId() -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.dateFormat = "yyyy-MM-dd"
+        return "\(Id.dailyGoalReminderPrefix).\(formatter.string(from: Date()))"
     }
 }
