@@ -10,13 +10,15 @@ struct ProfileView: View {
     var onEditProfile: (() -> Void)?
     var onBack: (() -> Void)?
 
-    private let stats: [ProfileStat] = [
-        .init(icon: "flame.fill", value: "12 Days", label: "CURRENT STREAK", color: Color(hex: "7EF5A8")),
-        .init(icon: "medal.fill", value: "4,250", label: "TOTAL XP", color: Color(hex: "75DFFF")),
-        .init(icon: "scope", value: "94%", label: "ACCURACY %", color: Color(hex: "66FFC8")),
-        .init(icon: "brain.head.profile", value: "148", label: "QUIZZES COMPLETED", color: Color(hex: "7EF5A8"))
-    ]
 
+    private var stats: [ProfileStat] {
+        [
+            .init(icon: "flame.fill", value: "\(vm.profile.currentStreak) Days", label: "CURRENT STREAK", color: Color(hex: "7EF5A8")),
+            .init(icon: "medal.fill", value: "\(vm.profile.totalXP)", label: "TOTAL XP", color: Color(hex: "75DFFF")),
+            .init(icon: "scope", value: "\(vm.profile.accuracyPercent)%", label: "ACCURACY %", color: Color(hex: "66FFC8")),
+            .init(icon: "brain.head.profile", value: "\(vm.profile.quizzesCompleted)", label: "QUIZZES COMPLETED", color: Color(hex: "7EF5A8"))
+        ]
+    }
     private let achievements: [AchievementItem] = [
         .init(icon: "rosette", title: "7-DAY STREAK", color: Color(hex: "F6CC2E"), isLocked: false),
         .init(icon: "speedometer", title: "SPEED DEMON", color: Color(hex: "7EF5A8"), isLocked: false),

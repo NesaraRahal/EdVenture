@@ -10,6 +10,10 @@ struct ContentView: View {
     @State private var path: [AppRoute] = []
     @State private var registeredEmail = ""
     @State private var pendingLessonFilter: String?
+    @State private var activeGlobalChallengeId: String?
+    @State private var activeGlobalChallengeQuestions: [EVQuizQuestion] = []
+    @State private var activeGlobalChallengeSessionId: String?
+    @State private var isRecordingGlobalChallengeCompletion = false
     @State private var showTelemetryConsentPrompt = false
     @State private var isSavingTelemetryConsent = false
     @State private var telemetryConsentErrorMessage: String?
@@ -107,6 +111,8 @@ struct ContentView: View {
             return "Insights screen. View subject proficiency, consistency heatmap, weekly XP performance, and daily rhythm patterns."
         case .editProfile:
             return "Edit profile screen. Update your personal details, avatar, and save changes."
+        case .globalChallenge:
+            return "Global challenge screen. Join this week's event, compete for bonus XP, and rank by accuracy and speed."
         }
     }
 
@@ -126,281 +132,8 @@ struct ContentView: View {
                 }
             }
             .navigationDestination(for: AppRoute.self) { route in
-                Group {
-                    switch route {
-
-                    // ── Auth flow ──────────────────────────────────
-                    case .login:
-                        loginRootView
-
-                    case .register:
-                        RegisterView(
-                            onSignIn: { path.removeLast() },
-                            onRegistered: { email in
-                                registeredEmail = email
-                                path.append(AppRoute.otp)
-                            }
-                        )
-
-                    case .forgotPassword:
-                        ForgotPasswordView(
-                            onCreateAccount: { path.append(AppRoute.register) }
-                        )
-
-                    case .otp:
-                        OTPView(
-                            email:      registeredEmail,
-                            onVerified: { path.append(AppRoute.preferencesOnboarding) }
-                        )
-
-                    case .preferencesOnboarding:
-                        PreferencesOnboardingView(
-                            onCompleted: {
-                                path.append(AppRoute.home)
-                            }
-                        )
-
-                    // ── Main app ───────────────────────────────────
-                    case .home:
-                        HomeView(
-                            onLessons:   { goToLessons() },
-                            onDiscovery: { goToMainTab(.discovery) },
-                            onRank:      { goToMainTab(.rank) },
-                            onSettings:  { goToMainTab(.settings) },
-                            onOpenLesson: { lessonId in
-                                path.append(AppRoute.lessonDetail(lessonId))
-                            },
-                            onNotifications: { path.append(AppRoute.notifications) },
-                            onProfile:   { path.append(AppRoute.profile) }
-                        )
-
-                    case .lessons:
-                        LessonsView(
-                            initialSelectedFilter: pendingLessonFilter,
-                            onHome:      { goToMainTab(.home) },
-                            onDiscovery: { goToMainTab(.discovery) },
-                            onRank:      { goToMainTab(.rank) },
-                            onSettings:  { goToMainTab(.settings) },
-                            onNotifications: { path.append(AppRoute.notifications) },
-                            onProfile:   { path.append(AppRoute.profile) }
-                        )
-
-                    case .lessonDetail(let lessonId):
-                        LessonDetailView(
-                            lessonId: lessonId,
-                            onBack: {
-                                if !path.isEmpty {
-                                    path.removeLast()
-                                }
-                            },
-                            onStartQuiz: { selectedLessonId, questionIndex in
-                                path.append(AppRoute.question(lessonId: selectedLessonId, questionIndex: questionIndex))
-                            }
-                        )
-
-                    case .question(let lessonId, let questionIndex):
-                        LevelQuizView(
-                            lessonId: lessonId,
-                            questionIndex: questionIndex,
-                            onShowSummary: { lessonId, score, total, earnedXP, attemptSessionId, totalTimeSeconds in
-                                path.append(
-                                    AppRoute.levelSummary(
-                                        lessonId: lessonId,
-                                        score: score,
-                                        total: total,
-                                        earnedXP: earnedXP,
-                                        attemptSessionId: attemptSessionId,
-                                        totalTimeSeconds: totalTimeSeconds
-                                    )
-                                )
-                            },
-                            onBack: {
-                                if !path.isEmpty {
-                                    path.removeLast()
-                                }
-                            }
-                        )
-
-                    case .levelSummary(let lessonId, let score, let total, let earnedXP, let attemptSessionId, let totalTimeSeconds):
-                        LevelSummaryView(
-                            lessonId: lessonId,
-                            score: score,
-                            totalQuestions: total,
-                            earnedXP: earnedXP,
-                            totalTimeSeconds: totalTimeSeconds,
-                            onBackToLesson: {
-                                if path.count >= 2 {
-                                    path.removeLast(2)
-                                } else if !path.isEmpty {
-                                    path.removeLast()
-                                }
-                            },
-                            onReviewAnswers: {
-                                path.append(
-                                    AppRoute.reviewAnswers(
-                                        lessonId: lessonId,
-                                        attemptSessionId: attemptSessionId,
-                                        score: score,
-                                        total: total,
-                                        totalTimeSeconds: totalTimeSeconds
-                                    )
-                                )
-                            },
-                            onReturnHome: {
-                                goToMainTab(.home)
-                            }
-                        )
-
-                    case .reviewAnswers(let lessonId, let attemptSessionId, let score, let total, let totalTimeSeconds):
-                        ReviewAnswersView(
-                            lessonId: lessonId,
-                            attemptSessionId: attemptSessionId,
-                            score: score,
-                            totalQuestions: total,
-                            totalTimeSeconds: totalTimeSeconds,
-                            onBack: {
-                                if !path.isEmpty {
-                                    path.removeLast()
-                                }
-                            }
-                        )
-
-                    case .tutorialQuestion:
-                        TutorialQuestionView(
-                            onBack: {
-                                if !path.isEmpty {
-                                    path.removeLast()
-                                }
-                            }
-                        )
-
-                    case .accessibilitySettings:
-                        AccessibilitySettingsView(
-                            onBack: {
-                                if !path.isEmpty {
-                                    path.removeLast()
-                                }
-                            }
-                        )
-                    case .discovery:
-                        DiscoveryView(
-                            onHome:     { goToMainTab(.home) },
-                            onLessons:  { goToMainTab(.lessons) },
-                            onRank:     { goToMainTab(.rank) },
-                            onSettings: { goToMainTab(.settings) },
-                            onNotifications: { path.append(AppRoute.notifications) },
-                            onProfile:  { path.append(AppRoute.profile) }
-                        )
-
-                    case .rank:
-                        RankView(
-                            onHome:      { goToMainTab(.home) },
-                            onLessons:   { goToMainTab(.lessons) },
-                            onDiscovery: { goToMainTab(.discovery) },
-                            onSettings:  { goToMainTab(.settings) },
-                            onNotifications: { path.append(AppRoute.notifications) },
-                            onProfile:   { path.append(AppRoute.profile) }
-                        )
-
-                    case .settings:
-                        SettingsView(
-                            onSignOut: {
-                                hasSeenWelcome = true
-                                path = []
-                            },
-                            onHome:      { goToMainTab(.home) },
-                            onLessons:   { goToMainTab(.lessons) },
-                            onDiscovery: { goToMainTab(.discovery) },
-                            onRank:      { goToMainTab(.rank) },
-                            onNotifications: { path.append(AppRoute.notifications) },
-                            onNotificationSettings: { path.append(AppRoute.notificationSettings) },
-                            onHelpCenter: { path.append(AppRoute.helpCenter) },
-                            onSupport: { path.append(AppRoute.support) },
-                            onTermsAndPrivacy: { path.append(AppRoute.termsPrivacy) },
-                            onAccessibility: { path.append(AppRoute.accessibilitySettings) },
-                            onBiometricsAndPassword: { path.append(AppRoute.biometricsSettings) },
-                            onProfile:   { path.append(AppRoute.profile) }
-                        )
-
-                    case .helpCenter:
-                        HelpCenterView(
-                            onBack: {
-                                if !path.isEmpty {
-                                    path.removeLast()
-                                }
-                            }
-                        )
-
-                    case .support:
-                        SupportView(
-                            onBack: {
-                                if !path.isEmpty {
-                                    path.removeLast()
-                                }
-                            }
-                        )
-
-                    case .termsPrivacy:
-                        TermsPrivacyView(
-                            onBack: {
-                                if !path.isEmpty {
-                                    path.removeLast()
-                                }
-                            }
-                        )
-
-                    case .notificationSettings:
-                        NotificationSettingsView(
-                            onBack: {
-                                if !path.isEmpty {
-                                    path.removeLast()
-                                }
-                            }
-                        )
-
-                    case .notifications:
-                        NotificationsView()
-
-                    case .biometricsSettings:
-                        BiometricsPasswordView(
-                            onBack: {
-                                if !path.isEmpty {
-                                    path.removeLast()
-                                }
-                            }
-                        )
-
-                    case .profile:
-                        ProfileView(
-                            onInsights: { path.append(AppRoute.insights) },
-                            onEditProfile: { path.append(AppRoute.editProfile) },
-                            onBack: {
-                                if !path.isEmpty {
-                                    path.removeLast()
-                                }
-                            }
-                        )
-
-                    case .insights:
-                        InsightsView(
-                            onBack: {
-                                if !path.isEmpty {
-                                    path.removeLast()
-                                }
-                            }
-                        )
-
-                    case .editProfile:
-                        EditProfileView(
-                            onBack: {
-                                if !path.isEmpty {
-                                    path.removeLast()
-                                }
-                            }
-                        )
-                    }
-                }
-                .onAppear {
+                destinationView(for: route)
+                    .onAppear {
                     EVAccessibilitySupport.announce(accessibilityAnnouncement(for: route))
 
                     if route == .home {
@@ -456,6 +189,352 @@ struct ContentView: View {
         // slide transition with velocity-matched spring by default.
         // The liquid glass morph on the nav bar is automatic when
         // .ultraThinMaterial is used consistently across screens.
+    }
+
+    @ViewBuilder
+    private func destinationView(for route: AppRoute) -> some View {
+        switch route {
+
+        // ── Auth flow ──────────────────────────────────
+        case .login:
+            loginRootView
+
+        case .register:
+            RegisterView(
+                onSignIn: { path.removeLast() },
+                onRegistered: { email in
+                    registeredEmail = email
+                    path.append(AppRoute.otp)
+                }
+            )
+
+        case .forgotPassword:
+            ForgotPasswordView(
+                onCreateAccount: { path.append(AppRoute.register) }
+            )
+
+        case .otp:
+            OTPView(
+                email: registeredEmail,
+                onVerified: { path.append(AppRoute.preferencesOnboarding) }
+            )
+
+        case .preferencesOnboarding:
+            PreferencesOnboardingView(
+                onCompleted: {
+                    path.append(AppRoute.home)
+                }
+            )
+
+        // ── Main app ───────────────────────────────────
+        case .home:
+            HomeView(
+                onLessons: { goToLessons() },
+                onDiscovery: { goToMainTab(.discovery) },
+                onRank: { goToMainTab(.rank) },
+                onSettings: { goToMainTab(.settings) },
+                onOpenLesson: { lessonId in
+                    path.append(AppRoute.lessonDetail(lessonId))
+                },
+                onNotifications: { path.append(AppRoute.notifications) },
+                onProfile: { path.append(AppRoute.profile) },
+                onChallenge: { challengeId in
+                    path.append(AppRoute.globalChallenge(challengeId))
+                }
+            )
+
+        case .lessons:
+            LessonsView(
+                initialSelectedFilter: pendingLessonFilter,
+                onHome: { goToMainTab(.home) },
+                onDiscovery: { goToMainTab(.discovery) },
+                onRank: { goToMainTab(.rank) },
+                onSettings: { goToMainTab(.settings) },
+                onNotifications: { path.append(AppRoute.notifications) },
+                onProfile: { path.append(AppRoute.profile) }
+            )
+
+        case .lessonDetail(let lessonId):
+            LessonDetailView(
+                lessonId: lessonId,
+                onBack: {
+                    if !path.isEmpty {
+                        path.removeLast()
+                    }
+                },
+                onStartQuiz: { selectedLessonId, questionIndex in
+                    path.append(AppRoute.question(lessonId: selectedLessonId, questionIndex: questionIndex))
+                }
+            )
+
+        case .globalChallenge(let challengeId):
+            GlobalChallengeLoaderView(
+                challengeId: challengeId,
+                onBack: {
+                    if !path.isEmpty {
+                        path.removeLast()
+                    }
+                },
+                onStart: { challenge, questions in
+                    activeGlobalChallengeId = challengeId
+                    activeGlobalChallengeQuestions = questions
+                    activeGlobalChallengeSessionId = "global-challenge-\(challenge.id)"
+                    path.append(AppRoute.question(lessonId: activeGlobalChallengeSessionId ?? challenge.lessonId, questionIndex: 0))
+                }
+            )
+
+        case .question(let lessonId, let questionIndex):
+            LevelQuizView(
+                lessonId: lessonId,
+                questionIndex: questionIndex,
+                sessionLessonId: activeGlobalChallengeSessionId,
+                questionsOverride: activeGlobalChallengeQuestions.isEmpty ? nil : activeGlobalChallengeQuestions,
+                lessonTitleOverride: activeGlobalChallengeId.flatMap { _ in "Global Challenge" },
+                onShowSummary: { lessonId, score, total, earnedXP, attemptSessionId, totalTimeSeconds in
+                    path.append(
+                        AppRoute.levelSummary(
+                            lessonId: lessonId,
+                            score: score,
+                            total: total,
+                            earnedXP: earnedXP,
+                            attemptSessionId: attemptSessionId,
+                            totalTimeSeconds: totalTimeSeconds
+                        )
+                    )
+                },
+                onBack: {
+                    if activeGlobalChallengeId != nil {
+                        activeGlobalChallengeId = nil
+                        activeGlobalChallengeQuestions = []
+                        activeGlobalChallengeSessionId = nil
+                    }
+                    if !path.isEmpty {
+                        path.removeLast()
+                    }
+                }
+            )
+
+        case .levelSummary(let lessonId, let score, let total, let earnedXP, let attemptSessionId, let totalTimeSeconds):
+            LevelSummaryView(
+                lessonId: lessonId,
+                score: score,
+                totalQuestions: total,
+                earnedXP: earnedXP,
+                totalTimeSeconds: totalTimeSeconds,
+                onBackToLesson: {
+                    if path.count >= 2 {
+                        path.removeLast(2)
+                    } else if !path.isEmpty {
+                        path.removeLast()
+                    }
+                },
+                onReviewAnswers: {
+                    path.append(
+                        AppRoute.reviewAnswers(
+                            lessonId: lessonId,
+                            attemptSessionId: attemptSessionId,
+                            score: score,
+                            total: total,
+                            totalTimeSeconds: totalTimeSeconds
+                        )
+                    )
+                },
+                onReturnHome: {
+                    goToMainTab(.home)
+                }
+            )
+
+        case .reviewAnswers(let lessonId, let attemptSessionId, let score, let total, let totalTimeSeconds):
+            ReviewAnswersView(
+                lessonId: lessonId,
+                attemptSessionId: attemptSessionId,
+                score: score,
+                totalQuestions: total,
+                totalTimeSeconds: totalTimeSeconds,
+                onBack: {
+                    if !path.isEmpty {
+                        path.removeLast()
+                    }
+                }
+            )
+
+        case .tutorialQuestion:
+            TutorialQuestionView(
+                onBack: {
+                    if !path.isEmpty {
+                        path.removeLast()
+                    }
+                }
+            )
+
+        case .accessibilitySettings:
+            AccessibilitySettingsView(
+                onBack: {
+                    if !path.isEmpty {
+                        path.removeLast()
+                    }
+                }
+            )
+
+        case .discovery:
+            DiscoveryView(
+                onHome: { goToMainTab(.home) },
+                onLessons: { goToMainTab(.lessons) },
+                onRank: { goToMainTab(.rank) },
+                onSettings: { goToMainTab(.settings) },
+                onNotifications: { path.append(AppRoute.notifications) },
+                onProfile: { path.append(AppRoute.profile) }
+            )
+
+        case .rank:
+            RankView(
+                onHome: { goToMainTab(.home) },
+                onLessons: { goToMainTab(.lessons) },
+                onDiscovery: { goToMainTab(.discovery) },
+                onSettings: { goToMainTab(.settings) },
+                onNotifications: { path.append(AppRoute.notifications) },
+                onProfile: { path.append(AppRoute.profile) }
+            )
+
+        case .settings:
+            SettingsView(
+                onSignOut: {
+                    hasSeenWelcome = true
+                    path = []
+                },
+                onHome: { goToMainTab(.home) },
+                onLessons: { goToMainTab(.lessons) },
+                onDiscovery: { goToMainTab(.discovery) },
+                onRank: { goToMainTab(.rank) },
+                onNotifications: { path.append(AppRoute.notifications) },
+                onNotificationSettings: { path.append(AppRoute.notificationSettings) },
+                onHelpCenter: { path.append(AppRoute.helpCenter) },
+                onSupport: { path.append(AppRoute.support) },
+                onTermsAndPrivacy: { path.append(AppRoute.termsPrivacy) },
+                onAccessibility: { path.append(AppRoute.accessibilitySettings) },
+                onBiometricsAndPassword: { path.append(AppRoute.biometricsSettings) },
+                onProfile: { path.append(AppRoute.profile) }
+            )
+
+        case .helpCenter:
+            HelpCenterView(
+                onBack: {
+                    if !path.isEmpty {
+                        path.removeLast()
+                    }
+                }
+            )
+
+        case .support:
+            SupportView(
+                onBack: {
+                    if !path.isEmpty {
+                        path.removeLast()
+                    }
+                }
+            )
+
+        case .termsPrivacy:
+            TermsPrivacyView(
+                onBack: {
+                    if !path.isEmpty {
+                        path.removeLast()
+                    }
+                }
+            )
+
+        case .notificationSettings:
+            NotificationSettingsView(
+                onBack: {
+                    if !path.isEmpty {
+                        path.removeLast()
+                    }
+                }
+            )
+
+        case .notifications:
+            NotificationsView()
+
+        case .biometricsSettings:
+            BiometricsPasswordView(
+                onBack: {
+                    if !path.isEmpty {
+                        path.removeLast()
+                    }
+                }
+            )
+
+        case .profile:
+            ProfileView(
+                onInsights: { path.append(AppRoute.insights) },
+                onEditProfile: { path.append(AppRoute.editProfile) },
+                onBack: {
+                    if !path.isEmpty {
+                        path.removeLast()
+                    }
+                }
+            )
+
+        case .insights:
+            InsightsView(
+                onBack: {
+                    if !path.isEmpty {
+                        path.removeLast()
+                    }
+                }
+            )
+
+        case .editProfile:
+            EditProfileView(
+                onBack: {
+                    if !path.isEmpty {
+                        path.removeLast()
+                    }
+                }
+            )
+        }
+    }
+
+    @MainActor
+    private func recordGlobalChallengeCompletionIfNeeded(score: Int,
+                                                         total: Int,
+                                                         earnedXP: Int,
+                                                         attemptSessionId: String,
+                                                         totalTimeSeconds: Int) async {
+        guard let challengeId = activeGlobalChallengeId else { return }
+        guard !isRecordingGlobalChallengeCompletion else { return }
+
+        isRecordingGlobalChallengeCompletion = true
+        defer {
+            isRecordingGlobalChallengeCompletion = false
+            activeGlobalChallengeId = nil
+            activeGlobalChallengeQuestions = []
+            activeGlobalChallengeSessionId = nil
+        }
+
+        do {
+            let store = GlobalChallengeStore()
+            let challenge = try await store.loadChallenge(id: challengeId) ?? store.fallbackChallenge(id: challengeId)
+
+            guard let user = Auth.auth().currentUser else { return }
+            let trimmedDisplayName = user.displayName?.trimmingCharacters(in: .whitespacesAndNewlines)
+            let displayName = (trimmedDisplayName?.isEmpty == false ? trimmedDisplayName! : nil)
+                ?? user.email?.components(separatedBy: "@").first
+                ?? "Learner"
+
+            try await store.recordCompletion(
+                challenge: challenge,
+                userId: user.uid,
+                displayName: displayName,
+                score: score,
+                totalQuestions: total,
+                earnedXP: earnedXP,
+                timeSpentSeconds: totalTimeSeconds,
+                attemptSessionId: attemptSessionId
+            )
+        } catch {
+            telemetryConsentErrorMessage = error.localizedDescription
+        }
     }
 
     private func evaluateTelemetryConsentPrompt() async {
