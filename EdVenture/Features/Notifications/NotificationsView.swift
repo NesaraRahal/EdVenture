@@ -6,11 +6,46 @@ struct NotificationsView: View {
 
     var body: some View {
         ZStack {
-            Color(hex: "0F0F0F")
-                .ignoresSafeArea()
+            Color(hex: "0F0F0F").ignoresSafeArea()
 
-            VStack(spacing: 0) {
-                // MARK: - Header
+            ScrollView(showsIndicators: false) {
+                LazyVStack(spacing: 12) {
+                    if vm.filteredNotifications.isEmpty {
+                        emptyState
+                    } else {
+                        ForEach(vm.filteredNotifications) { notification in
+                            NotificationCard(
+                                notification: notification,
+                                onTap: {
+                                    vm.markAsRead(notification)
+                                },
+                                onDelete: {
+                                    vm.deleteNotification(notification)
+                                }
+                            )
+                        }
+                    }
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 10)
+                .padding(.bottom, 24)
+            }
+            .safeAreaInset(edge: .top, spacing: 0) {
+                topChrome
+            }
+        }
+        .navigationBarHidden(true)
+    }
+
+    private var topChrome: some View {
+        VStack(spacing: 14) {
+            ZStack {
+                Text("Notifications")
+                    .font(.system(size: 40, weight: .bold, design: .rounded))
+                    .foregroundColor(.white)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+
                 HStack {
                     Button {
                         dismiss()
@@ -22,92 +57,65 @@ struct NotificationsView: View {
                                 .font(.system(size: 16, weight: .semibold))
                         }
                         .foregroundColor(.white)
-                        .frame(height: 40)
-                        .padding(.horizontal, 12)
+                        .padding(.horizontal, 14)
+                        .frame(height: 42)
                         .background(Color.white.opacity(0.1))
-                        .cornerRadius(20)
+                        .clipShape(Capsule())
                     }
 
                     Spacer()
 
-                    Text("Notifications")
-                        .font(.system(size: 18, weight: .bold, design: .rounded))
-                        .foregroundColor(.white)
-
-                    Spacer()
-
-                    // Placeholder for alignment
                     Color.clear
-                        .frame(width: 70)
-                }
-                .padding(.horizontal, 20)
-                .padding(.vertical, 16)
-                .padding(.top, 52)
-
-                // MARK: - Tabs
-                HStack(spacing: 12) {
-                    ForEach(["All", "Unread"], id: \.self) { tab in
-                        Button {
-                            withAnimation(.easeInOut(duration: 0.2)) {
-                                vm.selectedTab = tab
-                            }
-                        } label: {
-                            Text(tab)
-                                .font(.system(size: 14, weight: .semibold))
-                                .foregroundColor(vm.selectedTab == tab ? .white : .gray)
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 10)
-                                .background(
-                                    vm.selectedTab == tab
-                                        ? Color(hex: "0EB060")
-                                        : Color.white.opacity(0.05)
-                                )
-                                .cornerRadius(20)
-                        }
-                    }
-
-                    Spacer()
-                }
-                .padding(.horizontal, 20)
-                .padding(.top, 12)
-                .padding(.bottom, 10)
-
-                // MARK: - Notifications List
-                ScrollView {
-                    VStack(spacing: 12) {
-                        if vm.filteredNotifications.isEmpty {
-                            VStack(spacing: 12) {
-                                Image(systemName: "bell.slash.fill")
-                                    .font(.system(size: 40))
-                                    .foregroundColor(.gray)
-
-                                Text("No notifications")
-                                    .font(.system(size: 14, weight: .semibold))
-                                    .foregroundColor(.gray)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 40)
-                        } else {
-                            ForEach(vm.filteredNotifications) { notification in
-                                NotificationCard(
-                                    notification: notification,
-                                    onTap: {
-                                        vm.markAsRead(notification)
-                                    },
-                                    onDelete: {
-                                        vm.deleteNotification(notification)
-                                    }
-                                )
-                            }
-                        }
-                    }
-                    .padding(.horizontal, 20)
-                    .padding(.top, 8)
-                    .padding(.bottom, 20)
+                        .frame(width: 78, height: 42)
                 }
             }
+
+            HStack(spacing: 12) {
+                tabButton("All")
+                tabButton("Unread")
+                Spacer(minLength: 0)
+            }
         }
-        .navigationBarHidden(true)
+        .padding(.horizontal, 20)
+        .padding(.top, 8)
+        .padding(.bottom, 10)
+        .background(Color(hex: "0F0F0F"))
+    }
+
+    private var emptyState: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "bell.slash.fill")
+                .font(.system(size: 40, weight: .semibold))
+                .foregroundColor(.white.opacity(0.35))
+
+            Text("No notifications")
+                .font(.system(size: 15, weight: .semibold, design: .rounded))
+                .foregroundColor(.white.opacity(0.55))
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.top, 40)
+        .padding(.bottom, 30)
+    }
+
+    private func tabButton(_ tab: String) -> some View {
+        Button {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                vm.selectedTab = tab
+            }
+        } label: {
+            Text(tab)
+                .font(.system(size: 14, weight: .semibold, design: .rounded))
+                .foregroundColor(vm.selectedTab == tab ? .white : .white.opacity(0.55))
+                .padding(.horizontal, 24)
+                .padding(.vertical, 12)
+                .background(
+                    vm.selectedTab == tab
+                        ? Color(hex: "0EB060")
+                        : Color.white.opacity(0.06)
+                )
+                .clipShape(Capsule())
+        }
+        .buttonStyle(.plain)
     }
 }
 
@@ -119,69 +127,70 @@ private struct NotificationCard: View {
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
-            HStack(spacing: 12) {
-                // Icon container
+            HStack(spacing: 14) {
                 Circle()
                     .fill(notification.type.color.opacity(0.2))
-                    .frame(width: 48, height: 48)
+                    .frame(width: 56, height: 56)
                     .overlay(
                         Image(systemName: notification.type.icon)
-                            .font(.system(size: 18, weight: .semibold))
+                            .font(.system(size: 20, weight: .semibold))
                             .foregroundColor(notification.type.color)
                     )
 
                 VStack(alignment: .leading, spacing: 4) {
-                    HStack {
-                        Text(notification.title)
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(.white)
-
-                        Spacer()
-
-                        Text(notification.timeAgo)
-                            .font(.system(size: 12, weight: .regular))
-                            .foregroundColor(.gray)
-                    }
+                    Text(notification.title)
+                        .font(.system(size: 16, weight: .bold, design: .rounded))
+                        .foregroundColor(.white)
+                        .lineLimit(1)
+                        .truncationMode(.tail)
 
                     Text(notification.description)
-                        .font(.system(size: 13, weight: .regular))
-                        .foregroundColor(.gray)
+                        .font(.system(size: 13, design: .rounded))
+                        .foregroundColor(.white.opacity(0.58))
                         .lineLimit(2)
                 }
 
-                Spacer()
+                Spacer(minLength: 10)
 
                 VStack(alignment: .trailing, spacing: 8) {
+                    Text(notification.timeAgo)
+                        .font(.system(size: 12, weight: .semibold, design: .rounded))
+                        .foregroundColor(.white.opacity(0.45))
+
                     if !notification.isRead {
                         Circle()
                             .fill(Color(hex: "0EB060"))
-                            .frame(width: 8, height: 8)
+                            .frame(width: 10, height: 10)
                     }
                 }
+
             }
-            .padding(12)
+            .padding(14)
+            .padding(.trailing, 30)
             .background(
-                RoundedRectangle(cornerRadius: 16)
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
                     .fill(Color.white.opacity(0.05))
                     .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(Color.white.opacity(0.08), lineWidth: 1)
+                        RoundedRectangle(cornerRadius: 20, style: .continuous)
+                            .stroke(Color.white.opacity(0.08), lineWidth: 0.8)
                     )
             )
+            .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             .onTapGesture {
                 onTap()
             }
 
-            // Delete button
             Button(action: onDelete) {
                 Image(systemName: "xmark")
                     .font(.system(size: 12, weight: .semibold))
-                    .foregroundColor(.gray)
-                    .frame(width: 24, height: 24)
+                    .foregroundColor(.white.opacity(0.45))
+                    .frame(width: 28, height: 28)
                     .background(Color.white.opacity(0.1))
-                    .cornerRadius(12)
+                    .clipShape(Circle())
             }
-            .padding(12)
+            .padding(.top, 10)
+            .padding(.trailing, 10)
+            .buttonStyle(.plain)
         }
     }
 }
