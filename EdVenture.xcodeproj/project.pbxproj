@@ -13,6 +13,7 @@
 		037CC1002FB4AA1100ABC001 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 037CC0FF2FB4AA1100ABC001 /* FirebaseAnalytics */; };
 		037CC1022FB4AB2200ABC001 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 037CC1012FB4AB2200ABC001 /* FirebaseCrashlytics */; };
 		03A855D82F861BCB00D0ABA2 /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 03A855D72F861BCB00D0ABA2 /* FirebaseRemoteConfig */; };
+		03B1E5A32F9ABC1200ABCD01 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 03B1E5A22F9ABC1200ABCD01 /* GoogleSignIn */; };
 		58D91D7E2FB4000200ABC001 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 58D91D7D2FB4000200ABC001 /* FirebaseStorage */; };
 /* End PBXBuildFile section */
 
@@ -20,9 +21,22 @@
 		037BA73D2F7B8FB10087C670 /* EdVenture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EdVenture.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		031999782FA1E593002E940A /* Exceptions for "EdVenture" folder in "EdVenture" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 037BA73C2F7B8FB10087C670 /* EdVenture */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		037BA73F2F7B8FB10087C670 /* EdVenture */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				031999782FA1E593002E940A /* Exceptions for "EdVenture" folder in "EdVenture" target */,
+			);
 			path = EdVenture;
 			sourceTree = "<group>";
 		};
@@ -40,6 +54,7 @@
 				037BA76E2F7BA3960087C670 /* FirebaseAuth in Frameworks */,
 				037BA7722F7BA3B00087C670 /* FirebaseFirestore in Frameworks */,
 				03A855D82F861BCB00D0ABA2 /* FirebaseRemoteConfig in Frameworks */,
+				03B1E5A32F9ABC1200ABCD01 /* GoogleSignIn in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -131,6 +146,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				037BA7682F7B9F650087C670 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				03B1E5A12F9ABC1200ABCD01 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 037BA73E2F7B8FB10087C670 /* Products */;
@@ -292,6 +308,7 @@
 				DEVELOPMENT_TEAM = W3CBD9RD5Z;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = EdVenture/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Allow camera access to capture your profile photo and scan educational materials to unlock learning content.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Allow photo library access to choose your profile photo.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -327,6 +344,7 @@
 				DEVELOPMENT_TEAM = W3CBD9RD5Z;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = EdVenture/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Allow camera access to capture your profile photo and scan educational materials to unlock learning content.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Allow photo library access to choose your profile photo.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -384,6 +402,14 @@
 				minimumVersion = 12.11.0;
 			};
 		};
+		03B1E5A12F9ABC1200ABCD01 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -416,6 +442,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 037BA7682F7B9F650087C670 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseRemoteConfig;
+		};
+		03B1E5A22F9ABC1200ABCD01 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 03B1E5A12F9ABC1200ABCD01 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
 		};
 		58D91D7D2FB4000200ABC001 /* FirebaseStorage */ = {
 			isa = XCSwiftPackageProductDependency;

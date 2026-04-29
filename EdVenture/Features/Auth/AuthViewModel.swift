@@ -8,7 +8,9 @@
 import SwiftUI
 import FirebaseAuth
 import FirebaseFirestore
+import FirebaseCore
 import Combine
+import GoogleSignIn
 
 // MARK: - AuthViewModel
 // Shared across all Auth screens.
@@ -108,7 +110,46 @@ final class AuthViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Forgot Password
+    // MARK: - Google Sign In
+    func signInWithGoogle() async {
+        errorMessage = nil
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            guard let clientID = FirebaseApp.app()?.options.clientID else {
+                errorMessage = "Firebase client ID not configured."
+                return
+            }
+
+            let config = GIDConfiguration(clientID: clientID)
+            GIDSignIn.sharedInstance.configuration = config
+
+            // Get the root view controller
+            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                  let rootViewController = windowScene.windows.first?.rootViewController else {
+                errorMessage = "Unable to get view controller for sign in."
+                return
+            }
+
+            let result = try await GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController)
+            let user = result.user
+
+            guard let idToken = user.idToken?.tokenString else {
+                errorMessage = "Failed to retrieve ID token from Google."
+                return
+            }
+
+            let accessToken = user.accessToken.tokenString
+            let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: accessToken)
+
+            let authResult = try await Auth.auth().signIn(with: credential)
+            try await ensureUserProfileDefaults(for: authResult.user)
+            isAuthenticated = true
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
     func sendPasswordReset(email: String) async {
         errorMessage = nil
 
