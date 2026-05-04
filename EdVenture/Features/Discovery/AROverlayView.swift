@@ -71,18 +71,46 @@ struct AROverlayView: View {
 
                         Button(action: { viewModel.startDiscoveryQuiz() }) {
                             HStack(spacing: 10) {
-                                Image(systemName: "sparkles")
-                                Text("Quick Quiz + XP")
-                                    .font(.system(size: 15, weight: .semibold, design: .rounded))
+                                Image(systemName: viewModel.isDiscoveryScanCompleted ? "lock.fill" : "sparkles")
+                                Text(viewModel.isDiscoveryScanCompleted ? "Quiz Already Completed" : "Quick Quiz + XP")
+                                    .font(.system(size: 16, weight: .bold, design: .rounded))
                             }
-                            .foregroundColor(.black)
+                            .foregroundColor(viewModel.isDiscoveryScanCompleted ? .black : .black)
                             .frame(maxWidth: 320)
-                            .frame(height: 48)
-                            .background(Color(hex: "0EB060"))
+                            .frame(height: 50)
+                            .background(viewModel.isDiscoveryScanCompleted ? Color(hex: "FFB800") : Color(hex: "0EB060"))
+                            .overlay(
+                                Capsule()
+                                    .stroke(Color.black.opacity(0.2), lineWidth: 1)
+                            )
                             .clipShape(Capsule())
-                            .shadow(color: Color.black.opacity(0.2), radius: 8, y: 4)
+                            .shadow(color: Color.black.opacity(0.25), radius: 10, y: 5)
                         }
+                        .buttonStyle(.plain)
+                        .allowsHitTesting(!viewModel.isDiscoveryScanCompleted)
                         .padding(.top, 12)
+
+                        if viewModel.isDiscoveryScanCompleted {
+                            HStack(spacing: 10) {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .font(.system(size: 14, weight: .bold))
+                                    .foregroundColor(Color(hex: "FFB800"))
+                                Text("Quiz already completed for this book. Scan a new one to generate another quiz.")
+                                    .font(.system(size: 13, weight: .semibold, design: .rounded))
+                                    .foregroundColor(.white)
+                                    .multilineTextAlignment(.leading)
+                            }
+                            .padding(.vertical, 10)
+                            .padding(.horizontal, 14)
+                            .background(Color.black.opacity(0.55))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                    .stroke(Color(hex: "FFB800").opacity(0.6), lineWidth: 1)
+                            )
+                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            .padding(.horizontal, 24)
+                            .padding(.top, 8)
+                        }
                     } else {
                         VStack(spacing: 8) {
                             ProgressView()

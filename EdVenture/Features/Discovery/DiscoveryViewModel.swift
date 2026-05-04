@@ -35,6 +35,7 @@ class DiscoveryViewModel: ObservableObject {
     @Published var lastDiscoveryXP: Int = 0
     @Published var discoverySummary: DiscoveryQuizSummaryPayload?
     @Published var discoveryReviewItems: [DiscoveryReviewItem] = []
+    @Published var isDiscoveryScanCompleted = false
     
     private let visionRecognizer = VisionTextRecognizer.shared
     private let geminiService = GeminiAPIService.shared
@@ -52,7 +53,6 @@ class DiscoveryViewModel: ObservableObject {
         state = .scanning
         isShowingCamera = true
     }
-    
     func closeCamera() {
         isShowingCamera = false
         if case .scanning = state {
@@ -81,6 +81,7 @@ class DiscoveryViewModel: ObservableObject {
     // MARK: - Text Recognition
     
     private func processImage(_ image: UIImage) {
+        isDiscoveryScanCompleted = false
         Task {
             await extractTextFromImage(image)
         }
@@ -127,6 +128,15 @@ class DiscoveryViewModel: ObservableObject {
             
             educationalContent = content
             progress = 0.9
+
+            if let user = Auth.auth().currentUser {
+                let fingerprint = scanFingerprint(for: content)
+                let scanRef = db.collection("users").document(user.uid)
+                    .collection("discoveryScans").document(fingerprint)
+                isDiscoveryScanCompleted = await isScanAlreadyAwarded(scanRef: scanRef)
+            } else {
+                isDiscoveryScanCompleted = false
+            }
             
             // Save to history
             saveScanToHistory(content)
@@ -174,6 +184,10 @@ class DiscoveryViewModel: ObservableObject {
     func startDiscoveryQuiz() {
         guard let content = educationalContent, !content.quizQuestions.isEmpty else {
             errorMessage = "No quiz questions are available yet."
+            return
+        }
+        guard !isDiscoveryScanCompleted else {
+            errorMessage = "You've already completed the quiz for this scan."
             return
         }
         isShowingDiscoveryQuiz = true
@@ -322,13 +336,17 @@ class DiscoveryViewModel: ObservableObject {
     }
 
     private func scanFingerprint(for content: EducationalContent) -> String {
-        let normalized = content.extractedText
-            .lowercased()
-            .replacingOccurrences(of: "\n", with: " ")
-            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let normalized = normalizedFingerprintText(from: content.extractedText)
         let data = Data(normalized.utf8)
         let digest = SHA256.hash(data: data)
         return digest.compactMap { String(format: "%02x", $0) }.joined()
+    }
+
+    private func normalizedFingerprintText(from text: String) -> String {
+        text
+            .lowercased()
+            .replacingOccurrences(of: "\n", with: " ")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     private func isScanAlreadyAwarded(scanRef: DocumentReference) async -> Bool {
@@ -387,6 +405,7 @@ class DiscoveryViewModel: ObservableObject {
         educationalContent = nil
         errorMessage = nil
         progress = 0.0
+        isDiscoveryScanCompleted = false
     }
     
     // MARK: - API Configuration
