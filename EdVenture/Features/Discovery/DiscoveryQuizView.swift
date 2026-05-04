@@ -9,6 +9,8 @@ struct DiscoveryQuizView: View {
     @State private var showFeedback = false
     @State private var isCorrect = false
     @State private var currentQuestionIndex = 0
+    @State private var correctCount = 0
+    @State private var reviewItems: [DiscoveryReviewItem] = []
     @Environment(\.dismiss) var dismiss
     
     var currentQuestion: EVDiscoveryQuizQuestion? {
@@ -270,6 +272,23 @@ struct DiscoveryQuizView: View {
     
     private func submitAnswer(_ selectedIndex: Int, correctIndex: Int) {
         isCorrect = selectedIndex == correctIndex
+        if isCorrect {
+            correctCount += 1
+        }
+        if let question = currentQuestion {
+            let item = DiscoveryReviewItem(
+                id: question.id,
+                order: currentQuestionIndex,
+                question: question.question,
+                options: question.options,
+                selectedIndex: selectedIndex,
+                correctIndex: question.correctAnswerIndex,
+                explanation: question.explanation
+            )
+            if !reviewItems.contains(where: { $0.id == item.id }) {
+                reviewItems.append(item)
+            }
+        }
         withAnimation(.easeInOut(duration: 0.3)) {
             showFeedback = true
         }
@@ -283,6 +302,16 @@ struct DiscoveryQuizView: View {
                 showFeedback = false
             }
         } else {
+            Task {
+                let total = viewModel.educationalContent?.quizQuestions.count ?? 0
+                await MainActor.run {
+                    viewModel.discoveryReviewItems = reviewItems.sorted { $0.order < $1.order }
+                }
+                await viewModel.completeDiscoveryQuiz(correctCount: correctCount, totalCount: total)
+                await MainActor.run {
+                    viewModel.isShowingDiscoverySummary = true
+                }
+            }
             dismiss()
         }
     }
@@ -296,6 +325,7 @@ struct DiscoveryQuizView: View {
         id: "preview",
         title: "The Trial",
         detectedObjectName: "Book Cover",
+        category: "philosophy",
         shortSummary: "A philosophical novel exploring bureaucracy",
         educationalFacts: ["Published 1925", "Written by Kafka"],
         difficultyLevel: "Advanced",

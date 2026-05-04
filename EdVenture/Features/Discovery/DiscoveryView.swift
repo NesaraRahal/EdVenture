@@ -47,6 +47,33 @@ struct DiscoveryView: View {
         }
         .navigationBarHidden(true)
         .onAppear { appeared = true }
+        .sheet(isPresented: $viewModel.isShowingDiscoveryQuiz) {
+            DiscoveryQuizView(viewModel: viewModel)
+                .interactiveDismissDisabled(false)
+        }
+        .sheet(isPresented: $viewModel.isShowingDiscoverySummary) {
+            if let summary = viewModel.discoverySummary {
+                DiscoveryQuizSummaryView(
+                    summary: summary,
+                    onReview: {
+                        viewModel.isShowingDiscoverySummary = false
+                        viewModel.isShowingDiscoveryReview = true
+                    },
+                    onDone: {
+                        viewModel.isShowingDiscoverySummary = false
+                        viewModel.discoverySummary = nil
+                    }
+                )
+            }
+        }
+        .sheet(isPresented: $viewModel.isShowingDiscoveryReview) {
+            DiscoveryQuizReviewView(
+                items: viewModel.discoveryReviewItems,
+                onDone: {
+                    viewModel.isShowingDiscoveryReview = false
+                }
+            )
+        }
         .fullScreenCover(isPresented: $viewModel.isShowingCamera) {
             CameraViewControllerWrapper(
                 onImageCaptured: { image in
