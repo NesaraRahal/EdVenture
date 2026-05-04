@@ -5,24 +5,30 @@ import Combine
 
 struct LevelQuizView: View {
     let lessonId: String
+    let level: Int
     let questionIndex: Int
+    let totalLevels: Int
     let sessionLessonId: String?
     let questionsOverride: [EVQuizQuestion]?
     let lessonTitleOverride: String?
-    var onShowSummary: ((String, Int, Int, Int, String, Int) -> Void)?
+    var onShowSummary: ((String, Int, Int, Int, Int, Int, String, Int) -> Void)?
     var onBack: (() -> Void)?
 
     @StateObject private var vm = LevelQuizViewModel()
 
     init(lessonId: String,
+         level: Int,
          questionIndex: Int,
+         totalLevels: Int,
          sessionLessonId: String? = nil,
          questionsOverride: [EVQuizQuestion]? = nil,
          lessonTitleOverride: String? = nil,
-         onShowSummary: ((String, Int, Int, Int, String, Int) -> Void)? = nil,
+         onShowSummary: ((String, Int, Int, Int, Int, Int, String, Int) -> Void)? = nil,
          onBack: (() -> Void)? = nil) {
         self.lessonId = lessonId
+        self.level = level
         self.questionIndex = questionIndex
+        self.totalLevels = totalLevels
         self.sessionLessonId = sessionLessonId
         self.questionsOverride = questionsOverride
         self.lessonTitleOverride = lessonTitleOverride
@@ -89,7 +95,9 @@ struct LevelQuizView: View {
         .task(id: lessonId) {
             await vm.load(
                 lessonId: lessonId,
+                level: level,
                 startIndex: questionIndex,
+                totalLevels: totalLevels,
                 sessionLessonId: sessionLessonId,
                 questionsOverride: questionsOverride,
                 lessonTitleOverride: lessonTitleOverride
@@ -153,7 +161,7 @@ struct LevelQuizView: View {
                     Text(vm.lessonTitle)
                         .font(.system(size: 26, weight: .bold, design: .rounded))
                         .foregroundColor(.white)
-                    Text("Level 1 • Question \(vm.currentDisplayIndex + 1) of \(max(vm.questions.count, 1))")
+                    Text("Level \(vm.currentLevelDisplay) • Question \(vm.currentDisplayIndex + 1) of \(max(vm.questions.count, 1))")
                         .font(.system(size: 13, weight: .semibold, design: .rounded))
                         .foregroundColor(.white.opacity(0.55))
                 }
@@ -344,6 +352,8 @@ struct LevelQuizView: View {
                 if let summary = vm.consumePendingSummary() {
                     onShowSummary?(
                         summary.lessonId,
+                        summary.level,
+                        summary.totalLevels,
                         summary.score,
                         summary.totalQuestions,
                         summary.earnedXP,
@@ -479,6 +489,8 @@ final class LevelQuizViewModel: ObservableObject {
     private var userId: String?
     private var displayName: String = "Learner"
     private var totalQuestions = 0
+    private var totalLevels = 1
+    private var currentLevel = 1
     private var sessionLessonId: String?
     private var questionsOverride: [EVQuizQuestion]?
     private var lessonTitleOverride: String?
@@ -496,6 +508,10 @@ final class LevelQuizViewModel: ObservableObject {
 
     var currentDisplayIndex: Int {
         currentQuestion == nil ? 0 : currentIndex
+    }
+
+    var currentLevelDisplay: Int {
+        max(currentLevel, 1)
     }
 
     var sessionStreak: Int {
@@ -556,7 +572,9 @@ final class LevelQuizViewModel: ObservableObject {
     }
 
     func load(lessonId: String,
+              level: Int,
               startIndex: Int,
+              totalLevels: Int,
               sessionLessonId: String? = nil,
               questionsOverride: [EVQuizQuestion]? = nil,
               lessonTitleOverride: String? = nil) async {
@@ -573,6 +591,8 @@ final class LevelQuizViewModel: ObservableObject {
         self.sessionLessonId = sessionLessonId
         self.questionsOverride = questionsOverride
         self.lessonTitleOverride = lessonTitleOverride
+        self.currentLevel = max(1, level)
+        self.totalLevels = max(1, totalLevels)
 
         defer { isLoading = false }
 
@@ -590,7 +610,7 @@ final class LevelQuizViewModel: ObservableObject {
             if let questionsOverride {
                 loadedQuestions = questionsOverride
             } else {
-                loadedQuestions = try await store.loadLevelQuestions(lessonId: lessonId, level: 1)
+                loadedQuestions = try await store.loadLevelQuestions(lessonId: lessonId, level: self.currentLevel)
             }
             guard !loadedQuestions.isEmpty else {
                 errorMessage = "No questions were found for this level."
@@ -601,14 +621,17 @@ final class LevelQuizViewModel: ObservableObject {
             totalQuestions = loadedQuestions.count
             lessonTitle = self.lessonTitleOverride ?? sourceLessonId.replacingOccurrences(of: "_", with: " ").capitalized
 
-            let loadedSession = try await store.loadSession(userId: user.uid, lessonId: sourceLessonId, level: 1, totalQuestions: loadedQuestions.count)
+            let loadedSession = try await store.loadSession(userId: user.uid, lessonId: sourceLessonId, level: self.currentLevel, totalQuestions: loadedQuestions.count)
             var sanitizedSession = loadedSession
-            sanitizedSession.unlockedCount = loadedQuestions.count
+            let completedCount = sanitizedSession.completedQuestionIDs.count
+            sanitizedSession.unlockedCount = min(max(1, completedCount + 1), loadedQuestions.count)
             sanitizedSession.lockedUntil = nil
             session = sanitizedSession
 
-            let safeIndex = min(max(0, startIndex), max(loadedQuestions.count - 1, 0))
-            currentIndex = min(safeIndex, loadedQuestions.count - 1)
+            let resumeIndex = sanitizedSession.currentQuestionIndex
+            let safeStartIndex = min(max(0, startIndex), max(loadedQuestions.count - 1, 0))
+            let safeIndex = min(max(safeStartIndex, resumeIndex), loadedQuestions.count - 1)
+            currentIndex = safeIndex
             startTimerForCurrentQuestion()
 
             try await store.persistSession(userId: user.uid, session: sanitizedSession)
@@ -659,7 +682,8 @@ final class LevelQuizViewModel: ObservableObject {
                 attemptSessionId: attemptSessionId,
                 timeSpentSeconds: elapsed,
                 questionIndex: currentIndex,
-                totalQuestions: questions.count
+                totalQuestions: questions.count,
+                totalLevels: totalLevels
             )
 
             session = result.updatedSession
@@ -782,7 +806,8 @@ final class LevelQuizViewModel: ObservableObject {
                     attemptSessionId: attemptSessionId,
                     timeSpentSeconds: elapsed,
                     questionIndex: currentIndex,
-                    totalQuestions: questions.count
+                    totalQuestions: questions.count,
+                    totalLevels: totalLevels
                 )
 
                 session = result.updatedSession
@@ -808,6 +833,8 @@ final class LevelQuizViewModel: ObservableObject {
         let total = max(questions.count, totalQuestions, 1)
         pendingSummary = EVLevelSummaryPayload(
             lessonId: lessonIdFromSession,
+            level: currentLevel,
+            totalLevels: totalLevels,
             score: score,
             totalQuestions: total,
             earnedXP: sessionXP,
@@ -823,6 +850,8 @@ final class LevelQuizViewModel: ObservableObject {
 
 struct EVLevelSummaryPayload {
     let lessonId: String
+    let level: Int
+    let totalLevels: Int
     let score: Int
     let totalQuestions: Int
     let earnedXP: Int
@@ -939,5 +968,5 @@ private extension String {
 }
 
 #Preview {
-    LevelQuizView(lessonId: "astronomy", questionIndex: 0)
+    LevelQuizView(lessonId: "astronomy", level: 1, questionIndex: 0, totalLevels: 10)
 }

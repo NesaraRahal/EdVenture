@@ -5,6 +5,8 @@ import Combine
 
 struct LevelSummaryView: View {
     let lessonId: String
+    let level: Int
+    let totalLevels: Int
     let score: Int
     let totalQuestions: Int
     let earnedXP: Int
@@ -12,6 +14,7 @@ struct LevelSummaryView: View {
 
     var onBackToLesson: (() -> Void)?
     var onReviewAnswers: (() -> Void)?
+    var onProgressToNextLevel: (() -> Void)?
     var onReturnHome: (() -> Void)?
 
     @StateObject private var vm = LevelSummaryViewModel()
@@ -234,9 +237,13 @@ struct LevelSummaryView: View {
     private var actionButtons: some View {
         VStack(spacing: 12) {
             Button {
-                onBackToLesson?()
+                if level < totalLevels {
+                    onProgressToNextLevel?()
+                } else {
+                    onBackToLesson?()
+                }
             } label: {
-                Text("Progress to Next Level")
+                Text(level < totalLevels ? "Progress to Next Level" : "Back to Lesson")
                     .font(.system(size: 17, weight: .bold, design: .rounded))
                     .foregroundColor(.black)
                     .frame(maxWidth: .infinity)
@@ -421,5 +428,5 @@ final class LevelSummaryViewModel: ObservableObject {
 }
 
 #Preview {
-    LevelSummaryView(lessonId: "astronomy", score: 9, totalQuestions: 10, earnedXP: 500, totalTimeSeconds: 760)
+    LevelSummaryView(lessonId: "astronomy", level: 1, totalLevels: 10, score: 9, totalQuestions: 10, earnedXP: 500, totalTimeSeconds: 760)
 }

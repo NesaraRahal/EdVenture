@@ -101,7 +101,7 @@ struct EVQuizSessionState {
         EVQuizSessionState(
             lessonId: lessonId,
             level: level,
-            unlockedCount: max(totalQuestions, 1),
+            unlockedCount: 1,
             consecutiveWins: 0,
             correctInWindow: 0,
             windowStartsAt: Date(),
@@ -145,14 +145,14 @@ struct EVQuizSessionState {
         consecutiveWins += 1
         correctInWindow += 1
         completedQuestionIDs.append(questionId)
-
-        unlockedCount = max(totalQuestions, 1)
+        unlockedCount = min(totalQuestions, attemptedCount + 1)
     }
 
-    mutating func applyWrongAnswer(now: Date = Date()) {
+    mutating func applyWrongAnswer(totalQuestions: Int, now: Date = Date()) {
         attemptedCount += 1
         consecutiveWins = 0
         lockedUntil = nil
+        unlockedCount = min(max(1, attemptedCount + 1), max(totalQuestions, 1))
     }
 
     var dictionary: [String: Any] {
@@ -242,7 +242,8 @@ final class EVQuizStore {
     }
 
     func loadSession(userId: String, lessonId: String, level: Int, totalQuestions: Int) async throws -> EVQuizSessionState {
-        let ref = db.collection("users").document(userId).collection("quizSessions").document(lessonId)
+        let ref = db.collection("users").document(userId)
+            .collection("quizSessions").document(sessionDocumentId(lessonId: lessonId, level: level))
         let snapshot = try await ref.getDocument()
 
         guard let data = snapshot.data() else {
@@ -276,7 +277,7 @@ final class EVQuizStore {
 
     func persistSession(userId: String, session: EVQuizSessionState) async throws {
         try await db.collection("users").document(userId)
-            .collection("quizSessions").document(session.lessonId)
+            .collection("quizSessions").document(sessionDocumentId(lessonId: session.lessonId, level: session.level))
             .setData(session.dictionary, merge: true)
     }
 
@@ -288,7 +289,8 @@ final class EVQuizStore {
                      attemptSessionId: String,
                      timeSpentSeconds: Int,
                      questionIndex: Int,
-                     totalQuestions: Int) async throws -> EVQuizRoundResult {
+                     totalQuestions: Int,
+                     totalLevels: Int) async throws -> EVQuizRoundResult {
         var updatedSession = session.withLoadedWindow()
         let now = Date()
         let isCorrect = selectedIndex == question.correctIndex
@@ -302,7 +304,7 @@ final class EVQuizStore {
                 now: now
             )
         } else {
-            updatedSession.applyWrongAnswer(now: now)
+            updatedSession.applyWrongAnswer(totalQuestions: totalQuestions, now: now)
         }
 
         updatedSession.currentQuestionIndex = max(0, questionIndex)
@@ -314,7 +316,8 @@ final class EVQuizStore {
             incrementSeconds: safeTimeSpent,
             now: now
         )
-        let sessionRef = userRef.collection("quizSessions").document(session.lessonId)
+        let sessionRef = userRef.collection("quizSessions")
+            .document(sessionDocumentId(lessonId: session.lessonId, level: session.level))
         let attemptRef = userRef.collection("quizAttempts").document()
         let activeLessonRef = userRef.collection("activeLessons").document(session.lessonId)
         let questionProgressRef = userRef
@@ -327,8 +330,27 @@ final class EVQuizStore {
         let uniqueCompleted = Set(updatedSession.completedQuestionIDs)
         let completedCount = uniqueCompleted.count
         let normalizedTotal = max(totalQuestions, 1)
-        let progress = min(Double(completedCount) / Double(normalizedTotal), 1.0)
         let levelCompleted = completedCount >= normalizedTotal
+        let safeTotalLevels = max(totalLevels, 1)
+
+        let activeSnapshot = try await activeLessonRef.getDocument()
+        let activeData = activeSnapshot.data() ?? [:]
+        let existingCompletedLevels = Set(activeData["completedLevels"] as? [Int] ?? [])
+        let existingHighestUnlocked = max(activeData["highestUnlockedLevel"] as? Int ?? 1, 1)
+
+        var updatedCompletedLevels = existingCompletedLevels
+        if levelCompleted {
+            updatedCompletedLevels.insert(session.level)
+        }
+
+        let nextUnlocked = levelCompleted
+            ? max(existingHighestUnlocked, session.level + 1)
+            : existingHighestUnlocked
+        let clampedUnlocked = min(nextUnlocked, safeTotalLevels)
+        let currentLevel = levelCompleted
+            ? min(session.level + 1, safeTotalLevels)
+            : session.level
+        let progress = min(Double(updatedCompletedLevels.count) / Double(safeTotalLevels), 1.0)
 
         let batch = db.batch()
         batch.setData([
@@ -352,6 +374,10 @@ final class EVQuizStore {
             "completedQuestionIDs": Array(uniqueCompleted),
             "completedQuestionsCount": completedCount,
             "totalQuestions": normalizedTotal,
+            "totalLevels": safeTotalLevels,
+            "completedLevels": Array(updatedCompletedLevels).sorted(),
+            "highestUnlockedLevel": clampedUnlocked,
+            "currentLevel": currentLevel,
             "isCompleted": levelCompleted,
             "lastQuestionIndex": questionIndex,
             "updatedAt": Timestamp(date: now),
@@ -411,6 +437,11 @@ final class EVQuizStore {
         )
     }
 
+    private func sessionDocumentId(lessonId: String, level: Int) -> String {
+        let safeLevel = max(1, level)
+        return "\(lessonId)_L\(String(format: "%02d", safeLevel))"
+    }
+
     private func computeDailyGoalUpdate(userRef: DocumentReference,
                                         incrementSeconds: Int,
                                         now: Date) async throws -> (Int, Int, Bool, Bool) {
@@ -441,24 +472,11 @@ final class EVQuizStore {
 
 private extension Array where Element == EVQuizQuestion {
     func shuffledByDifficulty() -> [EVQuizQuestion] {
-        let sorted = sorted { lhs, rhs in
+        sorted { lhs, rhs in
             if lhs.difficulty == rhs.difficulty {
                 return lhs.order < rhs.order
             }
             return lhs.difficulty < rhs.difficulty
         }
-
-        let bucketSize = 10
-        var result: [EVQuizQuestion] = []
-        var index = 0
-
-        while index < sorted.count {
-            let upperBound = Swift.min(index + bucketSize, sorted.count)
-            let bucket = Array(sorted[index..<upperBound])
-            result.append(contentsOf: bucket.shuffled())
-            index = upperBound
-        }
-
-        return result
     }
 }

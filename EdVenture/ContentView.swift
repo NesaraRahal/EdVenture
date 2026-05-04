@@ -262,8 +262,8 @@ struct ContentView: View {
                         path.removeLast()
                     }
                 },
-                onStartQuiz: { selectedLessonId, questionIndex in
-                    path.append(AppRoute.question(lessonId: selectedLessonId, questionIndex: questionIndex))
+                onStartQuiz: { selectedLessonId, level, questionIndex, totalLevels in
+                    path.append(AppRoute.question(lessonId: selectedLessonId, level: level, questionIndex: questionIndex, totalLevels: totalLevels))
                 }
             )
 
@@ -279,21 +279,25 @@ struct ContentView: View {
                     activeGlobalChallengeId = challengeId
                     activeGlobalChallengeQuestions = questions
                     activeGlobalChallengeSessionId = "global-challenge-\(challenge.id)"
-                    path.append(AppRoute.question(lessonId: activeGlobalChallengeSessionId ?? challenge.lessonId, questionIndex: 0))
+                    path.append(AppRoute.question(lessonId: activeGlobalChallengeSessionId ?? challenge.lessonId, level: 1, questionIndex: 0, totalLevels: 1))
                 }
             )
 
-        case .question(let lessonId, let questionIndex):
+        case .question(let lessonId, let level, let questionIndex, let totalLevels):
             LevelQuizView(
                 lessonId: lessonId,
+                level: level,
                 questionIndex: questionIndex,
+                totalLevels: totalLevels,
                 sessionLessonId: activeGlobalChallengeSessionId,
                 questionsOverride: activeGlobalChallengeQuestions.isEmpty ? nil : activeGlobalChallengeQuestions,
                 lessonTitleOverride: activeGlobalChallengeId.flatMap { _ in "Global Challenge" },
-                onShowSummary: { lessonId, score, total, earnedXP, attemptSessionId, totalTimeSeconds in
+                onShowSummary: { lessonId, summaryLevel, summaryTotalLevels, score, total, earnedXP, attemptSessionId, totalTimeSeconds in
                     path.append(
                         AppRoute.levelSummary(
                             lessonId: lessonId,
+                            level: summaryLevel,
+                            totalLevels: summaryTotalLevels,
                             score: score,
                             total: total,
                             earnedXP: earnedXP,
@@ -314,9 +318,11 @@ struct ContentView: View {
                 }
             )
 
-        case .levelSummary(let lessonId, let score, let total, let earnedXP, let attemptSessionId, let totalTimeSeconds):
+        case .levelSummary(let lessonId, let level, let totalLevels, let score, let total, let earnedXP, let attemptSessionId, let totalTimeSeconds):
             LevelSummaryView(
                 lessonId: lessonId,
+                level: level,
+                totalLevels: totalLevels,
                 score: score,
                 totalQuestions: total,
                 earnedXP: earnedXP,
@@ -338,6 +344,10 @@ struct ContentView: View {
                             totalTimeSeconds: totalTimeSeconds
                         )
                     )
+                },
+                onProgressToNextLevel: {
+                    let nextLevel = min(level + 1, max(totalLevels, 1))
+                    path.append(AppRoute.question(lessonId: lessonId, level: nextLevel, questionIndex: 0, totalLevels: totalLevels))
                 },
                 onReturnHome: {
                     goToMainTab(.home)
