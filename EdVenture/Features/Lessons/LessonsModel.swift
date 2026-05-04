@@ -24,22 +24,19 @@ struct LessonModel: Identifiable {
 
     // MARK: - Init from Firestore document
     init?(id: String, data: [String: Any]) {
-        guard
-            let title       = data["title"]       as? String,
-            let description = data["description"] as? String,
-            let icon        = data["icon"]        as? String,
-            let totalLevels = data["totalLevels"] as? Int,
-            let order       = data["order"]       as? Int
-        else { return nil }
+        guard let title = data["title"] as? String else { return nil }
+
+        let fallbackDescription = "Short, focused practice to unlock harder levels."
+        let fallbackIcon = "book.fill"
 
         self.id          = id
         self.title       = title
-        self.description = description
-        self.icon        = icon
+        self.description = data["description"] as? String ?? fallbackDescription
+        self.icon        = data["icon"]        as? String ?? fallbackIcon
         self.color       = data["color"]     as? String ?? "0EB060"
         self.xpReward    = data["xpReward"]  as? Int    ?? 50
         self.scholars    = data["scholars"]  as? Int    ?? 0
-        self.totalLevels = totalLevels
-        self.order       = order
+        self.totalLevels = data["totalLevels"] as? Int ?? 10
+        self.order       = data["order"] as? Int ?? 999
     }
 }

@@ -215,10 +215,18 @@ final class EVQuizStore {
             return EVQuizQuestion(id: doc.documentID, data: data)
         }
         .filter { question in
-            question.level == level && question.isActive
+            question.isActive
         }
 
-        return questions.shuffledByDifficulty()
+        let levelFiltered = questions.filter { question in
+            question.level == level
+        }
+
+        if levelFiltered.isEmpty {
+            return questions.shuffledByDifficulty()
+        }
+
+        return levelFiltered.shuffledByDifficulty()
     }
 
     private func parseLevelOrder(from questionId: String) -> (level: Int, order: Int)? {
