@@ -192,7 +192,12 @@ struct LessonDetailView: View {
                 ForEach(vm.items) { item in
                     Button {
                         guard !item.isLocked else { return }
-                        onStartQuiz?(lesson.id, item.level, 0, lesson.totalLevels)
+                        Task {
+                            let ready = await vm.preloadLevelQuestions(lessonId: lesson.id, level: item.level)
+                            if ready {
+                                onStartQuiz?(lesson.id, item.level, 0, lesson.totalLevels)
+                            }
+                        }
                     } label: {
                         LevelNode(item: item)
                     }
@@ -245,6 +250,7 @@ final class LessonDetailViewModel: ObservableObject {
     @Published var errorMessage: String?
 
     private let db = Firestore.firestore()
+    private let quizStore = EVQuizStore()
 
     func load(lessonId: String) async {
         isLoading = true
@@ -324,6 +330,21 @@ final class LessonDetailViewModel: ObservableObject {
             )
         } catch {
             errorMessage = error.localizedDescription
+        }
+    }
+
+    func preloadLevelQuestions(lessonId: String, level: Int) async -> Bool {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            errorMessage = "Please sign in to load questions."
+            return false
+        }
+
+        do {
+            _ = try await quizStore.loadLevelQuestionSet(userId: uid, lessonId: lessonId, level: level)
+            return true
+        } catch {
+            errorMessage = error.localizedDescription
+            return false
         }
     }
 

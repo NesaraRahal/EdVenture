@@ -77,6 +77,10 @@ struct ContentView: View {
             return "Lessons screen. Browse lessons by category, search, and open a lesson card to start learning."
         case .lessonDetail:
             return "Lesson detail screen. Overview card shows XP per question and progress stats. Curriculum list below contains lesson quiz items with play buttons."
+        case .levelQuestions:
+            return "Level questions screen. Review all questions for this level, including completed and pending items."
+        case .levelQuestionReview:
+            return "Question review screen. See the prompt, correct answer, and explanation for a completed question."
         case .question:
             return "Question screen. Timer at top, question content in the center, answer options below, hint button, and next question button at the bottom."
         case .levelSummary:
@@ -262,8 +266,44 @@ struct ContentView: View {
                         path.removeLast()
                     }
                 },
-                onStartQuiz: { selectedLessonId, level, questionIndex, totalLevels in
-                    path.append(AppRoute.question(lessonId: selectedLessonId, level: level, questionIndex: questionIndex, totalLevels: totalLevels))
+                onStartQuiz: { selectedLessonId, level, _, totalLevels in
+                    path.append(AppRoute.levelQuestions(lessonId: selectedLessonId, level: level, totalLevels: totalLevels))
+                }
+            )
+
+        case .levelQuestions(let lessonId, let level, let totalLevels):
+            LevelQuestionListView(
+                lessonId: lessonId,
+                level: level,
+                totalLevels: totalLevels,
+                onBack: {
+                    if !path.isEmpty {
+                        path.removeLast()
+                    }
+                },
+                onSelectQuestion: { selectedIndex in
+                    path.append(
+                        AppRoute.question(
+                            lessonId: lessonId,
+                            level: level,
+                            questionIndex: selectedIndex,
+                            totalLevels: totalLevels
+                        )
+                    )
+                },
+                onReviewQuestion: { questionId in
+                    path.append(AppRoute.levelQuestionReview(lessonId: lessonId, questionId: questionId))
+                }
+            )
+
+        case .levelQuestionReview(let lessonId, let questionId):
+            LevelQuestionReviewView(
+                lessonId: lessonId,
+                questionId: questionId,
+                onBack: {
+                    if !path.isEmpty {
+                        path.removeLast()
+                    }
                 }
             )
 

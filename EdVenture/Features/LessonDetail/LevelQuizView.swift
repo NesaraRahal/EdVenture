@@ -610,7 +610,7 @@ final class LevelQuizViewModel: ObservableObject {
             if let questionsOverride {
                 loadedQuestions = questionsOverride
             } else {
-                loadedQuestions = try await store.loadLevelQuestions(lessonId: lessonId, level: self.currentLevel)
+                loadedQuestions = try await store.loadLevelQuestionSet(userId: user.uid, lessonId: lessonId, level: self.currentLevel)
             }
             guard !loadedQuestions.isEmpty else {
                 errorMessage = "No questions were found for this level."

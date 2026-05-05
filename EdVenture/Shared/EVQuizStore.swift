@@ -184,6 +184,64 @@ struct EVQuizRoundResult {
 final class EVQuizStore {
     private let db = Firestore.firestore()
 
+    func loadLevelQuestionSet(userId: String,
+                              lessonId: String,
+                              level: Int,
+                              limit: Int = 10) async throws -> [EVQuizQuestion] {
+        let docId = levelSetDocumentId(lessonId: lessonId, level: level)
+        let setRef = db.collection("users").document(userId)
+            .collection("levelQuestionSets").document(docId)
+        let snapshot = try await setRef.getDocument()
+
+        if let data = snapshot.data(),
+           let stored = data["questions"] as? [[String: Any]] {
+            let parsed = stored.compactMap { map -> EVQuizQuestion? in
+                guard let qid = map["id"] as? String else { return nil }
+                return EVQuizQuestion(id: qid, data: map)
+            }
+            .sorted { lhs, rhs in
+                if lhs.difficulty == rhs.difficulty {
+                    return lhs.order < rhs.order
+                }
+                return lhs.difficulty < rhs.difficulty
+            }
+
+            if !parsed.isEmpty {
+                return parsed
+            }
+        }
+
+        let all = try await loadLevelQuestions(lessonId: lessonId, level: level)
+        let selected = Array(all.prefix(max(limit, 1)))
+        let payload: [[String: Any]] = selected.map { question in
+            [
+                "id": question.id,
+                "lessonId": question.lessonId,
+                "level": question.level,
+                "order": question.order,
+                "difficulty": question.difficulty,
+                "xpMin": question.xpMin,
+                "xpMax": question.xpMax,
+                "xpSuggested": question.xpSuggested,
+                "prompt": question.prompt,
+                "choices": question.choices,
+                "correctIndex": question.correctIndex,
+                "explanation": question.explanation,
+                "tags": question.tags,
+                "isActive": question.isActive
+            ]
+        }
+
+        try await setRef.setData([
+            "lessonId": lessonId,
+            "level": level,
+            "questions": payload,
+            "createdAt": Timestamp(date: Date())
+        ], merge: true)
+
+        return selected
+    }
+
     func loadLevelQuestions(lessonId: String, level: Int) async throws -> [EVQuizQuestion] {
         let snapshot = try await db
             .collection("lessons")
@@ -220,10 +278,6 @@ final class EVQuizStore {
 
         let levelFiltered = questions.filter { question in
             question.level == level
-        }
-
-        if levelFiltered.isEmpty {
-            return questions.shuffledByDifficulty()
         }
 
         return levelFiltered.shuffledByDifficulty()
@@ -302,7 +356,8 @@ final class EVQuizStore {
         var updatedSession = session.withLoadedWindow()
         let now = Date()
         let isCorrect = selectedIndex == question.correctIndex
-        let earnedXP = isCorrect ? question.xpSuggested : 0
+        let alreadyCompleted = updatedSession.completedQuestionIDs.contains(question.id)
+        let earnedXP = isCorrect && !alreadyCompleted ? question.xpSuggested : 0
 
         if isCorrect {
             updatedSession.applyCorrectAnswer(
@@ -404,6 +459,9 @@ final class EVQuizStore {
             "level": session.level,
             "questionId": question.id,
             "questionIndex": questionIndex,
+            "questionPrompt": question.prompt,
+            "questionChoices": question.choices,
+            "questionExplanation": question.explanation,
             "selectedIndex": selectedIndex,
             "correctIndex": question.correctIndex,
             "isCorrect": isCorrect,
@@ -448,6 +506,10 @@ final class EVQuizStore {
     private func sessionDocumentId(lessonId: String, level: Int) -> String {
         let safeLevel = max(1, level)
         return "\(lessonId)_L\(String(format: "%02d", safeLevel))"
+    }
+
+    private func levelSetDocumentId(lessonId: String, level: Int) -> String {
+        sessionDocumentId(lessonId: lessonId, level: level)
     }
 
     private func computeDailyGoalUpdate(userRef: DocumentReference,
