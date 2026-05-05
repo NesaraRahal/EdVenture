@@ -524,11 +524,15 @@ final class UserProfileViewModel: ObservableObject {
         let last7 = filtered.filter { $0.answeredAt >= last7Start }
         let prev7 = filtered.filter { $0.answeredAt < last7Start && $0.answeredAt >= prev7Start }
 
-        guard last7.count >= 4, prev7.count >= 4 else { return ("No trend yet", "FFFFFF") }
+        guard last7.count >= 4, prev7.count >= 4 else { return ("Needs 2 weeks", "FFFFFF") }
 
         let lastAccuracy = accuracyPercent(for: last7)
         let prevAccuracy = accuracyPercent(for: prev7)
         let delta = lastAccuracy - prevAccuracy
+
+        if delta == 0 {
+            return ("Stable", "71F8AA")
+        }
 
         let sign = delta >= 0 ? "+" : ""
         let text = "\(sign)\(delta)% accuracy"
