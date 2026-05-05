@@ -10,6 +10,7 @@ struct EducationalContent: Codable, Identifiable {
     let id: String
     let title: String
     let detectedObjectName: String
+    let category: String
     let shortSummary: String
     let educationalFacts: [String]
     let difficultyLevel: String // "Beginner", "Intermediate", "Advanced"
@@ -20,7 +21,7 @@ struct EducationalContent: Codable, Identifiable {
     let generatedAt: Date
     
     enum CodingKeys: String, CodingKey {
-        case id, title, detectedObjectName, shortSummary, educationalFacts
+        case id, title, detectedObjectName, category, shortSummary, educationalFacts
         case difficultyLevel, keyLearningPoints, quizQuestions, arOverlayCaption
         case extractedText, generatedAt
     }
@@ -168,6 +169,7 @@ class GeminiAPIService: ObservableObject {
         {
             "title": "Name/title of the object",
             "detectedObjectName": "Type of object (e.g., 'Book Cover', 'Educational Poster')",
+            "category": "astronomy|computer_science|philosophy|biology|mathematics",
             "shortSummary": "2-3 sentence summary of the content",
             "educationalFacts": ["fact1", "fact2", "fact3", "fact4"],
             "difficultyLevel": "Beginner|Intermediate|Advanced",
@@ -198,6 +200,7 @@ class GeminiAPIService: ObservableObject {
         IMPORTANT:
         - Return ONLY valid JSON, no other text
         - Ensure all quiz questions have exactly 4 options
+        - Generate 5 questions when possible (4-6 acceptable)
         - Keep facts and learning points concise
         - Make content educationally valuable
         """
@@ -343,7 +346,8 @@ class GeminiAPIService: ObservableObject {
         let contentDict = try decoder.decode(GeminiContentDict.self, from: jsonData)
         
         let id = UUID().uuidString
-        let quizQuestions = contentDict.quizQuestions.enumerated().map { index, q in
+        let limitedQuestions = Array(contentDict.quizQuestions.prefix(6))
+        let quizQuestions = limitedQuestions.enumerated().map { index, q in
             EVDiscoveryQuizQuestion(
                 id: "\(id)_q\(index)",
                 question: q.question,
@@ -357,6 +361,7 @@ class GeminiAPIService: ObservableObject {
             id: id,
             title: contentDict.title,
             detectedObjectName: contentDict.detectedObjectName,
+            category: resolveCategory(contentDict.category),
             shortSummary: contentDict.shortSummary,
             educationalFacts: contentDict.educationalFacts,
             difficultyLevel: contentDict.difficultyLevel,
@@ -369,6 +374,16 @@ class GeminiAPIService: ObservableObject {
         
         return content
     }
+
+    private func resolveCategory(_ raw: String?) -> String {
+        let normalized = (raw ?? "").lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+        switch normalized {
+        case "astronomy", "computer_science", "philosophy", "biology", "mathematics":
+            return normalized
+        default:
+            return "computer_science"
+        }
+    }
 }
 
 // MARK: - Helper Structures for Parsing
@@ -376,6 +391,7 @@ class GeminiAPIService: ObservableObject {
 struct GeminiContentDict: Codable {
     let title: String
     let detectedObjectName: String
+    let category: String?
     let shortSummary: String
     let educationalFacts: [String]
     let difficultyLevel: String
@@ -384,7 +400,7 @@ struct GeminiContentDict: Codable {
     let arOverlayCaption: String
     
     enum CodingKeys: String, CodingKey {
-        case title, detectedObjectName, shortSummary, educationalFacts
+        case title, detectedObjectName, category, shortSummary, educationalFacts
         case difficultyLevel, keyLearningPoints, quizQuestions, arOverlayCaption
     }
 }

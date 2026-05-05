@@ -1,5 +1,8 @@
 import SwiftUI
 import Combine
+import FirebaseAuth
+import FirebaseFirestore
+import CryptoKit
 
 // MARK: - Discovery State
 
@@ -23,12 +26,20 @@ class DiscoveryViewModel: ObservableObject {
     @Published var educationalContent: EducationalContent?
     @Published var isShowingCamera = false
     @Published var isShowingAROverlay = false
+    @Published var isShowingDiscoveryQuiz = false
+    @Published var isShowingDiscoverySummary = false
+    @Published var isShowingDiscoveryReview = false
     @Published var errorMessage: String?
     @Published var scanHistory: [EducationalContent] = []
     @Published var progress: Float = 0.0
+    @Published var lastDiscoveryXP: Int = 0
+    @Published var discoverySummary: DiscoveryQuizSummaryPayload?
+    @Published var discoveryReviewItems: [DiscoveryReviewItem] = []
+    @Published var isDiscoveryScanCompleted = false
     
     private let visionRecognizer = VisionTextRecognizer.shared
     private let geminiService = GeminiAPIService.shared
+    private let db = Firestore.firestore()
     
     // MARK: - Initialization
     
@@ -42,7 +53,6 @@ class DiscoveryViewModel: ObservableObject {
         state = .scanning
         isShowingCamera = true
     }
-    
     func closeCamera() {
         isShowingCamera = false
         if case .scanning = state {
@@ -71,6 +81,7 @@ class DiscoveryViewModel: ObservableObject {
     // MARK: - Text Recognition
     
     private func processImage(_ image: UIImage) {
+        isDiscoveryScanCompleted = false
         Task {
             await extractTextFromImage(image)
         }
@@ -117,6 +128,15 @@ class DiscoveryViewModel: ObservableObject {
             
             educationalContent = content
             progress = 0.9
+
+            if let user = Auth.auth().currentUser {
+                let fingerprint = scanFingerprint(for: content)
+                let scanRef = db.collection("users").document(user.uid)
+                    .collection("discoveryScans").document(fingerprint)
+                isDiscoveryScanCompleted = await isScanAlreadyAwarded(scanRef: scanRef)
+            } else {
+                isDiscoveryScanCompleted = false
+            }
             
             // Save to history
             saveScanToHistory(content)
@@ -160,6 +180,82 @@ class DiscoveryViewModel: ObservableObject {
     func getFirstQuizQuestion() -> EVDiscoveryQuizQuestion? {
         return educationalContent?.quizQuestions.first
     }
+
+    func startDiscoveryQuiz() {
+        guard let content = educationalContent, !content.quizQuestions.isEmpty else {
+            errorMessage = "No quiz questions are available yet."
+            return
+        }
+        guard !isDiscoveryScanCompleted else {
+            errorMessage = "You've already completed the quiz for this scan."
+            return
+        }
+        isShowingDiscoveryQuiz = true
+    }
+
+    func completeDiscoveryQuiz(correctCount: Int, totalCount: Int) async {
+        guard let user = Auth.auth().currentUser else { return }
+        guard let content = educationalContent else { return }
+
+        let safeTotal = max(totalCount, 1)
+        let safeCorrect = max(min(correctCount, safeTotal), 0)
+        let fingerprint = scanFingerprint(for: content)
+        let scanRef = db.collection("users").document(user.uid)
+            .collection("discoveryScans").document(fingerprint)
+
+        let alreadyAwarded = await isScanAlreadyAwarded(scanRef: scanRef)
+        let xpEarned = alreadyAwarded ? 0 : safeCorrect * 10
+        lastDiscoveryXP = xpEarned
+
+        await saveDiscoveryQuestions(content: content)
+
+        if !alreadyAwarded {
+            do {
+                try await scanRef.setData([
+                    "title": content.title,
+                    "category": content.category,
+                    "xpAwarded": true,
+                    "correctCount": safeCorrect,
+                    "totalCount": safeTotal,
+                    "firstScannedAt": Timestamp(date: Date()),
+                    "lastScannedAt": Timestamp(date: Date())
+                ], merge: true)
+            } catch {
+                print("Failed to persist discovery scan: \(error.localizedDescription)")
+            }
+        } else {
+            do {
+                try await scanRef.setData([
+                    "lastScannedAt": Timestamp(date: Date())
+                ], merge: true)
+            } catch {
+                print("Failed to update discovery scan timestamp: \(error.localizedDescription)")
+            }
+        }
+
+        if xpEarned > 0 {
+            let userRef = db.collection("users").document(user.uid)
+            do {
+                try await userRef.setData([
+                    "totalXP": FieldValue.increment(Int64(xpEarned)),
+                    "quizXP": FieldValue.increment(Int64(xpEarned)),
+                    "updatedAt": Timestamp(date: Date())
+                ], merge: true)
+            } catch {
+                // Best-effort XP update.
+                print("Failed to award discovery XP: \(error.localizedDescription)")
+            }
+        }
+
+        discoverySummary = DiscoveryQuizSummaryPayload(
+            title: content.title,
+            category: content.category,
+            correctCount: safeCorrect,
+            totalCount: safeTotal,
+            xpEarned: xpEarned,
+            isRepeatScan: alreadyAwarded
+        )
+    }
     
     // MARK: - History Management
     
@@ -177,6 +273,103 @@ class DiscoveryViewModel: ObservableObject {
         }
         
         // TODO: Persist to Core Data or UserDefaults
+    }
+
+    private func saveDiscoveryQuestions(content: EducationalContent) async {
+        let category = content.category
+        guard !category.isEmpty else { return }
+
+        let lessonRef = db.collection("lessons").document(category)
+        do {
+            let snapshot = try await lessonRef.getDocument()
+            if !snapshot.exists {
+                try await lessonRef.setData([
+                    "title": category.replacingOccurrences(of: "_", with: " ").capitalized,
+                    "description": "Auto-generated questions from Discovery Mode scans.",
+                    "icon": "sparkles",
+                    "color": "38BDF8",
+                    "xpReward": 12,
+                    "scholars": 0,
+                    "totalLevels": 10,
+                    "order": 99
+                ], merge: true)
+            }
+        } catch {
+            print("Failed to seed lesson document: \(error.localizedDescription)")
+        }
+
+        let questionsRef = lessonRef.collection("questions")
+        let scanId = content.id
+        let now = Date()
+
+        for (index, q) in content.quizQuestions.enumerated() {
+            let difficultyScore = difficultyScoreFor(content.difficultyLevel, offset: index)
+            let level = min(max(1, (difficultyScore + 9) / 10), 10)
+            let order = index + 1
+            let questionId = "\(category)_DISC_\(scanId)_Q\(String(format: "%02d", order))"
+
+            let payload: [String: Any] = [
+                "lessonId": category,
+                "level": level,
+                "order": order,
+                "difficulty": difficultyScore,
+                "xpMin": max(8, difficultyScore / 6),
+                "xpMax": max(12, difficultyScore / 4),
+                "xpSuggested": max(10, difficultyScore / 5),
+                "prompt": q.question,
+                "choices": q.options,
+                "correctIndex": q.correctAnswerIndex,
+                "explanation": q.explanation,
+                "tags": content.keyLearningPoints,
+                "isActive": true,
+                "source": "discovery",
+                "sourceScanId": scanId,
+                "generatedAt": Timestamp(date: now)
+            ]
+
+            do {
+                try await questionsRef.document(questionId).setData(payload, merge: true)
+            } catch {
+                print("Failed to save discovery question: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    private func scanFingerprint(for content: EducationalContent) -> String {
+        let normalized = normalizedFingerprintText(from: content.extractedText)
+        let data = Data(normalized.utf8)
+        let digest = SHA256.hash(data: data)
+        return digest.compactMap { String(format: "%02x", $0) }.joined()
+    }
+
+    private func normalizedFingerprintText(from text: String) -> String {
+        text
+            .lowercased()
+            .replacingOccurrences(of: "\n", with: " ")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private func isScanAlreadyAwarded(scanRef: DocumentReference) async -> Bool {
+        do {
+            let snapshot = try await scanRef.getDocument()
+            let data = snapshot.data() ?? [:]
+            return (data["xpAwarded"] as? Bool) ?? false
+        } catch {
+            return false
+        }
+    }
+
+    private func difficultyScoreFor(_ level: String, offset: Int) -> Int {
+        let base: Int
+        switch level.lowercased() {
+        case "advanced":
+            base = 75
+        case "intermediate":
+            base = 50
+        default:
+            base = 25
+        }
+        return min(95, base + offset * 4)
     }
     
     // MARK: - Error Handling
@@ -212,6 +405,7 @@ class DiscoveryViewModel: ObservableObject {
         educationalContent = nil
         errorMessage = nil
         progress = 0.0
+        isDiscoveryScanCompleted = false
     }
     
     // MARK: - API Configuration
@@ -253,6 +447,7 @@ class DiscoveryViewModel: ObservableObject {
             id: UUID().uuidString,
             title: title,
             detectedObjectName: "Scanned Text",
+            category: "computer_science",
             shortSummary: summary,
             educationalFacts: [
                 "OCR extraction completed successfully",
@@ -279,5 +474,28 @@ class DiscoveryViewModel: ObservableObject {
             extractedText: text,
             generatedAt: Date()
         )
+    }
+}
+
+struct DiscoveryQuizSummaryPayload {
+    let title: String
+    let category: String
+    let correctCount: Int
+    let totalCount: Int
+    let xpEarned: Int
+    let isRepeatScan: Bool
+}
+
+struct DiscoveryReviewItem: Identifiable {
+    let id: String
+    let order: Int
+    let question: String
+    let options: [String]
+    let selectedIndex: Int
+    let correctIndex: Int
+    let explanation: String
+
+    var isCorrect: Bool {
+        selectedIndex == correctIndex
     }
 }

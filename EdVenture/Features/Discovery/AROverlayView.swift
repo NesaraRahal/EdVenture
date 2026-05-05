@@ -68,6 +68,49 @@ struct AROverlayView: View {
                         .padding(.horizontal, 12)
                         .frame(maxWidth: 460)
                         .shadow(color: .black.opacity(0.35), radius: 16, y: 8)
+
+                        Button(action: { viewModel.startDiscoveryQuiz() }) {
+                            HStack(spacing: 10) {
+                                Image(systemName: viewModel.isDiscoveryScanCompleted ? "lock.fill" : "sparkles")
+                                Text(viewModel.isDiscoveryScanCompleted ? "Quiz Already Completed" : "Quick Quiz + XP")
+                                    .font(.system(size: 16, weight: .bold, design: .rounded))
+                            }
+                            .foregroundColor(viewModel.isDiscoveryScanCompleted ? .black : .black)
+                            .frame(maxWidth: 320)
+                            .frame(height: 50)
+                            .background(viewModel.isDiscoveryScanCompleted ? Color(hex: "FFB800") : Color(hex: "0EB060"))
+                            .overlay(
+                                Capsule()
+                                    .stroke(Color.black.opacity(0.2), lineWidth: 1)
+                            )
+                            .clipShape(Capsule())
+                            .shadow(color: Color.black.opacity(0.25), radius: 10, y: 5)
+                        }
+                        .buttonStyle(.plain)
+                        .allowsHitTesting(!viewModel.isDiscoveryScanCompleted)
+                        .padding(.top, 12)
+
+                        if viewModel.isDiscoveryScanCompleted {
+                            HStack(spacing: 10) {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .font(.system(size: 14, weight: .bold))
+                                    .foregroundColor(Color(hex: "FFB800"))
+                                Text("Quiz already completed for this book. Scan a new one to generate another quiz.")
+                                    .font(.system(size: 13, weight: .semibold, design: .rounded))
+                                    .foregroundColor(.white)
+                                    .multilineTextAlignment(.leading)
+                            }
+                            .padding(.vertical, 10)
+                            .padding(.horizontal, 14)
+                            .background(Color.black.opacity(0.55))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                    .stroke(Color(hex: "FFB800").opacity(0.6), lineWidth: 1)
+                            )
+                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            .padding(.horizontal, 24)
+                            .padding(.top, 8)
+                        }
                     } else {
                         VStack(spacing: 8) {
                             ProgressView()
@@ -419,27 +462,34 @@ extension View {
 // MARK: - Preview
 
 #Preview {
-    let viewModel = DiscoveryViewModel()
-    viewModel.educationalContent = EducationalContent(
-        id: "preview",
-        title: "The Trial",
-        detectedObjectName: "Book Cover",
-        shortSummary: "A philosophical novel exploring bureaucracy and guilt.",
-        educationalFacts: ["Published in 1925", "Written by Franz Kafka"],
-        difficultyLevel: "Advanced",
-        keyLearningPoints: ["Existentialism", "Bureaucracy", "Surrealism"],
-        quizQuestions: [
-            EVDiscoveryQuizQuestion(
-                id: "q1",
-                question: "What is The Trial about?",
-                options: ["Adventure", "Bureaucracy", "Cooking", "Space travel"],
-                correctAnswerIndex: 1,
-                explanation: "Kafka’s novel centers on absurd bureaucracy."
-            )
-        ],
-        arOverlayCaption: "Scan complete — explore the meaning behind the text.",
-        extractedText: "The Trial",
-        generatedAt: Date()
-    )
-    return AROverlayView(viewModel: viewModel, previewImage: UIImage(named: "EdVentureLogo"))
+    AROverlayPreviewWrapper()
+}
+
+private struct AROverlayPreviewWrapper: View {
+    var body: some View {
+        let viewModel = DiscoveryViewModel()
+        viewModel.educationalContent = EducationalContent(
+            id: "preview",
+            title: "The Trial",
+            detectedObjectName: "Book Cover",
+            category: "philosophy",
+            shortSummary: "A philosophical novel exploring bureaucracy and guilt.",
+            educationalFacts: ["Published in 1925", "Written by Franz Kafka"],
+            difficultyLevel: "Advanced",
+            keyLearningPoints: ["Existentialism", "Bureaucracy", "Surrealism"],
+            quizQuestions: [
+                EVDiscoveryQuizQuestion(
+                    id: "q1",
+                    question: "What is The Trial about?",
+                    options: ["Adventure", "Bureaucracy", "Cooking", "Space travel"],
+                    correctAnswerIndex: 1,
+                    explanation: "Kafka’s novel centers on absurd bureaucracy."
+                )
+            ],
+            arOverlayCaption: "Scan complete — explore the meaning behind the text.",
+            extractedText: "The Trial",
+            generatedAt: Date()
+        )
+        return AROverlayView(viewModel: viewModel, previewImage: UIImage(named: "EdVentureLogo"))
+    }
 }

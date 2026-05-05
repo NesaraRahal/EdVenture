@@ -7,7 +7,7 @@ import Combine
 struct LessonDetailView: View {
     let lessonId: String
     var onBack: (() -> Void)?
-    var onStartQuiz: ((_ lessonId: String, _ questionIndex: Int) -> Void)?
+    var onStartQuiz: ((_ lessonId: String, _ level: Int, _ questionIndex: Int, _ totalLevels: Int) -> Void)?
 
     @StateObject private var vm = LessonDetailViewModel()
 
@@ -182,64 +182,35 @@ struct LessonDetailView: View {
     }
 
     private func curriculumSection(_ lesson: LessonDetail) -> some View {
-        VStack(alignment: .leading, spacing: 14) {
-            Text("CURRICULUM")
+        VStack(alignment: .leading, spacing: 16) {
+            Text("LEVEL MAP")
                 .font(.system(size: 14, weight: .bold, design: .rounded))
                 .foregroundColor(.white.opacity(0.5))
                 .tracking(2)
 
-            ForEach(Array(vm.items.enumerated()), id: \.element.id) { index, item in
-                Button {
-                    guard !item.isLocked else { return }
-                    onStartQuiz?(lesson.id, item.questionIndex)
-                } label: {
-                    HStack(spacing: 14) {
-                        Text(String(format: "%02d", index + 1))
-                            .font(.system(size: 28, weight: .bold, design: .rounded))
-                            .foregroundColor(item.statusColor)
-                            .frame(width: 48, alignment: .leading)
-
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text(item.title)
-                                .font(.system(size: 20, weight: .semibold, design: .rounded))
-                                .foregroundColor(item.isLocked ? .white.opacity(0.35) : .white)
-                                .lineLimit(2)
-
-                            if item.status == .completed {
-                                Text("COMPLETED")
-                                    .font(.system(size: 10, weight: .bold, design: .rounded))
-                                    .foregroundColor(Color(hex: "0EB060"))
-                                    .tracking(1.1)
-                            }
-
-                            Text(item.meta)
-                                .font(.system(size: 13, weight: .semibold, design: .rounded))
-                                .foregroundColor(item.statusColor)
-                        }
-
-                        Spacer()
-
-                        Image(systemName: item.buttonIcon)
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(item.buttonTint)
-                            .frame(width: 56, height: 56)
-                            .background(item.buttonBackground)
-                            .clipShape(Circle())
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 14), count: 5), spacing: 14) {
+                ForEach(vm.items) { item in
+                    Button {
+                        guard !item.isLocked else { return }
+                        onStartQuiz?(lesson.id, item.level, 0, lesson.totalLevels)
+                    } label: {
+                        LevelNode(item: item)
                     }
-                    .padding(.horizontal, 18)
-                    .frame(minHeight: 94)
-                    .background(
-                        RoundedRectangle(cornerRadius: 22, style: .continuous)
-                            .fill(Color.white.opacity(0.035))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 22, style: .continuous)
-                                    .stroke(item.isLocked ? Color.white.opacity(0.04) : Color.white.opacity(0.08), lineWidth: 0.6)
-                            )
-                    )
+                    .buttonStyle(.plain)
+                    .disabled(item.isLocked)
                 }
-                .buttonStyle(.plain)
-                .disabled(item.isLocked)
             }
+
+            HStack(spacing: 12) {
+                Label("Completed", systemImage: "checkmark.circle.fill")
+                    .foregroundColor(Color(hex: "0EB060"))
+                Label("Current", systemImage: "play.fill")
+                    .foregroundColor(Color(hex: "75DFFF"))
+                Label("Locked", systemImage: "lock.fill")
+                    .foregroundColor(.white.opacity(0.45))
+            }
+            .font(.system(size: 12, weight: .semibold, design: .rounded))
+            .padding(.top, 6)
         }
     }
 
@@ -296,34 +267,39 @@ final class LessonDetailViewModel: ObservableObject {
             let icon = resolveIcon(iconRaw)
 
             var progress: Double = 0
-            var completedQuestionIDs: [String] = []
-            var completedQuestionIndices: Set<Int> = []
-            var currentQuestionIndex = 0
+            var completedLevels: Set<Int> = []
+            var highestUnlockedLevel = 1
+            var currentLevel = 1
             if let uid = Auth.auth().currentUser?.uid {
                 let active = try await db.collection("users").document(uid)
                     .collection("activeLessons").document(lessonId).getDocument()
-                progress = min(max(active.data()?["progress"] as? Double ?? 0, 0), 1)
-
-                let questionProgress = try await db.collection("users").document(uid)
-                    .collection("activeLessons").document(lessonId)
-                    .collection("questions")
-                    .whereField("isCompleted", isEqualTo: true)
-                    .getDocuments()
-                completedQuestionIndices = Set(questionProgress.documents.compactMap { doc in
-                    doc.data()["questionIndex"] as? Int
-                })
-
-                let session = try await db.collection("users").document(uid)
-                    .collection("quizSessions").document(lessonId).getDocument()
-                let sessionData = session.data()
-                completedQuestionIDs = sessionData?["completedQuestionIDs"] as? [String] ?? []
-                currentQuestionIndex = sessionData?["currentQuestionIndex"] as? Int ?? 0
+                let activeData = active.data() ?? [:]
+                progress = min(max(activeData["progress"] as? Double ?? 0, 0), 1)
+                completedLevels = Set(activeData["completedLevels"] as? [Int] ?? [])
+                highestUnlockedLevel = max(activeData["highestUnlockedLevel"] as? Int ?? 1, 1)
+                currentLevel = max(activeData["currentLevel"] as? Int ?? 1, 1)
             }
 
-            let completedFromSession = completedQuestionIDs.count
-            let completed = min(max(completedFromSession, Int((progress * Double(totalLevels)).rounded(.down))), totalLevels)
-            let pending = max(totalLevels - completed, 0)
-            let locked = max(totalLevels - completed - pending, 0)
+            if completedLevels.isEmpty, progress > 0 {
+                let completedFromProgress = Int((progress * Double(totalLevels)).rounded(.down))
+                if completedFromProgress > 0 {
+                    completedLevels = Set(1...min(completedFromProgress, totalLevels))
+                }
+            }
+
+            if completedLevels.isEmpty {
+                highestUnlockedLevel = max(highestUnlockedLevel, 1)
+            } else {
+                highestUnlockedLevel = max(highestUnlockedLevel, min(totalLevels, completedLevels.count + 1))
+            }
+
+            currentLevel = min(max(currentLevel, 1), totalLevels)
+            let completed = min(completedLevels.count, totalLevels)
+            let pending = max(highestUnlockedLevel - completed, 0)
+            let locked = max(totalLevels - highestUnlockedLevel, 0)
+            let adjustedProgress = totalLevels > 0
+                ? min(max(Double(completed) / Double(totalLevels), 0), 1)
+                : 0
 
             lesson = LessonDetail(
                 id: lessonId,
@@ -332,7 +308,7 @@ final class LessonDetailViewModel: ObservableObject {
                 colorHex: (colorHex?.isEmpty == false ? colorHex! : "0EB060"),
                 xpReward: xpReward,
                 totalLevels: totalLevels,
-                progress: progress,
+                progress: completedLevels.isEmpty ? progress : adjustedProgress,
                 completedCount: completed,
                 pendingCount: pending,
                 lockedCount: locked
@@ -340,9 +316,9 @@ final class LessonDetailViewModel: ObservableObject {
 
             items = buildCurriculumItems(
                 totalLevels: totalLevels,
-                completedQuestionIDs: completedQuestionIDs,
-                completedQuestionIndices: completedQuestionIndices,
-                currentQuestionIndex: currentQuestionIndex,
+                completedLevels: completedLevels,
+                highestUnlockedLevel: highestUnlockedLevel,
+                currentLevel: currentLevel,
                 xpReward: xpReward,
                 lessonTitle: lesson?.title ?? "Lesson"
             )
@@ -357,52 +333,35 @@ final class LessonDetailViewModel: ObservableObject {
     }
 
     private func buildCurriculumItems(totalLevels: Int,
-                                      completedQuestionIDs: [String],
-                                      completedQuestionIndices: Set<Int>,
-                                      currentQuestionIndex: Int,
+                                      completedLevels: Set<Int>,
+                                      highestUnlockedLevel: Int,
+                                      currentLevel: Int,
                                       xpReward: Int,
                                       lessonTitle: String) -> [LessonCurriculumItem] {
-        let displayCount = min(max(totalLevels, 4), 12)
-        let completedByID = Set(completedQuestionIDs.compactMap(parseQuestionOrder).map { max(0, $0 - 1) })
-        let completedIndices = completedQuestionIndices.union(completedByID)
-        let safeCurrentIndex = min(max(0, currentQuestionIndex), max(displayCount - 1, 0))
+        let displayCount = min(max(totalLevels, 1), 10)
+        let safeCurrentLevel = min(max(currentLevel, 1), displayCount)
+        let safeHighestUnlocked = min(max(highestUnlockedLevel, 1), displayCount)
 
-        return (1...displayCount).map { index in
+        return (1...displayCount).map { level in
             let status: LessonItemStatus
-            let itemIndex = index - 1
-
-            if completedIndices.contains(itemIndex) {
+            if completedLevels.contains(level) {
                 status = .completed
-            } else if itemIndex == safeCurrentIndex {
+            } else if level == safeCurrentLevel {
                 status = .inProgress
-            } else {
+            } else if level <= safeHighestUnlocked {
                 status = .pending
+            } else {
+                status = .locked
             }
 
             return LessonCurriculumItem(
-                id: "\(index)",
-                questionIndex: itemIndex,
-                title: "\(lessonTitle) Quiz \(index)",
-                meta: "\(xpReward) XP • \(index <= 2 ? "1" : "3") MIN",
+                id: "L\(level)",
+                level: level,
+                title: "\(lessonTitle) • Level \(level)",
+                meta: "\(xpReward) XP • 10 QUESTIONS",
                 status: status
             )
         }
-    }
-
-    private func parseQuestionOrder(from questionId: String) -> Int? {
-        let pattern = #"_Q(\d+)$"#
-        guard let regex = try? NSRegularExpression(pattern: pattern) else {
-            return nil
-        }
-
-        let range = NSRange(questionId.startIndex..<questionId.endIndex, in: questionId)
-        guard let match = regex.firstMatch(in: questionId, options: [], range: range),
-              let valueRange = Range(match.range(at: 1), in: questionId)
-        else {
-            return nil
-        }
-
-        return Int(questionId[valueRange])
     }
 }
 
@@ -421,7 +380,7 @@ struct LessonDetail {
 
 struct LessonCurriculumItem: Identifiable {
     let id: String
-    let questionIndex: Int
+    let level: Int
     let title: String
     let meta: String
     let status: LessonItemStatus
@@ -468,6 +427,93 @@ enum LessonItemStatus {
     case inProgress
     case pending
     case locked
+}
+
+private struct LevelNode: View {
+    let item: LessonCurriculumItem
+
+    private var circleFill: Color {
+        switch item.status {
+        case .completed:
+            return Color(hex: "0EB060").opacity(0.18)
+        case .inProgress:
+            return Color(hex: "75DFFF").opacity(0.18)
+        case .pending:
+            return Color.white.opacity(0.06)
+        case .locked:
+            return Color.white.opacity(0.04)
+        }
+    }
+
+    private var circleStroke: Color {
+        switch item.status {
+        case .completed:
+            return Color(hex: "0EB060").opacity(0.5)
+        case .inProgress:
+            return Color(hex: "75DFFF").opacity(0.5)
+        case .pending:
+            return Color.white.opacity(0.12)
+        case .locked:
+            return Color.white.opacity(0.08)
+        }
+    }
+
+    private var iconName: String {
+        switch item.status {
+        case .completed:
+            return "checkmark"
+        case .inProgress:
+            return "play.fill"
+        case .pending:
+            return "circle.fill"
+        case .locked:
+            return "lock.fill"
+        }
+    }
+
+    private var iconColor: Color {
+        switch item.status {
+        case .completed:
+            return Color(hex: "0EB060")
+        case .inProgress:
+            return Color(hex: "75DFFF")
+        case .pending:
+            return .white.opacity(0.65)
+        case .locked:
+            return .white.opacity(0.35)
+        }
+    }
+
+    var body: some View {
+        VStack(spacing: 8) {
+            ZStack {
+                Circle()
+                    .fill(circleFill)
+                    .frame(width: 56, height: 56)
+                    .overlay(
+                        Circle()
+                            .stroke(circleStroke, lineWidth: 1)
+                    )
+
+                Text("\(item.level)")
+                    .font(.system(size: 16, weight: .bold, design: .rounded))
+                    .foregroundColor(.white.opacity(item.isLocked ? 0.35 : 0.95))
+
+                if item.status != .pending {
+                    Image(systemName: iconName)
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundColor(iconColor)
+                        .offset(x: 18, y: 18)
+                }
+            }
+
+            Text("Level \(item.level)")
+                .font(.system(size: 12, weight: .semibold, design: .rounded))
+                .foregroundColor(.white.opacity(item.isLocked ? 0.35 : 0.7))
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 4)
+    }
 }
 
 #Preview {

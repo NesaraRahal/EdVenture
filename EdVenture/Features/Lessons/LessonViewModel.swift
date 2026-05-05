@@ -67,15 +67,100 @@ final class LessonsViewModel: ObservableObject {
                 .order(by: "order")
                 .getDocuments()
 
-            lessons = snapshot.documents.compactMap { doc in
+            var loadedLessons = snapshot.documents.compactMap { doc in
                 LessonModel(id: doc.documentID, data: doc.data())
             }
+
+            let missingLessonIds = Self.coreLessonSeeds
+                .map { $0.id }
+                .filter { id in
+                    !loadedLessons.contains(where: { $0.id == id })
+                }
+
+            if !missingLessonIds.isEmpty {
+                for seed in Self.coreLessonSeeds where missingLessonIds.contains(seed.id) {
+                    try await db.collection("lessons").document(seed.id).setData(seed.data, merge: true)
+                    if let model = LessonModel(id: seed.id, data: seed.data) {
+                        loadedLessons.append(model)
+                    }
+                }
+            }
+
+            lessons = loadedLessons.sorted { $0.order < $1.order }
         } catch {
             errorMessage = error.localizedDescription
         }
 
         isLoading = false
     }
+
+    private static let coreLessonSeeds: [(id: String, data: [String: Any])] = [
+        (
+            id: "astronomy",
+            data: [
+                "title": "Astronomy",
+                "description": "Explore stars, galaxies, and cosmic phenomena through bite-sized quizzes.",
+                "icon": "sparkles",
+                "color": "4FC3A1",
+                "xpReward": 15,
+                "scholars": 120,
+                "totalLevels": 10,
+                "order": 1
+            ]
+        ),
+        (
+            id: "philosophy",
+            data: [
+                "title": "Philosophy",
+                "description": "Reason through ideas, ethics, and arguments in focused challenges.",
+                "icon": "brain.head.profile",
+                "color": "F59E0B",
+                "xpReward": 13,
+                "scholars": 128,
+                "totalLevels": 10,
+                "order": 2
+            ]
+        ),
+        (
+            id: "biology",
+            data: [
+                "title": "Biology",
+                "description": "Train on cells, systems, and life science fundamentals.",
+                "icon": "leaf.fill",
+                "color": "10B981",
+                "xpReward": 14,
+                "scholars": 110,
+                "totalLevels": 10,
+                "order": 3
+            ]
+        ),
+        (
+            id: "mathematics",
+            data: [
+                "title": "Mathematics",
+                "description": "Sharpen logic, patterns, and calculation speed.",
+                "icon": "function",
+                "color": "8B5CF6",
+                "xpReward": 16,
+                "scholars": 140,
+                "totalLevels": 10,
+                "order": 4
+            ]
+        ),
+        (
+            id: "computer_science",
+            data: [
+                "title": "Computer Science",
+                "description": "Build fluency in algorithms, data, and systems.",
+                "icon": "cpu",
+                "color": "38BDF8",
+                "xpReward": 14,
+                "scholars": 132,
+                "totalLevels": 10,
+                "order": 5
+            ]
+        )
+    ]
 
     // MARK: - Fetch user's active practice lessons
     func fetchActivePracticeLessons(userId: String) async {

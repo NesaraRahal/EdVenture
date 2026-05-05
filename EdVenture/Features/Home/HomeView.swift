@@ -441,16 +441,7 @@ final class HomeViewModel: ObservableObject {
     }
 
     private func rankTitleForXP(_ xp: Int) -> String {
-        switch xp {
-        case ..<100: return "Amateur"
-        case ..<200: return "Adept"
-        case ..<400: return "Polymath"
-        case ..<700: return "Scholar"
-        case ..<1100: return "Strategist"
-        case ..<1600: return "Sage"
-        case ..<2300: return "Grandmaster"
-        default: return "Legend"
-        }
+        ProfileLevelProgress.from(totalXP: xp).title
     }
 
     private func formatPlayTime(_ seconds: Int) -> String {

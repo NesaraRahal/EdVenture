@@ -3,6 +3,7 @@ import SwiftUI
 struct NotificationsView: View {
     @StateObject private var vm = NotificationsViewModel()
     @Environment(\.dismiss) var dismiss
+    @State private var expandedNotificationId: String?
 
     var body: some View {
         ZStack {
@@ -16,7 +17,15 @@ struct NotificationsView: View {
                         ForEach(vm.filteredNotifications) { notification in
                             NotificationCard(
                                 notification: notification,
+                                isExpanded: expandedNotificationId == notification.id,
                                 onTap: {
+                                    withAnimation(.spring(response: 0.28, dampingFraction: 0.9)) {
+                                        if expandedNotificationId == notification.id {
+                                            expandedNotificationId = nil
+                                        } else {
+                                            expandedNotificationId = notification.id
+                                        }
+                                    }
                                     vm.markAsRead(notification)
                                 },
                                 onDelete: {
@@ -40,12 +49,6 @@ struct NotificationsView: View {
     private var topChrome: some View {
         VStack(spacing: 14) {
             ZStack {
-                Text("Notifications")
-                    .font(.system(size: 40, weight: .bold, design: .rounded))
-                    .foregroundColor(.white)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.7)
-
                 HStack {
                     Button {
                         dismiss()
@@ -68,6 +71,14 @@ struct NotificationsView: View {
                     Color.clear
                         .frame(width: 78, height: 42)
                 }
+
+                Text("Notifications")
+                    .font(.system(size: 40, weight: .bold, design: .rounded))
+                    .foregroundColor(.white)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, 96)
             }
 
             HStack(spacing: 12) {
@@ -122,6 +133,7 @@ struct NotificationsView: View {
 // MARK: - Notification Card
 private struct NotificationCard: View {
     let notification: EVNotification
+    let isExpanded: Bool
     let onTap: () -> Void
     let onDelete: () -> Void
 
@@ -137,7 +149,7 @@ private struct NotificationCard: View {
                             .foregroundColor(notification.type.color)
                     )
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 6) {
                     Text(notification.title)
                         .font(.system(size: 16, weight: .bold, design: .rounded))
                         .foregroundColor(.white)
@@ -147,7 +159,23 @@ private struct NotificationCard: View {
                     Text(notification.description)
                         .font(.system(size: 13, design: .rounded))
                         .foregroundColor(.white.opacity(0.58))
-                        .lineLimit(2)
+                        .lineLimit(isExpanded ? 6 : 2)
+
+                    if isExpanded {
+                        Divider()
+                            .overlay(Color.white.opacity(0.08))
+
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("Details")
+                                .font(.system(size: 12, weight: .semibold, design: .rounded))
+                                .foregroundColor(.white.opacity(0.6))
+
+                            Text(expandedDetailText)
+                                .font(.system(size: 13, design: .rounded))
+                                .foregroundColor(.white.opacity(0.8))
+                                .lineLimit(6)
+                        }
+                    }
                 }
 
                 Spacer(minLength: 10)
@@ -192,6 +220,17 @@ private struct NotificationCard: View {
             .padding(.trailing, 10)
             .buttonStyle(.plain)
         }
+    }
+
+    private var expandedDetailText: String {
+        "Received \(formattedTimestamp)"
+    }
+
+    private var formattedTimestamp: String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "MMM d, yyyy 'at' h:mm a"
+        return formatter.string(from: notification.timestamp)
     }
 }
 
