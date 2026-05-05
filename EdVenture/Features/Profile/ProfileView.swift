@@ -19,17 +19,13 @@ struct ProfileView: View {
             .init(icon: "brain.head.profile", value: "\(vm.profile.quizzesCompleted)", label: "QUIZZES COMPLETED", color: Color(hex: "7EF5A8"))
         ]
     }
-    private let achievements: [AchievementItem] = [
-        .init(icon: "rosette", title: "7-DAY STREAK", color: Color(hex: "F6CC2E"), isLocked: false),
-        .init(icon: "speedometer", title: "SPEED DEMON", color: Color(hex: "7EF5A8"), isLocked: false),
-        .init(icon: "graduationcap.fill", title: "TOPIC MASTER", color: Color(hex: "75DFFF"), isLocked: false),
-        .init(icon: "moon", title: "NIGHT OWL", color: .white.opacity(0.2), isLocked: true)
-    ]
+    private var achievements: [ProfileAchievementItem] {
+        vm.achievements
+    }
 
-    private let activities: [RecentActivity] = [
-        .init(icon: "paperplane.fill", title: "Introduction to Quasars", time: "2h ago", score: "100%", tag: "PERFECT", color: Color(hex: "7EF5A8")),
-        .init(icon: "globe.americas.fill", title: "Solar System Quiz", time: "yesterday", score: "85%", tag: "GREAT", color: Color(hex: "75DFFF"))
-    ]
+    private var activities: [ProfileRecentActivity] {
+        vm.recentActivities
+    }
 
     var body: some View {
         ZStack {
@@ -300,7 +296,7 @@ struct ProfileView: View {
                             .font(.system(size: 11, weight: .semibold, design: .rounded))
                             .foregroundColor(.white.opacity(0.45))
                             .tracking(1.1)
-                        Text("Astronomy")
+                        Text(vm.profile.strongestSubject.isEmpty ? "Keep learning" : vm.profile.strongestSubject)
                             .font(.system(size: 17, weight: .bold, design: .rounded))
                             .foregroundColor(.white)
                     }
@@ -312,9 +308,9 @@ struct ProfileView: View {
                             .font(.system(size: 11, weight: .semibold, design: .rounded))
                             .foregroundColor(.white.opacity(0.45))
                             .tracking(1.1)
-                        Text("+12% accuracy")
+                        Text(vm.accuracyTrendText)
                             .font(.system(size: 17, weight: .bold, design: .rounded))
-                            .foregroundColor(Color(hex: "71F8AA"))
+                            .foregroundColor(Color(hex: vm.accuracyTrendColorHex))
                     }
                 }
             }
@@ -327,11 +323,11 @@ struct ProfileView: View {
     private var levelSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("Level 12 Polymath")
+                Text("Level \(vm.levelProgress.level) \(vm.levelProgress.title)")
                     .font(.system(size: 18, weight: .bold, design: .rounded))
                     .foregroundColor(.white)
                 Spacer()
-                Text("450 XP to Level 13")
+                Text("\(vm.levelProgress.xpToNext) XP to Level \(vm.levelProgress.level + 1)")
                     .font(.system(size: 14, weight: .medium, design: .rounded))
                     .foregroundColor(.white.opacity(0.55))
             }
@@ -344,7 +340,7 @@ struct ProfileView: View {
 
                     Capsule()
                         .fill(Color(hex: "0EB060"))
-                        .frame(width: geo.size.width * 0.65, height: 12)
+                        .frame(width: geo.size.width * CGFloat(vm.levelProgress.progressRatio), height: 12)
                         .padding(.horizontal, 4)
                         .shadow(color: Color(hex: "0EB060").opacity(0.4), radius: 6, y: 1)
                 }
@@ -364,7 +360,7 @@ struct ProfileView: View {
                     VStack(spacing: 12) {
                         Image(systemName: item.icon)
                             .font(.system(size: 30, weight: .semibold))
-                            .foregroundColor(item.color)
+                            .foregroundColor(item.isLocked ? .white.opacity(0.2) : Color(hex: item.colorHex))
 
                         Text(item.title)
                             .font(.system(size: 11, weight: .bold, design: .rounded))
@@ -393,39 +389,47 @@ struct ProfileView: View {
                 .foregroundColor(.white)
 
             VStack(spacing: 14) {
-                ForEach(activities) { activity in
-                    HStack(spacing: 14) {
-                        Circle()
-                            .fill(activity.color.opacity(0.16))
-                            .frame(width: 54, height: 54)
-                            .overlay(
-                                Image(systemName: activity.icon)
-                                    .font(.system(size: 22, weight: .semibold))
-                                    .foregroundColor(activity.color)
-                            )
+                if activities.isEmpty {
+                    Text("Complete a quiz to see your recent activity.")
+                        .font(.system(size: 14, design: .rounded))
+                        .foregroundColor(.white.opacity(0.55))
+                        .padding(.vertical, 12)
+                } else {
+                    ForEach(activities) { activity in
+                        HStack(spacing: 14) {
+                            let color = Color(hex: activity.colorHex)
+                            Circle()
+                                .fill(color.opacity(0.16))
+                                .frame(width: 54, height: 54)
+                                .overlay(
+                                    Image(systemName: activity.icon)
+                                        .font(.system(size: 22, weight: .semibold))
+                                        .foregroundColor(color)
+                                )
 
-                        VStack(alignment: .leading, spacing: 3) {
-                            Text(activity.title)
-                                .font(.system(size: 17, weight: .bold, design: .rounded))
-                                .foregroundColor(.white)
-                            Text(activity.time)
-                                .font(.system(size: 14, design: .rounded))
-                                .foregroundColor(.white.opacity(0.55))
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text(activity.title)
+                                    .font(.system(size: 17, weight: .bold, design: .rounded))
+                                    .foregroundColor(.white)
+                                Text(activity.time)
+                                    .font(.system(size: 14, design: .rounded))
+                                    .foregroundColor(.white.opacity(0.55))
+                            }
+
+                            Spacer()
+
+                            VStack(alignment: .trailing, spacing: 2) {
+                                Text(activity.score)
+                                    .font(.system(size: 22, weight: .bold, design: .rounded))
+                                    .foregroundColor(color)
+                                Text(activity.tag)
+                                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                                    .foregroundColor(.white.opacity(0.5))
+                                    .tracking(0.8)
+                            }
                         }
-
-                        Spacer()
-
-                        VStack(alignment: .trailing, spacing: 2) {
-                            Text(activity.score)
-                                .font(.system(size: 22, weight: .bold, design: .rounded))
-                                .foregroundColor(activity.color)
-                            Text(activity.tag)
-                                .font(.system(size: 12, weight: .semibold, design: .rounded))
-                                .foregroundColor(.white.opacity(0.5))
-                                .tracking(0.8)
-                        }
+                        .padding(.vertical, 8)
                     }
-                    .padding(.vertical, 8)
                 }
             }
         }
@@ -452,24 +456,6 @@ private struct ProfileStat: Identifiable {
     let icon: String
     let value: String
     let label: String
-    let color: Color
-}
-
-private struct AchievementItem: Identifiable {
-    let id = UUID()
-    let icon: String
-    let title: String
-    let color: Color
-    let isLocked: Bool
-}
-
-private struct RecentActivity: Identifiable {
-    let id = UUID()
-    let icon: String
-    let title: String
-    let time: String
-    let score: String
-    let tag: String
     let color: Color
 }
 

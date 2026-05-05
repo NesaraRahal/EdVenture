@@ -94,7 +94,9 @@ struct UserProfile {
         self.dailyGoalMinutes = data["dailyGoalMinutes"] as? Int ?? 10
         self.dailyProgressSeconds = data["dailyProgressSeconds"] as? Int ?? 0
         self.isEmailVerified = data["isEmailVerified"] as? Bool ?? verified
-        self.currentStreak = data["currentQuizStreak"] as? Int ?? 0
+        self.currentStreak = data["currentStreak"] as? Int
+            ?? data["currentQuizStreak"] as? Int
+            ?? 0
         self.totalXP = data["totalXP"] as? Int ?? 0
         self.accuracyPercent = data["accuracyPercent"] as? Int ?? 0
         self.quizzesCompleted = data["quizzesCompleted"] as? Int ?? 0
@@ -120,9 +122,72 @@ struct UserProfile {
     }
 }
 
+struct ProfileLevelProgress {
+    let level: Int
+    let title: String
+    let xpInLevel: Int
+    let xpToNext: Int
+    let levelXP: Int
+
+    var progressRatio: Double {
+        guard levelXP > 0 else { return 0 }
+        return min(max(Double(xpInLevel) / Double(levelXP), 0), 1)
+    }
+
+    static let empty = ProfileLevelProgress(level: 1, title: "Polymath", xpInLevel: 0, xpToNext: 500, levelXP: 500)
+
+    static func from(totalXP: Int) -> ProfileLevelProgress {
+        let xpPerLevel = 500
+        let safeXP = max(0, totalXP)
+        let level = (safeXP / xpPerLevel) + 1
+        let xpInLevel = safeXP % xpPerLevel
+        let xpToNext = max(0, xpPerLevel - xpInLevel)
+        let title = rankTitle(for: level)
+        return ProfileLevelProgress(level: level, title: title, xpInLevel: xpInLevel, xpToNext: xpToNext, levelXP: xpPerLevel)
+    }
+
+    private static func rankTitle(for level: Int) -> String {
+        switch level {
+        case 1...4:
+            return "Explorer"
+        case 5...8:
+            return "Scholar"
+        case 9...12:
+            return "Polymath"
+        case 13...16:
+            return "Luminary"
+        default:
+            return "Legend"
+        }
+    }
+}
+
+struct ProfileAchievementItem: Identifiable {
+    let id = UUID()
+    let icon: String
+    let title: String
+    let colorHex: String
+    let isLocked: Bool
+}
+
+struct ProfileRecentActivity: Identifiable {
+    let id = UUID()
+    let icon: String
+    let title: String
+    let time: String
+    let score: String
+    let tag: String
+    let colorHex: String
+}
+
 @MainActor
 final class UserProfileViewModel: ObservableObject {
     @Published var profile: UserProfile = .empty
+    @Published var levelProgress: ProfileLevelProgress = .empty
+    @Published var recentActivities: [ProfileRecentActivity] = []
+    @Published var achievements: [ProfileAchievementItem] = []
+    @Published var accuracyTrendText: String = "--"
+    @Published var accuracyTrendColorHex: String = "7EF5A8"
     @Published var isLoading = false
     @Published var isSaving = false
     @Published var errorMessage: String?
@@ -130,6 +195,14 @@ final class UserProfileViewModel: ObservableObject {
 
     private let db = Firestore.firestore()
     private let storage = Storage.storage()
+    private let calendar = Calendar.current
+    private let lessonNames: [String: String] = [
+        "astronomy": "Astronomy",
+        "computer_science": "Computer Science",
+        "philosophy": "Philosophy",
+        "biology": "Biology",
+        "mathematics": "Mathematics"
+    ]
 
     func loadProfile() async {
         guard let user = Auth.auth().currentUser else {
@@ -331,77 +404,274 @@ final class UserProfileViewModel: ObservableObject {
             let attemptsSnapshot = try await db.collection("users")
                 .document(userId)
                 .collection("quizAttempts")
+                .order(by: "answeredAt", descending: true)
+                .limit(to: 300)
                 .getDocuments()
 
-            var totalCorrect = 0
-            var totalAttempts = 0
-            var totalXP = 0
-            var lessonAttempts: [String: (correct: Int, total: Int)] = [:]
-
-            for doc in attemptsSnapshot.documents {
-                let data = doc.data()
-                let isCorrect = data["isCorrect"] as? Bool ?? false
-                let earnedXP = data["earnedXP"] as? Int ?? 0
-                let lessonId = data["lessonId"] as? String ?? "general"
-
-                totalAttempts += 1
-                totalXP += earnedXP
-
-                if isCorrect {
-                    totalCorrect += 1
-                }
-
-                if lessonAttempts[lessonId] == nil {
-                    lessonAttempts[lessonId] = (correct: 0, total: 0)
-                }
-                lessonAttempts[lessonId]?.total += 1
-                if isCorrect {
-                    lessonAttempts[lessonId]?.correct += 1
-                }
-            }
-
+            let attempts = attemptsSnapshot.documents.compactMap(parseAttempt)
+            let totalAttempts = attempts.count
+            let totalCorrect = attempts.filter { $0.isCorrect }.count
+            let totalXP = attempts.reduce(0) { $0 + max(0, $1.earnedXP) }
             let accuracy = totalAttempts > 0 ? (totalCorrect * 100) / totalAttempts : 0
 
-            var strongestSubject = ""
-            var bestAccuracy = 0
-            for (lesson, stats) in lessonAttempts {
-                let lessonAccuracy = stats.total > 0 ? (stats.correct * 100) / stats.total : 0
-                if lessonAccuracy > bestAccuracy {
-                    bestAccuracy = lessonAccuracy
-                    strongestSubject = lesson.replacingOccurrences(of: "_", with: " ").capitalized
-                }
-            }
+            let strongest = strongestSubjectInfo(from: attempts)
+            let quizzesCompleted = uniqueSessionCount(from: attempts)
+            let currentStreak = currentDailyStreak(from: attempts)
 
-            let sessionsSnapshot = try await db.collection("users")
-                .document(userId)
-                .collection("quizSessions")
-                .getDocuments()
-
-            var maxStreak = 0
-            for doc in sessionsSnapshot.documents {
-                let data = doc.data()
-                if let streak = data["consecutiveWins"] as? Int {
-                    maxStreak = max(maxStreak, streak)
-                }
-            }
-
-            profile.totalXP = totalXP
+            profile.totalXP = max(profile.totalXP, totalXP)
             profile.accuracyPercent = accuracy
-            profile.quizzesCompleted = totalAttempts
-            profile.currentStreak = maxStreak
-            profile.strongestSubject = strongestSubject
+            profile.quizzesCompleted = quizzesCompleted
+            profile.currentStreak = currentStreak
+            profile.strongestSubject = strongest.name
+
+            levelProgress = ProfileLevelProgress.from(totalXP: profile.totalXP)
+            let trend = accuracyTrend(from: attempts, lessonId: strongest.id)
+            accuracyTrendText = trend.text
+            accuracyTrendColorHex = trend.colorHex
+            achievements = buildAchievements(from: attempts, currentStreak: currentStreak)
+            recentActivities = buildRecentActivities(from: attempts)
 
             try await db.collection("users").document(userId).setData([
-                "totalXP": totalXP,
+                "totalXP": profile.totalXP,
                 "accuracyPercent": accuracy,
-                "quizzesCompleted": totalAttempts,
-                "currentQuizStreak": maxStreak,
-                "strongestSubject": strongestSubject,
+                "quizzesCompleted": quizzesCompleted,
+                "currentStreak": currentStreak,
+                "strongestSubject": strongest.name,
                 "statsUpdatedAt": Timestamp(date: Date())
             ], merge: true)
         } catch {
             print("Failed to calculate stats: \(error.localizedDescription)")
         }
+    }
+
+    private func parseAttempt(_ doc: QueryDocumentSnapshot) -> ProfileQuizAttempt? {
+        let data = doc.data()
+        guard let timestamp = data["answeredAt"] as? Timestamp else { return nil }
+
+        return ProfileQuizAttempt(
+            answeredAt: timestamp.dateValue(),
+            lessonId: (data["lessonId"] as? String ?? "general").lowercased(),
+            isCorrect: data["isCorrect"] as? Bool ?? false,
+            earnedXP: data["earnedXP"] as? Int ?? 0,
+            timeSpentSeconds: data["timeSpentSeconds"] as? Int ?? 0,
+            attemptSessionId: data["attemptSessionId"] as? String ?? doc.documentID
+        )
+    }
+
+    private func strongestSubjectInfo(from attempts: [ProfileQuizAttempt]) -> (id: String?, name: String) {
+        var lessonBuckets: [String: (correct: Int, total: Int)] = [:]
+        for attempt in attempts {
+            var bucket = lessonBuckets[attempt.lessonId, default: (0, 0)]
+            bucket.total += 1
+            if attempt.isCorrect { bucket.correct += 1 }
+            lessonBuckets[attempt.lessonId] = bucket
+        }
+
+        var bestLesson = ""
+        var bestAccuracy = 0
+        for (lessonId, stats) in lessonBuckets {
+            guard stats.total >= 4 else { continue }
+            let percent = Int((Double(stats.correct) / Double(stats.total) * 100).rounded())
+            if percent > bestAccuracy {
+                bestAccuracy = percent
+                bestLesson = lessonId
+            }
+        }
+
+        guard !bestLesson.isEmpty else { return (nil, "") }
+        let name = lessonNames[bestLesson] ?? bestLesson.replacingOccurrences(of: "_", with: " ").capitalized
+        return (bestLesson, name)
+    }
+
+    private func uniqueSessionCount(from attempts: [ProfileQuizAttempt]) -> Int {
+        Set(attempts.map { $0.attemptSessionId }).count
+    }
+
+    private func currentDailyStreak(from attempts: [ProfileQuizAttempt]) -> Int {
+        guard !attempts.isEmpty else { return 0 }
+
+        let days = Set(attempts.map { dayKey($0.answeredAt) })
+        let today = dayKey(Date())
+        let yesterday = dayKey(calendar.date(byAdding: .day, value: -1, to: Date()) ?? Date())
+
+        var currentDay = days.contains(today) ? today : (days.contains(yesterday) ? yesterday : nil)
+        guard let startDay = currentDay else { return 0 }
+
+        var streak = 0
+        var cursorDate = dateFromDayKey(startDay)
+        while let date = cursorDate {
+            let key = dayKey(date)
+            if days.contains(key) {
+                streak += 1
+                cursorDate = calendar.date(byAdding: .day, value: -1, to: date)
+            } else {
+                break
+            }
+        }
+        return streak
+    }
+
+    private func accuracyTrend(from attempts: [ProfileQuizAttempt], lessonId: String?) -> (text: String, colorHex: String) {
+        let filtered = lessonId.map { id in attempts.filter { $0.lessonId == id } } ?? attempts
+        guard !filtered.isEmpty else { return ("No trend yet", "FFFFFF") }
+
+        let now = Date()
+        guard let last7Start = calendar.date(byAdding: .day, value: -6, to: now),
+              let prev7Start = calendar.date(byAdding: .day, value: -13, to: now) else {
+            return ("No trend yet", "FFFFFF")
+        }
+
+        let last7 = filtered.filter { $0.answeredAt >= last7Start }
+        let prev7 = filtered.filter { $0.answeredAt < last7Start && $0.answeredAt >= prev7Start }
+
+        guard last7.count >= 4, prev7.count >= 4 else { return ("No trend yet", "FFFFFF") }
+
+        let lastAccuracy = accuracyPercent(for: last7)
+        let prevAccuracy = accuracyPercent(for: prev7)
+        let delta = lastAccuracy - prevAccuracy
+
+        let sign = delta >= 0 ? "+" : ""
+        let text = "\(sign)\(delta)% accuracy"
+        let colorHex = delta >= 0 ? "71F8AA" : "FF6B6B"
+        return (text, colorHex)
+    }
+
+    private func accuracyPercent(for attempts: [ProfileQuizAttempt]) -> Int {
+        guard !attempts.isEmpty else { return 0 }
+        let correct = attempts.filter { $0.isCorrect }.count
+        return Int((Double(correct) / Double(attempts.count) * 100).rounded())
+    }
+
+    private func buildAchievements(from attempts: [ProfileQuizAttempt], currentStreak: Int) -> [ProfileAchievementItem] {
+        let avgTime = averageTime(for: attempts)
+        let nightOwl = percentAfterEight(for: attempts) >= 60 && attempts.count >= 8
+        let speedDemon = avgTime > 0 && avgTime <= 45
+        let topicMaster = hasTopicMastery(from: attempts)
+
+        return [
+            ProfileAchievementItem(icon: "rosette", title: "7-DAY STREAK", colorHex: "F6CC2E", isLocked: currentStreak < 7),
+            ProfileAchievementItem(icon: "speedometer", title: "SPEED DEMON", colorHex: "7EF5A8", isLocked: !speedDemon),
+            ProfileAchievementItem(icon: "graduationcap.fill", title: "TOPIC MASTER", colorHex: "75DFFF", isLocked: !topicMaster),
+            ProfileAchievementItem(icon: "moon", title: "NIGHT OWL", colorHex: nightOwl ? "A58BFF" : "FFFFFF", isLocked: !nightOwl)
+        ]
+    }
+
+    private func averageTime(for attempts: [ProfileQuizAttempt]) -> Int {
+        guard !attempts.isEmpty else { return 0 }
+        let total = attempts.reduce(0) { $0 + max(0, $1.timeSpentSeconds) }
+        return total / max(attempts.count, 1)
+    }
+
+    private func percentAfterEight(for attempts: [ProfileQuizAttempt]) -> Int {
+        guard !attempts.isEmpty else { return 0 }
+        let afterEight = attempts.filter { calendar.component(.hour, from: $0.answeredAt) >= 20 }.count
+        return Int((Double(afterEight) / Double(attempts.count) * 100).rounded())
+    }
+
+    private func hasTopicMastery(from attempts: [ProfileQuizAttempt]) -> Bool {
+        var totals: [String: (correct: Int, total: Int)] = [:]
+        for attempt in attempts {
+            var bucket = totals[attempt.lessonId, default: (0, 0)]
+            bucket.total += 1
+            if attempt.isCorrect { bucket.correct += 1 }
+            totals[attempt.lessonId] = bucket
+        }
+
+        for stats in totals.values where stats.total >= 6 {
+            let percent = Int((Double(stats.correct) / Double(stats.total) * 100).rounded())
+            if percent >= 85 { return true }
+        }
+        return false
+    }
+
+    private func buildRecentActivities(from attempts: [ProfileQuizAttempt]) -> [ProfileRecentActivity] {
+        guard !attempts.isEmpty else { return [] }
+
+        var sessions: [String: ProfileSessionSummary] = [:]
+        for attempt in attempts {
+            var summary = sessions[attempt.attemptSessionId] ?? ProfileSessionSummary(lessonId: attempt.lessonId)
+            summary.total += 1
+            if attempt.isCorrect { summary.correct += 1 }
+            if summary.lastAnsweredAt == nil || attempt.answeredAt > summary.lastAnsweredAt! {
+                summary.lastAnsweredAt = attempt.answeredAt
+            }
+            sessions[attempt.attemptSessionId] = summary
+        }
+
+        let sorted = sessions.values
+            .compactMap { summary -> ProfileActivitySortable? in
+                guard let last = summary.lastAnsweredAt else { return nil }
+                let percent = summary.total > 0 ? Int((Double(summary.correct) / Double(summary.total) * 100).rounded()) : 0
+                let colorHex = scoreColorHex(for: percent)
+                let label = scoreLabel(for: percent)
+                let lessonName = lessonNames[summary.lessonId] ?? summary.lessonId.replacingOccurrences(of: "_", with: " ").capitalized
+                let title = "\(lessonName) Quiz"
+                let time = relativeTimeDescription(from: last)
+                let activity = ProfileRecentActivity(
+                    icon: iconName(for: summary.lessonId),
+                    title: title,
+                    time: time,
+                    score: "\(percent)%",
+                    tag: label,
+                    colorHex: colorHex
+                )
+                return ProfileActivitySortable(activity: activity, sortDate: last)
+            }
+            .sorted { $0.sortDate > $1.sortDate }
+
+        return Array(sorted.prefix(4)).map { $0.activity }
+    }
+
+    private func iconName(for lessonId: String) -> String {
+        switch lessonId.lowercased() {
+        case "astronomy": return "sparkles"
+        case "biology": return "leaf"
+        case "philosophy": return "brain.head.profile"
+        case "mathematics": return "function"
+        case "computer_science": return "chevron.left.forwardslash.chevron.right"
+        default: return "book.fill"
+        }
+    }
+
+    private func scoreLabel(for percent: Int) -> String {
+        switch percent {
+        case 100: return "PERFECT"
+        case 85...99: return "GREAT"
+        case 70...84: return "SOLID"
+        case 50...69: return "KEEP GOING"
+        default: return "STARTED"
+        }
+    }
+
+    private func scoreColorHex(for percent: Int) -> String {
+        switch percent {
+        case 90...100: return "7EF5A8"
+        case 75...89: return "75DFFF"
+        case 60...74: return "F6CC2E"
+        default: return "FF6B6B"
+        }
+    }
+
+    private func relativeTimeDescription(from date: Date) -> String {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .short
+        return formatter.localizedString(for: date, relativeTo: Date())
+    }
+
+    private func dateFromDayKey(_ key: String) -> Date? {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.date(from: key)
+    }
+
+    private func dayKey(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.string(from: date)
     }
 }
 
@@ -409,4 +679,25 @@ private extension String {
     var nonEmpty: String? {
         isEmpty ? nil : self
     }
+}
+
+private struct ProfileQuizAttempt {
+    let answeredAt: Date
+    let lessonId: String
+    let isCorrect: Bool
+    let earnedXP: Int
+    let timeSpentSeconds: Int
+    let attemptSessionId: String
+}
+
+private struct ProfileSessionSummary {
+    let lessonId: String
+    var total: Int = 0
+    var correct: Int = 0
+    var lastAnsweredAt: Date? = nil
+}
+
+private struct ProfileActivitySortable {
+    let activity: ProfileRecentActivity
+    let sortDate: Date
 }
