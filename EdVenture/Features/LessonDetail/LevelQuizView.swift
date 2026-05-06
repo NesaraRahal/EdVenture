@@ -606,7 +606,7 @@ final class LevelQuizViewModel: ObservableObject {
 
         do {
             let sourceLessonId = sessionLessonId ?? lessonId
-            let loadedQuestions: [EVQuizQuestion]
+            var loadedQuestions: [EVQuizQuestion]
             if let questionsOverride {
                 loadedQuestions = questionsOverride
             } else {
@@ -617,15 +617,26 @@ final class LevelQuizViewModel: ObservableObject {
                 return
             }
 
-            questions = loadedQuestions
-            totalQuestions = loadedQuestions.count
             lessonTitle = self.lessonTitleOverride ?? sourceLessonId.replacingOccurrences(of: "_", with: " ").capitalized
 
             let loadedSession = try await store.loadSession(userId: user.uid, lessonId: sourceLessonId, level: self.currentLevel, totalQuestions: loadedQuestions.count)
             var sanitizedSession = loadedSession
+            let retryQuestions = sessionLessonId == nil ? sanitizedSession.activeRetryQuestions.map { $0.question } : []
+            if !retryQuestions.isEmpty, questionsOverride == nil {
+                loadedQuestions = retryQuestions
+            }
+
+            questions = loadedQuestions
+            totalQuestions = max(sanitizedSession.totalQuestions, loadedQuestions.count)
+
             let completedCount = sanitizedSession.completedQuestionIDs.count
-            sanitizedSession.unlockedCount = min(max(1, completedCount + 1), loadedQuestions.count)
+            sanitizedSession.unlockedCount = min(max(1, completedCount + 1), max(totalQuestions, 1))
             sanitizedSession.lockedUntil = nil
+            sanitizedSession.totalQuestions = totalQuestions
+
+            if !retryQuestions.isEmpty, sanitizedSession.currentQuestionIndex >= loadedQuestions.count {
+                sanitizedSession.currentQuestionIndex = 0
+            }
             session = sanitizedSession
 
             let resumeIndex = sanitizedSession.currentQuestionIndex

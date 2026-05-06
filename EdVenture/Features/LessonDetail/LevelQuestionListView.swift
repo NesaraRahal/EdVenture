@@ -160,7 +160,9 @@ enum LevelQuestionStatus {
     case completed
     case inProgress
     case pending
+    case failed
 }
+
 
 private struct LevelQuestionRow: View {
     let item: LevelQuestionListItem
@@ -173,6 +175,7 @@ private struct LevelQuestionRow: View {
         case .completed: return Color(hex: "0EB060")
         case .inProgress: return Color(hex: "75DFFF")
         case .pending: return Color.white.opacity(0.55)
+        case .failed: return Color(hex: "F6CC2E")
         }
     }
 
@@ -181,6 +184,7 @@ private struct LevelQuestionRow: View {
         case .completed: return "COMPLETED"
         case .inProgress: return "IN PROGRESS"
         case .pending: return "PENDING"
+        case .failed: return "FAILED"
         }
     }
 
@@ -189,6 +193,7 @@ private struct LevelQuestionRow: View {
         case .completed: return "checkmark.circle.fill"
         case .inProgress: return "play.circle.fill"
         case .pending: return "circle"
+        case .failed: return "exclamationmark.triangle.fill"
         }
     }
 
@@ -200,6 +205,8 @@ private struct LevelQuestionRow: View {
             return "Continue"
         case .pending:
             return "Play"
+        case .failed:
+            return "Replay"
         }
     }
 
@@ -323,13 +330,16 @@ final class LevelQuestionListViewModel: ObservableObject {
             let progress = await loadQuestionProgress(lessonId: lessonId)
 
             var completed = 0
+            var failedCount = 0
             let mapped = questions.enumerated().map { _, question in
                 let status: LevelQuestionStatus
                 if progress.completed.contains(question.id) {
                     status = .completed
                     completed += 1
                 } else if progress.attempted.contains(question.id) {
-                    status = .inProgress
+                    // attempted but not completed -> failed (eligible for replay)
+                    status = .failed
+                    failedCount += 1
                 } else {
                     status = .pending
                 }
@@ -344,7 +354,7 @@ final class LevelQuestionListViewModel: ObservableObject {
 
             items = mapped
             completedCount = completed
-            pendingCount = max(mapped.count - completed, 0)
+            pendingCount = max(mapped.count - completed - failedCount, 0)
         } catch {
             errorMessage = error.localizedDescription
         }
