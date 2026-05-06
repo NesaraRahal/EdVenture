@@ -51,6 +51,25 @@ struct EVQuizQuestion: Identifiable, Hashable {
         guard choices.indices.contains(correctIndex) else { return nil }
     }
 
+    var dictionary: [String: Any] {
+        [
+            "id": id,
+            "lessonId": lessonId,
+            "level": level,
+            "order": order,
+            "difficulty": difficulty,
+            "xpMin": xpMin,
+            "xpMax": xpMax,
+            "xpSuggested": xpSuggested,
+            "prompt": prompt,
+            "choices": choices,
+            "correctIndex": correctIndex,
+            "explanation": explanation,
+            "tags": tags,
+            "isActive": isActive
+        ]
+    }
+
     init(id: String,
          lessonId: String,
          level: Int,
@@ -84,14 +103,46 @@ struct EVQuizQuestion: Identifiable, Hashable {
     }
 }
 
+struct EVQuizRetryQuestion: Hashable {
+    let questionIndex: Int
+    let question: EVQuizQuestion
+
+    var dictionary: [String: Any] {
+        [
+            "questionIndex": questionIndex,
+            "question": question.dictionary
+        ]
+    }
+
+    init(questionIndex: Int, question: EVQuizQuestion) {
+        self.questionIndex = questionIndex
+        self.question = question
+    }
+
+    init?(data: [String: Any]) {
+        let questionIndex = data["questionIndex"] as? Int ?? 0
+        guard
+            let questionData = data["question"] as? [String: Any],
+            let questionId = questionData["id"] as? String,
+            let question = EVQuizQuestion(id: questionId, data: questionData)
+        else { return nil }
+
+        self.questionIndex = questionIndex
+        self.question = question
+    }
+}
+
 struct EVQuizSessionState {
     let lessonId: String
     let level: Int
+    var totalQuestions: Int
     var unlockedCount: Int
     var consecutiveWins: Int
     var correctInWindow: Int
     var windowStartsAt: Date
     var lockedUntil: Date?
+    var retryQuestions: [EVQuizRetryQuestion]
+    var retryAvailableUntil: Date?
     var totalXP: Int
     var attemptedCount: Int
     var currentQuestionIndex: Int
@@ -101,11 +152,14 @@ struct EVQuizSessionState {
         EVQuizSessionState(
             lessonId: lessonId,
             level: level,
+            totalQuestions: max(totalQuestions, 1),
             unlockedCount: 1,
             consecutiveWins: 0,
             correctInWindow: 0,
             windowStartsAt: Date(),
             lockedUntil: nil,
+            retryQuestions: [],
+            retryAvailableUntil: nil,
             totalXP: 0,
             attemptedCount: 0,
             currentQuestionIndex: 0,
@@ -133,7 +187,48 @@ struct EVQuizSessionState {
         if let lockedUntil, lockedUntil <= now {
             copy.lockedUntil = nil
         }
+        if let retryAvailableUntil, retryAvailableUntil <= now {
+            copy.retryQuestions = []
+            copy.retryAvailableUntil = nil
+        }
         return copy
+    }
+
+    var activeRetryQuestions: [EVQuizRetryQuestion] {
+        guard let retryAvailableUntil, retryAvailableUntil > Date(), !retryQuestions.isEmpty else { return [] }
+        return retryQuestions.sorted { lhs, rhs in
+            if lhs.questionIndex == rhs.questionIndex {
+                return lhs.question.order < rhs.question.order
+            }
+            return lhs.questionIndex < rhs.questionIndex
+        }
+    }
+
+    mutating func refreshRetryWindow(now: Date = Date()) {
+        if retryQuestions.isEmpty {
+            retryAvailableUntil = nil
+        } else if retryAvailableUntil == nil || retryAvailableUntil! <= now {
+            retryAvailableUntil = now.addingTimeInterval(5 * 60)
+        }
+    }
+
+    mutating func addRetryQuestion(_ question: EVQuizQuestion, questionIndex: Int, now: Date = Date()) {
+        retryQuestions.removeAll { $0.question.id == question.id }
+        retryQuestions.append(EVQuizRetryQuestion(questionIndex: questionIndex, question: question))
+        retryQuestions.sort {
+            if $0.questionIndex == $1.questionIndex {
+                return $0.question.order < $1.question.order
+            }
+            return $0.questionIndex < $1.questionIndex
+        }
+        retryAvailableUntil = now.addingTimeInterval(5 * 60)
+    }
+
+    mutating func removeRetryQuestion(questionId: String) {
+        retryQuestions.removeAll { $0.question.id == questionId }
+        if retryQuestions.isEmpty {
+            retryAvailableUntil = nil
+        }
     }
 
     mutating func applyCorrectAnswer(questionId: String,
@@ -159,11 +254,14 @@ struct EVQuizSessionState {
         [
             "lessonId": lessonId,
             "level": level,
+            "totalQuestions": totalQuestions,
             "unlockedCount": unlockedCount,
             "consecutiveWins": consecutiveWins,
             "correctInWindow": correctInWindow,
             "windowStartsAt": Timestamp(date: windowStartsAt),
             "lockedUntil": lockedUntil.map { Timestamp(date: $0) } as Any,
+            "retryQuestions": retryQuestions.map { $0.dictionary },
+            "retryAvailableUntil": retryAvailableUntil.map { Timestamp(date: $0) } as Any,
             "totalXP": totalXP,
             "attemptedCount": attemptedCount,
             "currentQuestionIndex": currentQuestionIndex,
@@ -183,6 +281,64 @@ struct EVQuizRoundResult {
 
 final class EVQuizStore {
     private let db = Firestore.firestore()
+
+    func loadLevelQuestionSet(userId: String,
+                              lessonId: String,
+                              level: Int,
+                              limit: Int = 10) async throws -> [EVQuizQuestion] {
+        let docId = levelSetDocumentId(lessonId: lessonId, level: level)
+        let setRef = db.collection("users").document(userId)
+            .collection("levelQuestionSets").document(docId)
+        let snapshot = try await setRef.getDocument()
+
+        if let data = snapshot.data(),
+           let stored = data["questions"] as? [[String: Any]] {
+            let parsed = stored.compactMap { map -> EVQuizQuestion? in
+                guard let qid = map["id"] as? String else { return nil }
+                return EVQuizQuestion(id: qid, data: map)
+            }
+            .sorted { lhs, rhs in
+                if lhs.difficulty == rhs.difficulty {
+                    return lhs.order < rhs.order
+                }
+                return lhs.difficulty < rhs.difficulty
+            }
+
+            if !parsed.isEmpty {
+                return parsed
+            }
+        }
+
+        let all = try await loadLevelQuestions(lessonId: lessonId, level: level)
+        let selected = Array(all.prefix(max(limit, 1)))
+        let payload: [[String: Any]] = selected.map { question in
+            [
+                "id": question.id,
+                "lessonId": question.lessonId,
+                "level": question.level,
+                "order": question.order,
+                "difficulty": question.difficulty,
+                "xpMin": question.xpMin,
+                "xpMax": question.xpMax,
+                "xpSuggested": question.xpSuggested,
+                "prompt": question.prompt,
+                "choices": question.choices,
+                "correctIndex": question.correctIndex,
+                "explanation": question.explanation,
+                "tags": question.tags,
+                "isActive": question.isActive
+            ]
+        }
+
+        try await setRef.setData([
+            "lessonId": lessonId,
+            "level": level,
+            "questions": payload,
+            "createdAt": Timestamp(date: Date())
+        ], merge: true)
+
+        return selected
+    }
 
     func loadLevelQuestions(lessonId: String, level: Int) async throws -> [EVQuizQuestion] {
         let snapshot = try await db
@@ -222,10 +378,6 @@ final class EVQuizStore {
             question.level == level
         }
 
-        if levelFiltered.isEmpty {
-            return questions.shuffledByDifficulty()
-        }
-
         return levelFiltered.shuffledByDifficulty()
     }
 
@@ -258,11 +410,15 @@ final class EVQuizStore {
             return EVQuizSessionState.initial(lessonId: lessonId, level: level, totalQuestions: totalQuestions)
         }
 
+        let storedTotalQuestions = data["totalQuestions"] as? Int ?? totalQuestions
         let unlockedCount = data["unlockedCount"] as? Int ?? max(totalQuestions, 1)
         let consecutiveWins = data["consecutiveWins"] as? Int ?? 0
         let correctInWindow = data["correctInWindow"] as? Int ?? 0
         let windowStartsAt = (data["windowStartsAt"] as? Timestamp)?.dateValue() ?? Date()
         let lockedUntil = (data["lockedUntil"] as? Timestamp)?.dateValue()
+        let retryAvailableUntil = (data["retryAvailableUntil"] as? Timestamp)?.dateValue()
+        let retryQuestions = (data["retryQuestions"] as? [[String: Any]] ?? [])
+            .compactMap(EVQuizRetryQuestion.init)
         let totalXP = data["totalXP"] as? Int ?? 0
         let attemptedCount = data["attemptedCount"] as? Int ?? 0
         let currentQuestionIndex = data["currentQuestionIndex"] as? Int ?? 0
@@ -271,14 +427,17 @@ final class EVQuizStore {
         return EVQuizSessionState(
             lessonId: lessonId,
             level: level,
-            unlockedCount: min(totalQuestions, max(1, unlockedCount)),
+            totalQuestions: max(storedTotalQuestions, 1),
+            unlockedCount: min(storedTotalQuestions, max(1, unlockedCount)),
             consecutiveWins: consecutiveWins,
             correctInWindow: correctInWindow,
             windowStartsAt: windowStartsAt,
             lockedUntil: lockedUntil,
+            retryQuestions: retryQuestions,
+            retryAvailableUntil: retryAvailableUntil,
             totalXP: totalXP,
             attemptedCount: attemptedCount,
-            currentQuestionIndex: min(max(0, currentQuestionIndex), max(totalQuestions - 1, 0)),
+            currentQuestionIndex: min(max(0, currentQuestionIndex), max(storedTotalQuestions - 1, 0)),
             completedQuestionIDs: completedQuestionIDs
         ).withLoadedWindow()
     }
@@ -302,7 +461,10 @@ final class EVQuizStore {
         var updatedSession = session.withLoadedWindow()
         let now = Date()
         let isCorrect = selectedIndex == question.correctIndex
-        let earnedXP = isCorrect ? question.xpSuggested : 0
+        let alreadyCompleted = updatedSession.completedQuestionIDs.contains(question.id)
+        let earnedXP = isCorrect && !alreadyCompleted ? question.xpSuggested : 0
+
+        updatedSession.totalQuestions = max(updatedSession.totalQuestions, totalQuestions)
 
         if isCorrect {
             updatedSession.applyCorrectAnswer(
@@ -311,9 +473,13 @@ final class EVQuizStore {
                 totalQuestions: max(totalQuestions, 1),
                 now: now
             )
+            updatedSession.removeRetryQuestion(questionId: question.id)
         } else {
             updatedSession.applyWrongAnswer(totalQuestions: totalQuestions, now: now)
+            updatedSession.addRetryQuestion(question, questionIndex: questionIndex, now: now)
         }
+
+        updatedSession.refreshRetryWindow(now: now)
 
         updatedSession.currentQuestionIndex = max(0, questionIndex)
         let safeTimeSpent = max(0, timeSpentSeconds)
@@ -360,6 +526,26 @@ final class EVQuizStore {
             : session.level
         let progress = min(Double(updatedCompletedLevels.count) / Double(safeTotalLevels), 1.0)
 
+        var activeLessonData: [String: Any] = [
+            "lessonId": session.lessonId,
+            "progress": progress,
+            "completedQuestionIDs": Array(uniqueCompleted),
+            "completedQuestionsCount": completedCount,
+            "totalQuestions": normalizedTotal,
+            "totalLevels": safeTotalLevels,
+            "completedLevels": Array(updatedCompletedLevels).sorted(),
+            "highestUnlockedLevel": clampedUnlocked,
+            "currentLevel": currentLevel,
+            "isCompleted": levelCompleted,
+            "lastQuestionIndex": questionIndex,
+            "updatedAt": Timestamp(date: now),
+            "completedAt": levelCompleted ? Timestamp(date: now) : FieldValue.delete()
+        ]
+
+        if levelCompleted {
+            activeLessonData["lastLevelCompletedAt"] = Timestamp(date: now)
+        }
+
         let batch = db.batch()
         batch.setData([
             "totalXP": FieldValue.increment(Int64(earnedXP)),
@@ -376,21 +562,7 @@ final class EVQuizStore {
         ], forDocument: userRef, merge: true)
 
         batch.setData(updatedSession.dictionary, forDocument: sessionRef, merge: true)
-        batch.setData([
-            "lessonId": session.lessonId,
-            "progress": progress,
-            "completedQuestionIDs": Array(uniqueCompleted),
-            "completedQuestionsCount": completedCount,
-            "totalQuestions": normalizedTotal,
-            "totalLevels": safeTotalLevels,
-            "completedLevels": Array(updatedCompletedLevels).sorted(),
-            "highestUnlockedLevel": clampedUnlocked,
-            "currentLevel": currentLevel,
-            "isCompleted": levelCompleted,
-            "lastQuestionIndex": questionIndex,
-            "updatedAt": Timestamp(date: now),
-            "completedAt": levelCompleted ? Timestamp(date: now) : FieldValue.delete()
-        ], forDocument: activeLessonRef, merge: true)
+        batch.setData(activeLessonData, forDocument: activeLessonRef, merge: true)
         batch.setData([
             "questionId": question.id,
             "questionIndex": questionIndex,
@@ -404,6 +576,9 @@ final class EVQuizStore {
             "level": session.level,
             "questionId": question.id,
             "questionIndex": questionIndex,
+            "questionPrompt": question.prompt,
+            "questionChoices": question.choices,
+            "questionExplanation": question.explanation,
             "selectedIndex": selectedIndex,
             "correctIndex": question.correctIndex,
             "isCorrect": isCorrect,
@@ -448,6 +623,10 @@ final class EVQuizStore {
     private func sessionDocumentId(lessonId: String, level: Int) -> String {
         let safeLevel = max(1, level)
         return "\(lessonId)_L\(String(format: "%02d", safeLevel))"
+    }
+
+    private func levelSetDocumentId(lessonId: String, level: Int) -> String {
+        sessionDocumentId(lessonId: lessonId, level: level)
     }
 
     private func computeDailyGoalUpdate(userRef: DocumentReference,

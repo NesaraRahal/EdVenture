@@ -66,7 +66,7 @@ struct LevelSummaryView: View {
         }
         .navigationBarHidden(true)
         .task {
-            await vm.load()
+            await vm.load(lessonId: lessonId, level: level)
         }
     }
 
@@ -237,22 +237,29 @@ struct LevelSummaryView: View {
     private var actionButtons: some View {
         VStack(spacing: 12) {
             Button {
-                if level < totalLevels {
+                if level < totalLevels, !vm.isCooldownActive {
                     onProgressToNextLevel?()
-                } else {
+                } else if level >= totalLevels {
                     onBackToLesson?()
                 }
             } label: {
-                Text(level < totalLevels ? "Progress to Next Level" : "Back to Lesson")
+                Text(vm.cooldownButtonTitle(level: level, totalLevels: totalLevels))
                     .font(.system(size: 17, weight: .bold, design: .rounded))
                     .foregroundColor(.black)
                     .frame(maxWidth: .infinity)
                     .frame(height: 58)
-                    .background(Color(hex: "0EB060"))
+                    .background(vm.isCooldownActive ? Color.white.opacity(0.24) : Color(hex: "0EB060"))
                     .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
-                    .shadow(color: Color(hex: "0EB060").opacity(0.32), radius: 12, y: 3)
+                    .shadow(color: Color(hex: "0EB060").opacity(vm.isCooldownActive ? 0.12 : 0.32), radius: 12, y: 3)
             }
             .buttonStyle(.plain)
+            .disabled(vm.isCooldownActive && level < totalLevels)
+
+            if vm.isCooldownActive {
+                Text("Next level unlocks in \(vm.cooldownDisplay)")
+                    .font(.system(size: 13, weight: .semibold, design: .rounded))
+                    .foregroundColor(.white.opacity(0.55))
+            }
 
             Button {
                 onReviewAnswers?()
@@ -366,18 +373,44 @@ final class LevelSummaryViewModel: ObservableObject {
     @Published var currentRankTitle: String = "Amateur"
     @Published var nextRankTitle: String = "Adept"
     @Published var xpToNextTitle: Int = 100
+    @Published var cooldownRemainingSeconds: Int?
 
     private let db = Firestore.firestore()
+    private var cooldownTimer: AnyCancellable?
 
-    func load() async {
+    var isCooldownActive: Bool {
+        cooldownRemainingSeconds != nil
+    }
+
+    var cooldownDisplay: String {
+        guard let cooldownRemainingSeconds else { return "" }
+        let hours = cooldownRemainingSeconds / 3600
+        let minutes = (cooldownRemainingSeconds % 3600) / 60
+        return "\(hours)h \(minutes)m"
+    }
+
+    func cooldownButtonTitle(level: Int, totalLevels: Int) -> String {
+        if level >= totalLevels {
+            return "Back to Lesson"
+        }
+        if let cooldownRemainingSeconds {
+            let hours = cooldownRemainingSeconds / 3600
+            let minutes = (cooldownRemainingSeconds % 3600) / 60
+            return "Unlocks in \(hours)h \(minutes)m"
+        }
+        return "Progress to Next Level"
+    }
+
+    func load(lessonId: String, level: Int) async {
         guard let uid = Auth.auth().currentUser?.uid else { return }
 
         do {
             let userDoc = try await db.collection("users").document(uid).getDocument()
             let userData = userDoc.data() ?? [:]
             let totalXP = userData["totalXP"] as? Int ?? 0
+            let isPro = userData["isPro"] as? Bool ?? false
 
-            level = max(1, totalXP / 100 + 1)
+            self.level = max(1, totalXP / 100 + 1)
             let levelXP = totalXP % 100
             progressToNextLevel = min(max(Double(levelXP) / 100.0, 0.0), 1.0)
 
@@ -385,6 +418,22 @@ final class LevelSummaryViewModel: ObservableObject {
             currentRankTitle = rankMeta.current
             nextRankTitle = rankMeta.next
             xpToNextTitle = rankMeta.xpToNext
+
+            let activeLessonDoc = try await db.collection("users")
+                .document(uid)
+                .collection("activeLessons")
+                .document(lessonId)
+                .getDocument()
+            let activeData = activeLessonDoc.data() ?? [:]
+            let lastLevelCompletedAt = (activeData["lastLevelCompletedAt"] as? Timestamp)?.dateValue()
+            
+            // Pro users bypass cooldown
+            if isPro {
+                cooldownRemainingSeconds = nil
+            } else {
+                cooldownRemainingSeconds = cooldownSecondsRemaining(lastLevelCompletedAt: lastLevelCompletedAt, now: Date())
+            }
+            startCooldownTimer(lessonId: lessonId, level: level)
 
             let leaderboardSnapshot = try await db
                 .collection("leaderboards")
@@ -403,6 +452,40 @@ final class LevelSummaryViewModel: ObservableObject {
         } catch {
             // Keep graceful defaults.
         }
+    }
+
+    private func startCooldownTimer(lessonId: String, level: Int) {
+        cooldownTimer?.cancel()
+        guard cooldownRemainingSeconds != nil else { return }
+
+        cooldownTimer = Timer.publish(every: 1.0, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                guard let self else { return }
+                Task {
+                    guard let uid = Auth.auth().currentUser?.uid else { return }
+                    let activeLessonDoc = try? await self.db.collection("users")
+                        .document(uid)
+                        .collection("activeLessons")
+                        .document(lessonId)
+                        .getDocument()
+                    let activeData = activeLessonDoc?.data() ?? [:]
+                    let lastLevelCompletedAt = (activeData["lastLevelCompletedAt"] as? Timestamp)?.dateValue()
+                    let remaining = self.cooldownSecondsRemaining(lastLevelCompletedAt: lastLevelCompletedAt, now: Date())
+                    self.cooldownRemainingSeconds = remaining
+                    if remaining == nil {
+                        self.cooldownTimer?.cancel()
+                        self.cooldownTimer = nil
+                    }
+                }
+            }
+    }
+
+    private func cooldownSecondsRemaining(lastLevelCompletedAt: Date?, now: Date) -> Int? {
+        guard let lastLevelCompletedAt else { return nil }
+        let unlockAt = lastLevelCompletedAt.addingTimeInterval(24 * 60 * 60)
+        guard now < unlockAt else { return nil }
+        return max(0, Int(unlockAt.timeIntervalSince(now)))
     }
 
     private func rankMeta(for xp: Int) -> (current: String, next: String, xpToNext: Int) {

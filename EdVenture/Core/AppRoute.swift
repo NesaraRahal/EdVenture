@@ -20,11 +20,14 @@ enum AppRoute: Hashable {
     case biometricsSettings
     case accessibilitySettings
     case lessonDetail(String)
+    case levelQuestions(lessonId: String, level: Int, totalLevels: Int)
+    case levelQuestionReview(lessonId: String, questionId: String)
     case globalChallenge(String)
     case question(lessonId: String, level: Int, questionIndex: Int, totalLevels: Int)
     case levelSummary(lessonId: String, level: Int, totalLevels: Int, score: Int, total: Int, earnedXP: Int, attemptSessionId: String, totalTimeSeconds: Int)
     case reviewAnswers(lessonId: String, attemptSessionId: String, score: Int, total: Int, totalTimeSeconds: Int)
     case tutorialQuestion
+    case purchasePro
     case profile
     case insights
     case editProfile

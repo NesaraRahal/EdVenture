@@ -18,6 +18,8 @@ struct UserProfile {
     var dailyGoalMinutes: Int
     var dailyProgressSeconds: Int
     var isEmailVerified: Bool
+    var isPro: Bool
+    var proPurchasedAt: Date?
     // Stats
     var currentStreak: Int
     var totalXP: Int
@@ -38,6 +40,8 @@ struct UserProfile {
         dailyGoalMinutes: 10,
         dailyProgressSeconds: 0,
         isEmailVerified: false,
+        isPro: false,
+        proPurchasedAt: nil,
         currentStreak: 0,
         totalXP: 0,
         accuracyPercent: 0,
@@ -57,6 +61,8 @@ struct UserProfile {
          dailyGoalMinutes: Int,
          dailyProgressSeconds: Int,
             isEmailVerified: Bool,
+            isPro: Bool = false,
+            proPurchasedAt: Date? = nil,
             currentStreak: Int = 0,
             totalXP: Int = 0,
             accuracyPercent: Int = 0,
@@ -74,6 +80,8 @@ struct UserProfile {
         self.dailyGoalMinutes = dailyGoalMinutes
         self.dailyProgressSeconds = dailyProgressSeconds
         self.isEmailVerified = isEmailVerified
+        self.isPro = isPro
+        self.proPurchasedAt = proPurchasedAt
         self.currentStreak = currentStreak
         self.totalXP = totalXP
         self.accuracyPercent = accuracyPercent
@@ -94,6 +102,8 @@ struct UserProfile {
         self.dailyGoalMinutes = data["dailyGoalMinutes"] as? Int ?? 10
         self.dailyProgressSeconds = data["dailyProgressSeconds"] as? Int ?? 0
         self.isEmailVerified = data["isEmailVerified"] as? Bool ?? verified
+        self.isPro = data["isPro"] as? Bool ?? false
+        self.proPurchasedAt = (data["proPurchasedAt"] as? Timestamp)?.dateValue()
         self.currentStreak = data["currentStreak"] as? Int
             ?? data["currentQuizStreak"] as? Int
             ?? 0
@@ -117,6 +127,8 @@ struct UserProfile {
             "dailyGoalMinutes": dailyGoalMinutes,
             "dailyProgressSeconds": dailyProgressSeconds,
             "isEmailVerified": isEmailVerified,
+            "isPro": isPro,
+            "proPurchasedAt": proPurchasedAt.map { Timestamp(date: $0) } as Any,
             "updatedAt": Timestamp(date: Date())
         ]
     }
