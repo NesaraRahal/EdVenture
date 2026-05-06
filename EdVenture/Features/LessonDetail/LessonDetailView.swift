@@ -442,8 +442,10 @@ final class LessonDetailViewModel: ObservableObject {
         cooldownDisplaySeconds = cooldownSecondsRemaining(now: now)
 
         let completed = min(cachedCompletedLevels.count, cachedTotalLevels)
-        let pending = max(cachedHighestUnlockedLevel - completed, 0)
-        let locked = max(cachedTotalLevels - cachedHighestUnlockedLevel, 0)
+        let isCooldownActive = isCooldownActive(now: now)
+        let cooldownAdjustment = isCooldownActive ? 1 : 0
+        let pending = max(cachedHighestUnlockedLevel - completed - cooldownAdjustment, 0)
+        let locked = max(cachedTotalLevels - cachedHighestUnlockedLevel + cooldownAdjustment, 0)
 
         lesson = LessonDetail(
             id: lastLoadedLessonId ?? "",
