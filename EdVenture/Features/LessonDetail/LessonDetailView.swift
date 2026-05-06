@@ -8,6 +8,7 @@ struct LessonDetailView: View {
     let lessonId: String
     var onBack: (() -> Void)?
     var onStartQuiz: ((_ lessonId: String, _ level: Int, _ questionIndex: Int, _ totalLevels: Int) -> Void)?
+    var onOpenPurchase: (() -> Void)?
 
     @StateObject private var vm = LessonDetailViewModel()
 
@@ -56,6 +57,12 @@ struct LessonDetailView: View {
         .navigationBarHidden(true)
         .task(id: lessonId) {
             await vm.load(lessonId: lessonId)
+        }
+        .onAppear {
+            // Refresh when view appears (after returning from payment, etc.)
+            Task {
+                await vm.load(lessonId: lessonId)
+            }
         }
     }
 
@@ -188,9 +195,9 @@ struct LessonDetailView: View {
                 .foregroundColor(.white.opacity(0.5))
                 .tracking(2)
 
-            if let cooldownSeconds = vm.cooldownDisplaySeconds {
-                cooldownCountdownView(cooldownSeconds)
-            }
+                if let cooldownSeconds = vm.cooldownDisplaySeconds, !vm.isPro {
+                    cooldownCountdownView(cooldownSeconds)
+                }
 
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 14), count: 5), spacing: 14) {
                 ForEach(vm.items) { item in
@@ -261,6 +268,38 @@ struct LessonDetailView: View {
                         .foregroundColor(.white.opacity(0.4))
                 }
             }
+            HStack(spacing: 12) {
+                Button {
+                    // If Pro, proceed to next level. Otherwise, open purchase flow
+                    if vm.isPro {
+                        // Pro users can proceed immediately - for now just dismiss
+                        // In real scenario, this would trigger level progression
+                        onBack?()
+                    } else {
+                        onOpenPurchase?()
+                    }
+                } label: {
+                    Text(vm.isPro ? "Proceed to Next" : "Unlock now")
+                        .font(.system(size: 14, weight: .semibold, design: .rounded))
+                        .foregroundColor(Color(hex: "0A0F0D"))
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 40)
+                        .background(Color(hex: "0EB060"))
+                        .clipShape(Capsule())
+                }
+
+                Button {
+                    onOpenPurchase?()
+                } label: {
+                    Text("Manage Payment")
+                        .font(.system(size: 14, weight: .semibold, design: .rounded))
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 40)
+                        .background(Color.white.opacity(0.06))
+                        .clipShape(Capsule())
+                }
+            }
         }
         .padding(16)
         .background(
@@ -303,6 +342,7 @@ final class LessonDetailViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var cooldownDisplaySeconds: Int?
+    @Published var isPro = false
 
     private let db = Firestore.firestore()
     private let quizStore = EVQuizStore()
@@ -318,6 +358,7 @@ final class LessonDetailViewModel: ObservableObject {
     private var cachedCurrentLevel = 1
     private var cachedProgress: Double = 0
     private var cachedLastLevelCompletedAt: Date?
+    private var cachedIsPro = false
 
     deinit {
         cooldownTimer?.cancel()
@@ -347,7 +388,13 @@ final class LessonDetailViewModel: ObservableObject {
             var highestUnlockedLevel = 1
             var currentLevel = 1
             var lastLevelCompletedAt: Date?
+            var isPro = false
+            
             if let uid = Auth.auth().currentUser?.uid {
+                let userDoc = try await db.collection("users").document(uid).getDocument()
+                let userData = userDoc.data() ?? [:]
+                isPro = userData["isPro"] as? Bool ?? false
+                
                 let active = try await db.collection("users").document(uid)
                     .collection("activeLessons").document(lessonId).getDocument()
                 let activeData = active.data() ?? [:]
@@ -381,6 +428,10 @@ final class LessonDetailViewModel: ObservableObject {
             cachedCurrentLevel = min(max(currentLevel, 1), totalLevels)
             cachedProgress = completedLevels.isEmpty ? progress : min(max(Double(completedLevels.count) / Double(totalLevels), 0), 1)
             cachedLastLevelCompletedAt = lastLevelCompletedAt
+            cachedIsPro = isPro
+            await MainActor.run {
+                self.isPro = isPro
+            }
 
             rebuildLessonState(now: Date())
             startCooldownTimerIfNeeded()
@@ -426,6 +477,7 @@ final class LessonDetailViewModel: ObservableObject {
     }
 
     private func isCooldownActive(now: Date) -> Bool {
+        guard !cachedIsPro else { return false }
         guard let lastLevelCompletedAt = cachedLastLevelCompletedAt else { return false }
         let unlockAt = lastLevelCompletedAt.addingTimeInterval(24 * 60 * 60)
         return now < unlockAt
@@ -439,7 +491,7 @@ final class LessonDetailViewModel: ObservableObject {
     }
 
     private func rebuildLessonState(now: Date) {
-        cooldownDisplaySeconds = cooldownSecondsRemaining(now: now)
+        cooldownDisplaySeconds = isCooldownActive(now: now) ? cooldownSecondsRemaining(now: now) : nil
 
         let completed = min(cachedCompletedLevels.count, cachedTotalLevels)
         let isCooldownActive = isCooldownActive(now: now)
@@ -468,7 +520,8 @@ final class LessonDetailViewModel: ObservableObject {
             xpReward: cachedXpReward,
             lessonTitle: cachedLessonTitle,
             lastLevelCompletedAt: cachedLastLevelCompletedAt,
-            now: now
+            now: now,
+            isPro: cachedIsPro
         )
     }
 
@@ -484,7 +537,8 @@ final class LessonDetailViewModel: ObservableObject {
                                       xpReward: Int,
                                       lessonTitle: String,
                                       lastLevelCompletedAt: Date?,
-                                      now: Date) -> [LessonCurriculumItem] {
+                                      now: Date,
+                                      isPro: Bool) -> [LessonCurriculumItem] {
         let displayCount = min(max(totalLevels, 1), 10)
         let safeCurrentLevel = min(max(currentLevel, 1), displayCount)
         let safeHighestUnlocked = min(max(highestUnlockedLevel, 1), displayCount)
@@ -494,11 +548,21 @@ final class LessonDetailViewModel: ObservableObject {
             let status: LessonItemStatus
             if completedLevels.contains(level) {
                 status = .completed
-            } else if level == safeHighestUnlocked, let unlockAt, now < unlockAt {
-                status = .lockedByCooldown(secondsRemaining: max(0, Int(unlockAt.timeIntervalSince(now))))
+            } else if level == safeHighestUnlocked {
+                // This is the next unlockable level
+                if isPro {
+                    // Pro users skip cooldown - next level unlocks immediately
+                    status = .pending
+                } else if let unlockAt, now < unlockAt {
+                    // Regular users see cooldown on next level
+                    status = .lockedByCooldown(secondsRemaining: max(0, Int(unlockAt.timeIntervalSince(now))))
+                } else {
+                    // Cooldown expired
+                    status = .pending
+                }
             } else if level == safeCurrentLevel {
                 status = .inProgress
-            } else if level <= safeHighestUnlocked {
+            } else if level < safeHighestUnlocked {
                 status = .pending
             } else {
                 status = .locked

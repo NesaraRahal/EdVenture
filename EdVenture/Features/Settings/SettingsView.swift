@@ -22,6 +22,7 @@ struct SettingsView: View {
     var onAccessibility: (() -> Void)?
     var onBiometricsAndPassword: (() -> Void)?
     var onProfile:   (() -> Void)?
+    var onPayment: (() -> Void)?
 
     // MARK: - Body
     var body: some View {
@@ -74,6 +75,12 @@ struct SettingsView: View {
                         .padding(.bottom, 24)
 
                         // Support
+                        sectionLabel("Billing")
+                        settingsGroup([
+                            RowConfig(icon: "creditcard", label: "Payment & Billing", action: onPayment),
+                        ])
+                        .padding(.bottom, 24)
+
                         sectionLabel("Support")
                         settingsGroup([
                             RowConfig(icon: "questionmark.circle", label: "Help Center", action: onHelpCenter),

@@ -408,6 +408,7 @@ final class LevelSummaryViewModel: ObservableObject {
             let userDoc = try await db.collection("users").document(uid).getDocument()
             let userData = userDoc.data() ?? [:]
             let totalXP = userData["totalXP"] as? Int ?? 0
+            let isPro = userData["isPro"] as? Bool ?? false
 
             self.level = max(1, totalXP / 100 + 1)
             let levelXP = totalXP % 100
@@ -425,7 +426,13 @@ final class LevelSummaryViewModel: ObservableObject {
                 .getDocument()
             let activeData = activeLessonDoc.data() ?? [:]
             let lastLevelCompletedAt = (activeData["lastLevelCompletedAt"] as? Timestamp)?.dateValue()
-            cooldownRemainingSeconds = cooldownSecondsRemaining(lastLevelCompletedAt: lastLevelCompletedAt, now: Date())
+            
+            // Pro users bypass cooldown
+            if isPro {
+                cooldownRemainingSeconds = nil
+            } else {
+                cooldownRemainingSeconds = cooldownSecondsRemaining(lastLevelCompletedAt: lastLevelCompletedAt, now: Date())
+            }
             startCooldownTimer(lessonId: lessonId, level: level)
 
             let leaderboardSnapshot = try await db

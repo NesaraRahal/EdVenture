@@ -89,6 +89,8 @@ struct ContentView: View {
             return "Review answers screen. Inspect each question with your selected answer and the correct answer."
         case .tutorialQuestion:
             return "Tutorial question screen. A guided demo shows wrong answer feedback, hint usage, then correct answer flow."
+        case .purchasePro:
+            return "Pro purchase screen. Enter payment details to unlock the app immediately and manage your payment settings."
         case .discovery:
             return "Discovery screen. Explore recommended content and discover new lessons."
         case .rank:
@@ -268,6 +270,9 @@ struct ContentView: View {
                 },
                 onStartQuiz: { selectedLessonId, level, _, totalLevels in
                     path.append(AppRoute.levelQuestions(lessonId: selectedLessonId, level: level, totalLevels: totalLevels))
+                },
+                onOpenPurchase: {
+                    path.append(AppRoute.purchasePro)
                 }
             )
 
@@ -464,6 +469,14 @@ struct ContentView: View {
                 onAccessibility: { path.append(AppRoute.accessibilitySettings) },
                 onBiometricsAndPassword: { path.append(AppRoute.biometricsSettings) },
                 onProfile: { path.append(AppRoute.profile) }
+                ,onPayment: { path.append(AppRoute.purchasePro) }
+            )
+
+        case .purchasePro:
+            PaymentSettingsView(
+                onBack: {
+                    if !path.isEmpty { path.removeLast() }
+                }
             )
 
         case .helpCenter:

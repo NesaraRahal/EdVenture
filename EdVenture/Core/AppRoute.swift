@@ -27,6 +27,7 @@ enum AppRoute: Hashable {
     case levelSummary(lessonId: String, level: Int, totalLevels: Int, score: Int, total: Int, earnedXP: Int, attemptSessionId: String, totalTimeSeconds: Int)
     case reviewAnswers(lessonId: String, attemptSessionId: String, score: Int, total: Int, totalTimeSeconds: Int)
     case tutorialQuestion
+    case purchasePro
     case profile
     case insights
     case editProfile

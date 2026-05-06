@@ -48,6 +48,19 @@ struct EVProfileAvatarView: View {
                 .clipShape(Circle())
             }
             .overlay(Circle().stroke(ringColor, lineWidth: ringWidth))
+            .overlay(alignment: .topTrailing) {
+                if vm.profile.isPro {
+                    ZStack {
+                        Circle()
+                            .fill(Color(hex: "F6CC2E"))
+                            .frame(width: size * 0.45, height: size * 0.45)
+                        Text("★")
+                            .font(.system(size: size * 0.22))
+                            .foregroundColor(Color(hex: "0A0F0D"))
+                    }
+                    .offset(x: size * 0.12, y: -size * 0.12)
+                }
+            }
             .task {
                 if vm.profile.profileImageURL.isEmpty {
                     await vm.loadProfile()
