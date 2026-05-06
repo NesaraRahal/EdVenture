@@ -415,6 +415,26 @@ final class EVQuizStore {
             : session.level
         let progress = min(Double(updatedCompletedLevels.count) / Double(safeTotalLevels), 1.0)
 
+        var activeLessonData: [String: Any] = [
+            "lessonId": session.lessonId,
+            "progress": progress,
+            "completedQuestionIDs": Array(uniqueCompleted),
+            "completedQuestionsCount": completedCount,
+            "totalQuestions": normalizedTotal,
+            "totalLevels": safeTotalLevels,
+            "completedLevels": Array(updatedCompletedLevels).sorted(),
+            "highestUnlockedLevel": clampedUnlocked,
+            "currentLevel": currentLevel,
+            "isCompleted": levelCompleted,
+            "lastQuestionIndex": questionIndex,
+            "updatedAt": Timestamp(date: now),
+            "completedAt": levelCompleted ? Timestamp(date: now) : FieldValue.delete()
+        ]
+
+        if levelCompleted {
+            activeLessonData["lastLevelCompletedAt"] = Timestamp(date: now)
+        }
+
         let batch = db.batch()
         batch.setData([
             "totalXP": FieldValue.increment(Int64(earnedXP)),
@@ -431,21 +451,7 @@ final class EVQuizStore {
         ], forDocument: userRef, merge: true)
 
         batch.setData(updatedSession.dictionary, forDocument: sessionRef, merge: true)
-        batch.setData([
-            "lessonId": session.lessonId,
-            "progress": progress,
-            "completedQuestionIDs": Array(uniqueCompleted),
-            "completedQuestionsCount": completedCount,
-            "totalQuestions": normalizedTotal,
-            "totalLevels": safeTotalLevels,
-            "completedLevels": Array(updatedCompletedLevels).sorted(),
-            "highestUnlockedLevel": clampedUnlocked,
-            "currentLevel": currentLevel,
-            "isCompleted": levelCompleted,
-            "lastQuestionIndex": questionIndex,
-            "updatedAt": Timestamp(date: now),
-            "completedAt": levelCompleted ? Timestamp(date: now) : FieldValue.delete()
-        ], forDocument: activeLessonRef, merge: true)
+        batch.setData(activeLessonData, forDocument: activeLessonRef, merge: true)
         batch.setData([
             "questionId": question.id,
             "questionIndex": questionIndex,

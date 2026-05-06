@@ -188,6 +188,10 @@ struct LessonDetailView: View {
                 .foregroundColor(.white.opacity(0.5))
                 .tracking(2)
 
+            if let cooldownSeconds = vm.cooldownDisplaySeconds {
+                cooldownCountdownView(cooldownSeconds)
+            }
+
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 14), count: 5), spacing: 14) {
                 ForEach(vm.items) { item in
                     Button {
@@ -219,6 +223,56 @@ struct LessonDetailView: View {
         }
     }
 
+    private func cooldownCountdownView(_ cooldownSeconds: Int) -> some View {
+        let hours = cooldownSeconds / 3600
+        let minutes = (cooldownSeconds % 3600) / 60
+        let seconds = cooldownSeconds % 60
+        let totalSeconds: Double = 24 * 60 * 60
+        let progressPercent = 1.0 - (Double(cooldownSeconds) / totalSeconds)
+
+        return VStack(spacing: 12) {
+            VStack(spacing: 4) {
+                Text("Next Level Cooldown")
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .foregroundColor(.white.opacity(0.5))
+                    .tracking(0.5)
+
+                Text(String(format: "%02d:%02d:%02d", hours, minutes, seconds))
+                    .font(.system(size: 40, weight: .bold, design: .monospaced))
+                    .foregroundColor(Color(hex: "0EB060"))
+            }
+
+            VStack(spacing: 4) {
+                ZStack(alignment: .leading) {
+                    Capsule()
+                        .fill(Color.white.opacity(0.12))
+                        .frame(height: 6)
+                    Capsule()
+                        .fill(Color(hex: "0EB060"))
+                        .frame(width: max(0, progressPercent) * 300, height: 6)
+                }
+                HStack {
+                    Text("Time elapsed")
+                        .font(.system(size: 11, weight: .medium, design: .rounded))
+                        .foregroundColor(.white.opacity(0.4))
+                    Spacer()
+                    Text(String(format: "%.0f%%", progressPercent * 100))
+                        .font(.system(size: 11, weight: .medium, design: .rounded))
+                        .foregroundColor(.white.opacity(0.4))
+                }
+            }
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(Color(hex: "0EB060").opacity(0.08))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .stroke(Color(hex: "0EB060").opacity(0.2), lineWidth: 0.6)
+                )
+        )
+    }
+
     private func detailStat(title: String, value: String, accent: Color) -> some View {
         VStack(spacing: 10) {
             Text(title)
@@ -248,13 +302,31 @@ final class LessonDetailViewModel: ObservableObject {
     @Published var items: [LessonCurriculumItem] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
+    @Published var cooldownDisplaySeconds: Int?
 
     private let db = Firestore.firestore()
     private let quizStore = EVQuizStore()
+    private var cooldownTimer: AnyCancellable?
+    private var lastLoadedLessonId: String?
+    private var cachedLessonTitle = "Lesson"
+    private var cachedIcon = "book.fill"
+    private var cachedColorHex = "0EB060"
+    private var cachedXpReward = 50
+    private var cachedTotalLevels = 1
+    private var cachedCompletedLevels: Set<Int> = []
+    private var cachedHighestUnlockedLevel = 1
+    private var cachedCurrentLevel = 1
+    private var cachedProgress: Double = 0
+    private var cachedLastLevelCompletedAt: Date?
+
+    deinit {
+        cooldownTimer?.cancel()
+    }
 
     func load(lessonId: String) async {
         isLoading = true
         errorMessage = nil
+        lastLoadedLessonId = lessonId
         defer { isLoading = false }
 
         do {
@@ -270,12 +342,11 @@ final class LessonDetailViewModel: ObservableObject {
             let xpReward = data["xpReward"] as? Int ?? 50
             let totalLevels = max(data["totalLevels"] as? Int ?? 10, 1)
 
-            let icon = resolveIcon(iconRaw)
-
             var progress: Double = 0
             var completedLevels: Set<Int> = []
             var highestUnlockedLevel = 1
             var currentLevel = 1
+            var lastLevelCompletedAt: Date?
             if let uid = Auth.auth().currentUser?.uid {
                 let active = try await db.collection("users").document(uid)
                     .collection("activeLessons").document(lessonId).getDocument()
@@ -284,6 +355,7 @@ final class LessonDetailViewModel: ObservableObject {
                 completedLevels = Set(activeData["completedLevels"] as? [Int] ?? [])
                 highestUnlockedLevel = max(activeData["highestUnlockedLevel"] as? Int ?? 1, 1)
                 currentLevel = max(activeData["currentLevel"] as? Int ?? 1, 1)
+                lastLevelCompletedAt = (activeData["lastLevelCompletedAt"] as? Timestamp)?.dateValue()
             }
 
             if completedLevels.isEmpty, progress > 0 {
@@ -299,37 +371,22 @@ final class LessonDetailViewModel: ObservableObject {
                 highestUnlockedLevel = max(highestUnlockedLevel, min(totalLevels, completedLevels.count + 1))
             }
 
-            currentLevel = min(max(currentLevel, 1), totalLevels)
-            let completed = min(completedLevels.count, totalLevels)
-            let pending = max(highestUnlockedLevel - completed, 0)
-            let locked = max(totalLevels - highestUnlockedLevel, 0)
-            let adjustedProgress = totalLevels > 0
-                ? min(max(Double(completed) / Double(totalLevels), 0), 1)
-                : 0
+            cachedLessonTitle = (title?.isEmpty == false ? title! : "Untitled")
+            cachedIcon = resolveIcon(iconRaw)
+            cachedColorHex = (colorHex?.isEmpty == false ? colorHex! : "0EB060")
+            cachedXpReward = xpReward
+            cachedTotalLevels = totalLevels
+            cachedCompletedLevels = completedLevels
+            cachedHighestUnlockedLevel = highestUnlockedLevel
+            cachedCurrentLevel = min(max(currentLevel, 1), totalLevels)
+            cachedProgress = completedLevels.isEmpty ? progress : min(max(Double(completedLevels.count) / Double(totalLevels), 0), 1)
+            cachedLastLevelCompletedAt = lastLevelCompletedAt
 
-            lesson = LessonDetail(
-                id: lessonId,
-                title: (title?.isEmpty == false ? title! : "Untitled"),
-                icon: icon,
-                colorHex: (colorHex?.isEmpty == false ? colorHex! : "0EB060"),
-                xpReward: xpReward,
-                totalLevels: totalLevels,
-                progress: completedLevels.isEmpty ? progress : adjustedProgress,
-                completedCount: completed,
-                pendingCount: pending,
-                lockedCount: locked
-            )
-
-            items = buildCurriculumItems(
-                totalLevels: totalLevels,
-                completedLevels: completedLevels,
-                highestUnlockedLevel: highestUnlockedLevel,
-                currentLevel: currentLevel,
-                xpReward: xpReward,
-                lessonTitle: lesson?.title ?? "Lesson"
-            )
+            rebuildLessonState(now: Date())
+            startCooldownTimerIfNeeded()
         } catch {
             errorMessage = error.localizedDescription
+            stopCooldownTimer()
         }
     }
 
@@ -348,6 +405,71 @@ final class LessonDetailViewModel: ObservableObject {
         }
     }
 
+    private func startCooldownTimerIfNeeded() {
+        cooldownTimer?.cancel()
+
+        guard isCooldownActive(now: Date()) else { return }
+
+        cooldownTimer = Timer.publish(every: 1.0, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                self?.rebuildLessonState(now: Date())
+                if self?.isCooldownActive(now: Date()) != true {
+                    self?.stopCooldownTimer()
+                }
+            }
+    }
+
+    private func stopCooldownTimer() {
+        cooldownTimer?.cancel()
+        cooldownTimer = nil
+    }
+
+    private func isCooldownActive(now: Date) -> Bool {
+        guard let lastLevelCompletedAt = cachedLastLevelCompletedAt else { return false }
+        let unlockAt = lastLevelCompletedAt.addingTimeInterval(24 * 60 * 60)
+        return now < unlockAt
+    }
+
+    private func cooldownSecondsRemaining(now: Date) -> Int? {
+        guard let lastLevelCompletedAt = cachedLastLevelCompletedAt else { return nil }
+        let unlockAt = lastLevelCompletedAt.addingTimeInterval(24 * 60 * 60)
+        guard now < unlockAt else { return nil }
+        return max(0, Int(unlockAt.timeIntervalSince(now)))
+    }
+
+    private func rebuildLessonState(now: Date) {
+        cooldownDisplaySeconds = cooldownSecondsRemaining(now: now)
+
+        let completed = min(cachedCompletedLevels.count, cachedTotalLevels)
+        let pending = max(cachedHighestUnlockedLevel - completed, 0)
+        let locked = max(cachedTotalLevels - cachedHighestUnlockedLevel, 0)
+
+        lesson = LessonDetail(
+            id: lastLoadedLessonId ?? "",
+            title: cachedLessonTitle,
+            icon: cachedIcon,
+            colorHex: cachedColorHex,
+            xpReward: cachedXpReward,
+            totalLevels: cachedTotalLevels,
+            progress: cachedProgress,
+            completedCount: completed,
+            pendingCount: pending,
+            lockedCount: locked
+        )
+
+        items = buildCurriculumItems(
+            totalLevels: cachedTotalLevels,
+            completedLevels: cachedCompletedLevels,
+            highestUnlockedLevel: cachedHighestUnlockedLevel,
+            currentLevel: cachedCurrentLevel,
+            xpReward: cachedXpReward,
+            lessonTitle: cachedLessonTitle,
+            lastLevelCompletedAt: cachedLastLevelCompletedAt,
+            now: now
+        )
+    }
+
     private func resolveIcon(_ icon: String?) -> String {
         let candidate = (icon?.isEmpty == false ? icon! : "book.fill")
         return UIImage(systemName: candidate) == nil ? "book.fill" : candidate
@@ -358,15 +480,20 @@ final class LessonDetailViewModel: ObservableObject {
                                       highestUnlockedLevel: Int,
                                       currentLevel: Int,
                                       xpReward: Int,
-                                      lessonTitle: String) -> [LessonCurriculumItem] {
+                                      lessonTitle: String,
+                                      lastLevelCompletedAt: Date?,
+                                      now: Date) -> [LessonCurriculumItem] {
         let displayCount = min(max(totalLevels, 1), 10)
         let safeCurrentLevel = min(max(currentLevel, 1), displayCount)
         let safeHighestUnlocked = min(max(highestUnlockedLevel, 1), displayCount)
+        let unlockAt = lastLevelCompletedAt?.addingTimeInterval(24 * 60 * 60)
 
         return (1...displayCount).map { level in
             let status: LessonItemStatus
             if completedLevels.contains(level) {
                 status = .completed
+            } else if level == safeHighestUnlocked, let unlockAt, now < unlockAt {
+                status = .lockedByCooldown(secondsRemaining: max(0, Int(unlockAt.timeIntervalSince(now))))
             } else if level == safeCurrentLevel {
                 status = .inProgress
             } else if level <= safeHighestUnlocked {
@@ -406,20 +533,27 @@ struct LessonCurriculumItem: Identifiable {
     let meta: String
     let status: LessonItemStatus
 
-    var isLocked: Bool { status == .locked }
+    var isLocked: Bool {
+        switch status {
+        case .locked, .lockedByCooldown:
+            return true
+        default:
+            return false
+        }
+    }
 
     var statusColor: Color {
         switch status {
         case .completed: return Color(hex: "0EB060")
         case .inProgress: return Color(hex: "75DFFF")
         case .pending: return .white.opacity(0.55)
-        case .locked: return .white.opacity(0.25)
+        case .locked, .lockedByCooldown: return .white.opacity(0.25)
         }
     }
 
     var buttonIcon: String {
         switch status {
-        case .locked: return "lock.fill"
+        case .locked, .lockedByCooldown: return "lock.fill"
         default: return "play.fill"
         }
     }
@@ -429,7 +563,7 @@ struct LessonCurriculumItem: Identifiable {
         case .completed: return Color(hex: "0EB060")
         case .inProgress: return Color(hex: "0A0F0D")
         case .pending: return .white.opacity(0.65)
-        case .locked: return .white.opacity(0.3)
+        case .locked, .lockedByCooldown: return .white.opacity(0.3)
         }
     }
 
@@ -438,16 +572,17 @@ struct LessonCurriculumItem: Identifiable {
         case .completed: return Color(hex: "0EB060").opacity(0.15)
         case .inProgress: return Color(hex: "0EB060")
         case .pending: return Color.white.opacity(0.06)
-        case .locked: return Color.white.opacity(0.04)
+        case .locked, .lockedByCooldown: return Color.white.opacity(0.04)
         }
     }
 }
 
-enum LessonItemStatus {
+enum LessonItemStatus: Equatable {
     case completed
     case inProgress
     case pending
     case locked
+    case lockedByCooldown(secondsRemaining: Int)
 }
 
 private struct LevelNode: View {
@@ -461,7 +596,7 @@ private struct LevelNode: View {
             return Color(hex: "75DFFF").opacity(0.18)
         case .pending:
             return Color.white.opacity(0.06)
-        case .locked:
+        case .locked, .lockedByCooldown:
             return Color.white.opacity(0.04)
         }
     }
@@ -474,7 +609,7 @@ private struct LevelNode: View {
             return Color(hex: "75DFFF").opacity(0.5)
         case .pending:
             return Color.white.opacity(0.12)
-        case .locked:
+        case .locked, .lockedByCooldown:
             return Color.white.opacity(0.08)
         }
     }
@@ -487,7 +622,7 @@ private struct LevelNode: View {
             return "play.fill"
         case .pending:
             return "circle.fill"
-        case .locked:
+        case .locked, .lockedByCooldown:
             return "lock.fill"
         }
     }
@@ -500,7 +635,7 @@ private struct LevelNode: View {
             return Color(hex: "75DFFF")
         case .pending:
             return .white.opacity(0.65)
-        case .locked:
+        case .locked, .lockedByCooldown:
             return .white.opacity(0.35)
         }
     }
@@ -528,9 +663,11 @@ private struct LevelNode: View {
                 }
             }
 
-            Text("Level \(item.level)")
-                .font(.system(size: 12, weight: .semibold, design: .rounded))
-                .foregroundColor(.white.opacity(item.isLocked ? 0.35 : 0.7))
+            VStack(spacing: 2) {
+                Text("Level \(item.level)")
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .foregroundColor(.white.opacity(item.isLocked ? 0.35 : 0.7))
+            }
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 4)
