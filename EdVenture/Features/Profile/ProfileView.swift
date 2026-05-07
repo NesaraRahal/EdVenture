@@ -7,6 +7,7 @@ struct ProfileView: View {
     @State private var showingBiometricError = false
     @State private var showPaymentRequiredAlert = false
     @State private var showActivationResultAlert = false
+    @State private var showCancelProConfirm = false
     @State private var activationResultMessage = ""
     @State private var isActivatingPro = false
     private let proPriceLabel = "USD 4.99 / month"
@@ -99,26 +100,35 @@ struct ProfileView: View {
         } message: {
             Text(activationResultMessage)
         }
+        .confirmationDialog(
+            "Cancel Pro Membership",
+            isPresented: $showCancelProConfirm,
+            titleVisibility: .visible
+        ) {
+            Button("Cancel Pro", role: .destructive) {
+                Task {
+                    let result = await vm.cancelProMembership()
+                    switch result {
+                    case .success(let message):
+                        activationResultMessage = message
+                        showActivationResultAlert = true
+                    case .missingPaymentMethod:
+                        break
+                    case .failure(let message):
+                        activationResultMessage = message
+                        showActivationResultAlert = true
+                    }
+                }
+            }
+            Button("Keep Pro", role: .cancel) {}
+        } message: {
+            Text("This will turn off your Pro status in Firebase and return the account to the free plan.")
+        }
     }
 
     private var topBar: some View {
         HStack {
-            Button {
-                onBack?()
-            } label: {
-                HStack(spacing: 7) {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 15, weight: .semibold))
-                    Text("Back")
-                        .font(.system(size: 16, weight: .semibold, design: .rounded))
-                }
-                .foregroundColor(.white)
-                .padding(.horizontal, 18)
-                .frame(height: 44)
-                .background(Color.white.opacity(0.18))
-                .clipShape(Capsule())
-            }
-            .frame(minWidth: 44, minHeight: 44)
+            EVBackButton(title: "Back", action: { onBack?() })
 
             Spacer()
 
@@ -340,16 +350,30 @@ struct ProfileView: View {
                 }
                 .disabled(isActivatingPro || vm.profile.isPro)
 
-                Button {
-                    onOpenPayment?()
-                } label: {
-                    Text("Manage Payment")
-                        .font(.system(size: 15, weight: .semibold, design: .rounded))
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 46)
-                        .background(Color.white.opacity(0.1))
-                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                if vm.profile.isPro {
+                    Button {
+                        showCancelProConfirm = true
+                    } label: {
+                        Text("Cancel Pro")
+                            .font(.system(size: 15, weight: .semibold, design: .rounded))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 46)
+                            .background(Color.white.opacity(0.1))
+                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    }
+                } else {
+                    Button {
+                        onOpenPayment?()
+                    } label: {
+                        Text("Manage Payment")
+                            .font(.system(size: 15, weight: .semibold, design: .rounded))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 46)
+                            .background(Color.white.opacity(0.1))
+                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    }
                 }
             }
         }

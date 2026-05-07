@@ -27,6 +27,20 @@ struct PaymentSettingsView: View {
         return formatter.string(from: expiryDate)
     }
 
+    private var expiryDateDisplayText: String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter.string(from: expiryDate)
+    }
+
+    private func parsedExpiryDate(from value: String) -> Date? {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "MM/yy"
+        return formatter.date(from: value)
+    }
+
     private var cardBrand: String {
         let digits = cardNumber.filter { $0.isNumber }
         if digits.hasPrefix("4") { return "visa" }
@@ -40,26 +54,16 @@ struct PaymentSettingsView: View {
             Color(hex: "0A0F0D").ignoresSafeArea()
 
             VStack(spacing: 0) {
-                // Header with close button
-                HStack {
-                    Text(hasCard ? "Payment Method" : "Add a new method")
-                        .font(.system(size: 24, weight: .bold, design: .rounded))
-                        .foregroundColor(.white)
+                // Header with back button, matching the app's other settings screens
+                HStack(spacing: 14) {
+                    EVBackButton(title: "Back", action: { onBack?() })
+
+                    Text("Payment & Billing")
+                        .font(.system(size: 17, weight: .semibold, design: .rounded))
+                        .foregroundColor(.white.opacity(0.9))
+                        .lineLimit(1)
 
                     Spacer()
-
-                    HStack(spacing: 6) {
-                        Image(systemName: "creditcard")
-                            .foregroundColor(.white.opacity(0.3))
-                            .font(.system(size: 16, weight: .semibold))
-                    }
-
-                    Button(action: { onBack?() }) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(.white)
-                            .frame(width: 40, height: 40)
-                    }
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 20)
@@ -182,7 +186,7 @@ struct PaymentSettingsView: View {
                                         .tracking(0.3)
                                     Button(action: { showDatePicker = true }) {
                                         HStack {
-                                            Text(expiryDateFormatted)
+                                            Text(expiryDateDisplayText)
                                                 .font(.system(size: 15, weight: .medium, design: .rounded))
                                                 .foregroundColor(.white)
                                             Spacer()
@@ -224,8 +228,10 @@ struct PaymentSettingsView: View {
                                         displayedComponents: [.date]
                                     )
                                     .datePickerStyle(.graphical)
+                                    .labelsHidden()
+                                    .tint(Color(hex: "0EB060"))
+                                    .foregroundColor(.white)
                                     .padding(20)
-                                    .background(Color(hex: "0A0F0D"))
 
                                     Button(action: { showDatePicker = false }) {
                                         Text("Done")
@@ -236,11 +242,15 @@ struct PaymentSettingsView: View {
                                             .background(Color(hex: "0EB060"))
                                             .cornerRadius(14)
                                     }
-                                    .padding(20)
+                                    .padding(.horizontal, 20)
+                                    .padding(.bottom, 20)
 
-                                    Spacer()
+                                    Spacer(minLength: 0)
                                 }
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 .background(Color(hex: "0A0F0D").ignoresSafeArea())
+                                .preferredColorScheme(.dark)
+                                .presentationDetents([.large])
                             }
 
                             // Description
@@ -376,6 +386,16 @@ struct PaymentSettingsView: View {
                    let last4 = data["cardLast4"] as? String,
                    !last4.isEmpty {
                     await MainActor.run {
+                        if let holder = data["cardholderName"] as? String, !holder.isEmpty {
+                            nameOnCard = holder
+                        }
+
+                        if let expiry = data["cardExpiry"] as? String,
+                           let parsed = parsedExpiryDate(from: expiry) {
+                            expiryDate = parsed
+                        }
+
+                        cardNumber = last4
                         savedCardLast4 = last4
                         savedCardBrand = (data["cardBrand"] as? String) ?? "creditcard"
                         hasCard = true

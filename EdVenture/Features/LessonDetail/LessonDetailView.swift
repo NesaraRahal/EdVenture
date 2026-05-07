@@ -95,22 +95,7 @@ struct LessonDetailView: View {
 
     private var backButton: some View {
         HStack {
-            Button {
-                onBack?()
-            } label: {
-                HStack(spacing: 8) {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 15, weight: .semibold))
-                    Text("Back")
-                        .font(.system(size: 16, weight: .semibold, design: .rounded))
-                }
-                .foregroundColor(.white.opacity(0.95))
-                .padding(.horizontal, 20)
-                .frame(height: 44)
-                .background(Color.white.opacity(0.14))
-                .clipShape(Capsule())
-            }
-            .frame(minWidth: 44, minHeight: 44)
+            EVBackButton(title: "Back", action: { onBack?() }, compactTitleSize: 16)
 
             Spacer()
         }

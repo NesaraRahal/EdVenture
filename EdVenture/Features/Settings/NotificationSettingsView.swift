@@ -107,48 +107,35 @@ struct NotificationSettingsView: View {
 
     private var header: some View {
         HStack {
-            Button(action: { onBack?() }) {
-                HStack(spacing: 8) {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 16, weight: .semibold))
-                    Text("Back")
-                        .font(.system(size: 22, weight: .bold, design: .rounded))
-                }
-                .foregroundColor(Color(hex: "0A0F0D"))
-                .padding(.horizontal, 18)
-                .frame(height: 50)
-                .background(Color.white.opacity(0.82))
-                .clipShape(Capsule())
-            }
+            EVBackButton(title: "Back", action: { onBack?() }, compactTitleSize: 16, isDark: true)
 
             Spacer()
 
             Text("Notifications")
-                .font(.system(size: 35, weight: .bold, design: .rounded))
+                .font(.system(size: 17, weight: .semibold, design: .rounded))
                 .foregroundColor(.white)
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
 
             Spacer()
-                .frame(width: 98)
         }
     }
 
     private var pushCard: some View {
         HStack(spacing: 14) {
-            iconBadge(systemName: "bell.badge")
+            iconBadge(systemName: "bell.fill")
 
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text("Push Notifications")
-                    .font(.system(size: 16, weight: .bold, design: .rounded))
-                    .foregroundColor(.white)
-                Text("Enable to receive notifications on your device")
-                    .font(.system(size: 13, design: .rounded))
+                    .font(.system(size: 16, weight: .semibold, design: .rounded))
+                    .foregroundColor(.white.opacity(0.92))
+                Text("Enable system alerts for reminders and updates.")
+                    .font(.system(size: 12, design: .rounded))
                     .foregroundColor(.white.opacity(0.55))
                     .lineLimit(2)
             }
 
-            Spacer(minLength: 10)
+            Spacer(minLength: 12)
 
             Toggle("", isOn: $pushEnabled)
                 .labelsHidden()

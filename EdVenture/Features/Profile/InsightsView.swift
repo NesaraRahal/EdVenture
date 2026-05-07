@@ -41,21 +41,7 @@ struct InsightsView: View {
 
     private var topBar: some View {
         HStack {
-            Button {
-                onBack?()
-            } label: {
-                HStack(spacing: 8) {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 15, weight: .semibold))
-                    Text("Back")
-                        .font(.system(size: 16, weight: .semibold, design: .rounded))
-                }
-                .foregroundColor(.white)
-                .padding(.horizontal, 18)
-                .frame(height: 44)
-                .background(Color.white.opacity(0.18))
-                .clipShape(Capsule())
-            }
+            EVBackButton(title: "Back", action: { onBack?() }, compactTitleSize: 16)
 
             Spacer()
 

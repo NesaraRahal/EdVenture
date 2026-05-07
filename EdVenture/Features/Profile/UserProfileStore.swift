@@ -313,6 +313,29 @@ final class UserProfileViewModel: ObservableObject {
         }
     }
 
+    func cancelProMembership() async -> ProActivationResult {
+        guard let user = Auth.auth().currentUser else {
+            return .failure("User is not signed in.")
+        }
+
+        do {
+            let docRef = db.collection("users").document(user.uid)
+            try await docRef.setData([
+                "isPro": false,
+                "proPurchasedAt": FieldValue.delete(),
+                "proPriceLabel": FieldValue.delete(),
+                "updatedAt": Timestamp(date: Date())
+            ], merge: true)
+
+            profile.isPro = false
+            profile.proPurchasedAt = nil
+
+            return .success("Pro membership cancelled successfully.")
+        } catch {
+            return .failure(error.localizedDescription)
+        }
+    }
+
     func saveProfile() async {
         guard let user = Auth.auth().currentUser else {
             errorMessage = "User is not signed in."
