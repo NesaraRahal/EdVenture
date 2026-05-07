@@ -48,7 +48,13 @@ class LessonCooldownService: NSObject, ObservableObject {
     }
     
     deinit {
-        stopListening()
+        // Ensure cleanup runs on the main actor to avoid calling isolated methods
+        Task { @MainActor in
+            listeners.forEach { $0.remove() }
+            listeners.removeAll()
+            updateTimer?.invalidate()
+            updateTimer = nil
+        }
     }
     
     /// Start listening to all active lessons for a user
@@ -59,6 +65,7 @@ class LessonCooldownService: NSObject, ObservableObject {
             // Pro users have no cooldowns
             allLessonCooldowns = []
             leastUrgentCooldown = nil
+            HomeWidgetSnapshotStore.clearCooldown()
             return
         }
         
@@ -94,6 +101,7 @@ class LessonCooldownService: NSObject, ObservableObject {
         listeners.removeAll()
         updateTimer?.invalidate()
         updateTimer = nil
+        HomeWidgetSnapshotStore.clearCooldown()
     }
     
     /// Update cooldown statuses from Firestore snapshot
@@ -130,6 +138,33 @@ class LessonCooldownService: NSObject, ObservableObject {
         
         allLessonCooldowns = cooldowns
         leastUrgentCooldown = cooldowns.first
+
+        HomeWidgetSnapshotStore.updateCooldown(from: leastUrgentCooldown)
+        if let least = leastUrgentCooldown {
+            print("[CooldownService] 🔄 Published to widget: \(least.lessonName) | \(least.secondsRemaining ?? 0)s remaining")
+        } else {
+            print("[CooldownService] 🔄 No active cooldown, cleared widget")
+        }
+
+        // Automatically start or end Live Activity for the least-urgent cooldown
+        if #available(iOS 16.1, *) {
+            if let least = leastUrgentCooldown {
+                // Start or update the Live Activity for this lesson
+                Task { @MainActor in
+                    await LessonCooldownActivityManager.shared.startCooldownActivity(
+                        lessonName: least.lessonName,
+                        lessonIcon: least.lessonIcon,
+                        lessonColorHex: least.lessonColorHex,
+                        unlockTime: least.cooldownExpiresAt ?? Date()
+                    )
+                }
+            } else {
+                // No active cooldowns; end any running activity
+                Task { @MainActor in
+                    await LessonCooldownActivityManager.shared.endAllCooldownActivities()
+                }
+            }
+        }
     }
     
     /// Recalculate all cooldown timers (called every second)
@@ -156,12 +191,17 @@ class LessonCooldownService: NSObject, ObservableObject {
         }
         
         // Remove expired cooldowns
+        let hadCooldowns = !allLessonCooldowns.isEmpty
         allLessonCooldowns.removeAll { !$0.isCooldownActive }
         
         if updated || !allLessonCooldowns.isEmpty {
             leastUrgentCooldown = allLessonCooldowns.first
         } else {
             leastUrgentCooldown = nil
+        }
+
+        if hadCooldowns && allLessonCooldowns.isEmpty {
+            HomeWidgetSnapshotStore.clearCooldown()
         }
     }
     

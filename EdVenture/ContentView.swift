@@ -1,5 +1,6 @@
 import SwiftUI
 import FirebaseAuth
+import FirebaseFirestore
 
 // MARK: - ContentView
 // App/ContentView.swift
@@ -20,6 +21,8 @@ struct ContentView: View {
     @AppStorage("onboarding.hasSeenWelcome") private var hasSeenWelcome = false
     @AppStorage("accessibility.dynamicText") private var dynamicText = true
     private let mainTabAnimation = Animation.easeInOut(duration: 0.22)
+    @AppStorage("debug.showCooldownOverlay") private var showCooldownOverlay = false
+    @StateObject private var cooldownService = LessonCooldownService.shared
 
     private var loginRootView: some View {
         LoginView(
@@ -171,6 +174,33 @@ struct ContentView: View {
                 )
             }
         }
+        // Debug overlay: shows least-urgent cooldown and countdown in-app (tap to hide)
+        .overlay(alignment: .top) {
+            if let least = cooldownService.leastUrgentCooldown, showCooldownOverlay {
+                HStack(spacing: 12) {
+                    Image(systemName: least.lessonIcon)
+                        .font(.system(size: 16))
+                        .foregroundStyle(Color(hex: least.lessonColorHex))
+
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(least.lessonName)
+                            .font(.system(size: 13, weight: .semibold, design: .rounded))
+                        Text(least.displayString)
+                            .font(.system(size: 11, design: .rounded))
+                            .foregroundColor(.secondary)
+                    }
+
+                    Spacer()
+                }
+                .padding(10)
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .padding(.horizontal)
+                .padding(.top, 44)
+                .onTapGesture {
+                    showCooldownOverlay = false
+                }
+            }
+        }
         .dynamicTypeSize(dynamicText ? DynamicTypeSize.xSmall ... DynamicTypeSize.accessibility5
                                      : DynamicTypeSize.xSmall ... DynamicTypeSize.large)
         .sheet(isPresented: $showTelemetryConsentPrompt) {
@@ -195,6 +225,22 @@ struct ContentView: View {
         // slide transition with velocity-matched spring by default.
         // The liquid glass morph on the nav bar is automatic when
         // .ultraThinMaterial is used consistently across screens.
+    .task {
+        await setupCooldownServiceIfNeeded()
+    }
+    }
+
+    @MainActor
+    private func setupCooldownServiceIfNeeded() async {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        do {
+            let doc = try await Firestore.firestore().collection("users").document(uid).getDocument()
+            let isPro = doc.data()?["isPro"] as? Bool ?? false
+            LessonCooldownService.shared.startListening(for: uid, isPro: isPro)
+        } catch {
+            // Non-fatal: silently ignore and avoid crashing the UI
+            print("Failed to start LessonCooldownService: \(error)")
+        }
     }
 
     @ViewBuilder

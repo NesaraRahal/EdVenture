@@ -1,36 +1,6 @@
 import ActivityKit
 import Foundation
 
-/// Attributes for the Lesson Cooldown Live Activity displayed on lock screen and Dynamic Island
-struct LessonCooldownActivityAttributes: ActivityAttributes {
-    public struct ContentState: Codable, Hashable {
-        let secondsRemaining: Int
-        let unlockTime: Date
-        
-        var displayText: String {
-            let hours = secondsRemaining / 3600
-            let minutes = (secondsRemaining % 3600) / 60
-            
-            if hours > 0 {
-                return "\(hours)h \(minutes)m to go"
-            } else if minutes > 0 {
-                return "\(minutes)m to go"
-            } else {
-                return "Ready now!"
-            }
-        }
-    }
-    
-    /// Lesson name (e.g., "Astronomy")
-    let lessonName: String
-    /// Lesson icon system name (e.g., "star.fill")
-    let lessonIcon: String
-    /// Lesson color hex (e.g., "0EB060")
-    let lessonColorHex: String
-    /// Initial unlock time when activity is created
-    let unlockTime: Date
-}
-
 /// Service to manage Lesson Cooldown Live Activities
 @available(iOS 16.1, *)
 actor LessonCooldownActivityManager {
@@ -38,13 +8,15 @@ actor LessonCooldownActivityManager {
     
     private var activeActivityId: String?
     private var updateTimer: Task<Void, Never>?
+    private var activityInstance: Activity<LessonCooldownActivityAttributes>?
+    private var activityLessonId: String?
     
     deinit {
         updateTimer?.cancel()
     }
     
     /// Start a new lesson cooldown activity or update the existing one
-    nonisolated func startCooldownActivity(
+    func startCooldownActivity(
         lessonName: String,
         lessonIcon: String,
         lessonColorHex: String,
@@ -66,22 +38,38 @@ actor LessonCooldownActivityManager {
         )
         
         do {
+            // If an activity already exists for the same lesson, just update its state
+            if let existing = activityInstance, activityLessonId == activityId {
+                await existing.update(ActivityContent(state: initialState, staleDate: nil))
+                // restart timer with new unlockTime
+                await startUpdateTimer(activity: existing, unlockTime: unlockTime)
+                return
+            }
+
             // End any existing activity first
-            await endAllCooldownActivities()
-            
+            if let existing = activityInstance {
+                await existing.end(ActivityContent(state: initialState, staleDate: Date()), dismissalPolicy: .immediate)
+                activityInstance = nil
+                activityLessonId = nil
+            }
+
             // Request new activity
             let activity = try Activity<LessonCooldownActivityAttributes>.request(
                 attributes: attributes,
                 contentState: initialState,
                 pushType: nil
             )
-            
-            // Store activity ID for future updates
+
+            // Store activity instance for future updates
+            activityInstance = activity
+            activityLessonId = activityId
+
+            // Store activity ID for reference
             await updateActiveActivityId(activityId)
-            
+
             // Start background update timer
             await startUpdateTimer(activity: activity, unlockTime: unlockTime)
-            
+
             print("✅ Started lesson cooldown activity: \(lessonName)")
         } catch {
             print("❌ Failed to start cooldown activity: \(error)")
@@ -89,15 +77,21 @@ actor LessonCooldownActivityManager {
     }
     
     /// Stop all active cooldown activities
-    nonisolated func endAllCooldownActivities() async {
-        // Get all active activities of this type
-        let activities = Activity<LessonCooldownActivityAttributes>.all
-        
+    func endAllCooldownActivities() async {
+        // End the stored activity instance if present
+        if let existing = activityInstance {
+            await existing.end(ActivityContent(state: existing.contentState, staleDate: Date()), dismissalPolicy: .immediate)
+            print("⏹ Ended cooldown activity for: \(existing.attributes.lessonName)")
+            activityInstance = nil
+            activityLessonId = nil
+        }
+
+        // Also attempt to end any other activities of this type (best-effort)
+        let activities = Activity<LessonCooldownActivityAttributes>.activities
         for activity in activities {
             await activity.end(ActivityContent(state: activity.contentState, staleDate: Date()), dismissalPolicy: .immediate)
-            print("⏹ Ended cooldown activity for: \(activity.attributes.lessonName)")
         }
-        
+
         await updateActiveActivityId(nil)
         await cancelUpdateTimer()
     }
@@ -146,5 +140,13 @@ actor LessonCooldownActivityManager {
     private func cancelUpdateTimer() async {
         updateTimer?.cancel()
         updateTimer = nil
+    }
+
+    /// Returns a concise snapshot of the current active activity (for debugging)
+    func getActiveActivityInfo() async -> (lessonName: String?, secondsRemaining: Int?) {
+        if let existing = activityInstance {
+            return (existing.attributes.lessonName, existing.contentState.secondsRemaining)
+        }
+        return (nil, nil)
     }
 }
