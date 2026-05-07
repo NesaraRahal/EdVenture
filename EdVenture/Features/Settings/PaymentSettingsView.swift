@@ -14,6 +14,7 @@ struct PaymentSettingsView: View {
     @State private var successMessage: String?
     @State private var hasCard = false
     @State private var savedCardLast4 = ""
+    @State private var savedCardBrand = "creditcard"
     @State private var showRemoveAlert = false
 
     var onBack: (() -> Void)?
@@ -76,7 +77,7 @@ struct PaymentSettingsView: View {
                                     .tracking(0.3)
                                 
                                 HStack {
-                                    Image(systemName: cardBrand)
+                                    Image(systemName: savedCardBrand)
                                         .font(.system(size: 24, weight: .semibold))
                                         .foregroundColor(Color(hex: "0EB060"))
                                     
@@ -280,7 +281,7 @@ struct PaymentSettingsView: View {
                             }
 
                             // Save button
-                            Button(action: buyPro) {
+                            Button(action: saveCardDetails) {
                                 if isLoading {
                                     ProgressView()
                                         .progressViewStyle(CircularProgressViewStyle(tint: Color(hex: "0A0F0D")))
@@ -317,9 +318,9 @@ struct PaymentSettingsView: View {
         }
     }
 
-    private func buyPro() {
+    private func saveCardDetails() {
         guard let user = Auth.auth().currentUser else {
-            errorMessage = "Please sign in to purchase."
+            errorMessage = "Please sign in to manage payment."
             return
         }
         guard !cardNumber.trimmingCharacters(in: .whitespaces).isEmpty,
@@ -336,22 +337,19 @@ struct PaymentSettingsView: View {
             do {
                 let last4 = String(cardNumber.filter { $0.isNumber }.suffix(4))
                 let docRef = db.collection("users").document(user.uid)
-                
-                // Store card info and Pro status
+
                 try await docRef.setData([
-                    "isPro": true,
-                    "proPurchasedAt": Timestamp(date: Date()),
                     "cardLast4": last4,
                     "cardBrand": cardBrand,
                     "cardholderName": nameOnCard,
-                    "cardNumber": cardNumber,
                     "cardExpiry": expiryDateFormatted
                 ], merge: true)
 
                 await MainActor.run {
-                    successMessage = "Purchase successful — thank you!"
+                    successMessage = "Payment method saved successfully."
                     isLoading = false
                     savedCardLast4 = last4
+                    savedCardBrand = cardBrand
                     hasCard = true
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                         onBack?()
@@ -379,6 +377,7 @@ struct PaymentSettingsView: View {
                    !last4.isEmpty {
                     await MainActor.run {
                         savedCardLast4 = last4
+                        savedCardBrand = (data["cardBrand"] as? String) ?? "creditcard"
                         hasCard = true
                     }
                 }
@@ -399,12 +398,12 @@ struct PaymentSettingsView: View {
                     "cardLast4": FieldValue.delete(),
                     "cardBrand": FieldValue.delete(),
                     "cardholderName": FieldValue.delete(),
-                    "cardNumber": FieldValue.delete(),
                     "cardExpiry": FieldValue.delete()
                 ], merge: true)
                 
                 await MainActor.run {
                     savedCardLast4 = ""
+                    savedCardBrand = "creditcard"
                     hasCard = false
                     isLoading = false
                     clearForm()

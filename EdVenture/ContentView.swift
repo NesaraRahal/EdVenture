@@ -577,6 +577,7 @@ struct ContentView: View {
             ProfileView(
                 onInsights: { path.append(AppRoute.insights) },
                 onEditProfile: { path.append(AppRoute.editProfile) },
+                onOpenPayment: { path.append(AppRoute.purchasePro) },
                 onBack: {
                     if !path.isEmpty {
                         path.removeLast()
