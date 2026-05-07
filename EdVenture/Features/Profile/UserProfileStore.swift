@@ -134,6 +134,58 @@ struct UserProfile {
     }
 }
 
+// MARK: - Test helpers
+extension UserProfileViewModel {
+    func test_dayKey(_ date: Date) -> String { dayKey(date) }
+    func test_dateFromDayKey(_ key: String) -> Date? { dateFromDayKey(key) }
+    func test_scoreLabel(_ percent: Int) -> String { scoreLabel(for: percent) }
+    func test_scoreColorHex(_ percent: Int) -> String { scoreColorHex(for: percent) }
+    func test_iconName(_ lessonId: String) -> String { iconName(for: lessonId) }
+    func test_relativeTimeDescription(_ date: Date) -> String { relativeTimeDescription(from: date) }
+
+    func test_accuracyPercent(correct: Int, total: Int) -> Int {
+        guard total > 0 else { return 0 }
+        var attempts: [ProfileQuizAttempt] = []
+        for _ in 0..<correct { attempts.append(ProfileQuizAttempt(answeredAt: Date(), lessonId: "general", isCorrect: true, earnedXP: 0, timeSpentSeconds: 1, attemptSessionId: "s1")) }
+        for _ in 0..<(max(0, total - correct)) { attempts.append(ProfileQuizAttempt(answeredAt: Date(), lessonId: "general", isCorrect: false, earnedXP: 0, timeSpentSeconds: 1, attemptSessionId: "s1")) }
+        return accuracyPercent(for: attempts)
+    }
+
+    func test_averageTime(_ times: [Int]) -> Int {
+        let attempts = times.map { ProfileQuizAttempt(answeredAt: Date(), lessonId: "general", isCorrect: true, earnedXP: 0, timeSpentSeconds: $0, attemptSessionId: "s1") }
+        return averageTime(for: attempts)
+    }
+
+    func test_percentAfterEight(hours: [Int]) -> Int {
+        let calendar = Calendar.current
+        var attempts: [ProfileQuizAttempt] = []
+        for h in hours {
+            var comps = calendar.dateComponents([.year, .month, .day], from: Date())
+            comps.hour = h
+            comps.minute = 0
+            let date = calendar.date(from: comps) ?? Date()
+            attempts.append(ProfileQuizAttempt(answeredAt: date, lessonId: "general", isCorrect: true, earnedXP: 0, timeSpentSeconds: 1, attemptSessionId: "s1"))
+        }
+        return percentAfterEight(for: attempts)
+    }
+
+    func test_hasTopicMastery(lessonId: String, correct: Int, total: Int) -> Bool {
+        var attempts: [ProfileQuizAttempt] = []
+        for _ in 0..<correct { attempts.append(ProfileQuizAttempt(answeredAt: Date(), lessonId: lessonId, isCorrect: true, earnedXP: 0, timeSpentSeconds: 1, attemptSessionId: "s1")) }
+        for _ in 0..<(max(0, total - correct)) { attempts.append(ProfileQuizAttempt(answeredAt: Date(), lessonId: lessonId, isCorrect: false, earnedXP: 0, timeSpentSeconds: 1, attemptSessionId: "s1")) }
+        return hasTopicMastery(from: attempts)
+    }
+
+    func test_currentDailyStreak(dayOffsets: [Int]) -> Int {
+        let calendar = Calendar.current
+        let dates = dayOffsets.map { offset -> Date in
+            calendar.date(byAdding: .day, value: -offset, to: Date()) ?? Date()
+        }
+        let attempts = dates.map { d in ProfileQuizAttempt(answeredAt: d, lessonId: "general", isCorrect: true, earnedXP: 0, timeSpentSeconds: 1, attemptSessionId: "s1") }
+        return currentDailyStreak(from: attempts)
+    }
+}
+
 struct ProfileLevelProgress {
     let level: Int
     let title: String

@@ -401,6 +401,17 @@ final class EVQuizStore {
         return (level, order)
     }
 
+    // Test helpers
+    func test_parseLevelOrder(from questionId: String) -> (level: Int, order: Int)? {
+        parseLevelOrder(from: questionId)
+    }
+
+    func test_sessionDocumentId(lessonId: String, level: Int) -> String { sessionDocumentId(lessonId: lessonId, level: level) }
+
+    func test_dayKey(_ date: Date) -> String { dayKey(date) }
+
+    func test_shuffledByDifficulty(_ questions: [EVQuizQuestion]) -> [EVQuizQuestion] { questions.shuffledByDifficulty() }
+
     func loadSession(userId: String, lessonId: String, level: Int, totalQuestions: Int) async throws -> EVQuizSessionState {
         let ref = db.collection("users").document(userId)
             .collection("quizSessions").document(sessionDocumentId(lessonId: lessonId, level: level))

@@ -256,3 +256,15 @@ enum EVTelemetryManager {
         return String(cleaned.prefix(24))
     }
 }
+
+// MARK: - Test helpers
+extension EVTelemetryManager {
+    static func test_sanitizeAnalyticsEventName(_ raw: String) -> String {
+        sanitizeAnalyticsEventName(raw)
+    }
+
+    static func test_sanitizeAnalyticsKey(_ raw: String) -> String {
+        sanitizeAnalyticsKey(raw)
+    }
+}
+

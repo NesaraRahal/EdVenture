@@ -30,6 +30,13 @@
 			remoteGlobalIDString = 03199A552FACC5D3002E940A;
 			remoteInfo = EdVentureWidgetExtensionExtension;
 		};
+		033B8E8A2FAD05CC00085CDE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 037BA7352F7B8FB10087C670 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 037BA73C2F7B8FB10087C670;
+			remoteInfo = EdVenture;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -51,6 +58,8 @@
 		03199A572FACC5D3002E940A /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		03199A592FACC5D3002E940A /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		03199A712FACC5ED002E940A /* EdVentureWidgetExtensionExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EdVentureWidgetExtensionExtension.entitlements; sourceTree = "<group>"; };
+		033B8E862FAD05CC00085CDE /* EdVentureTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EdVentureTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		033B8EAB2FAD0CBE00085CDE /* EdVenture.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = EdVenture.xctestplan; sourceTree = "<group>"; };
 		037BA73D2F7B8FB10087C670 /* EdVenture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EdVenture.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1B2C3D42FACC5D3002E940A /* LessonCooldownAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LessonCooldownAttributes.swift; path = EdVenture/Shared/LessonCooldownAttributes.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -81,6 +90,11 @@
 			path = EdVentureWidgetExtension;
 			sourceTree = "<group>";
 		};
+		033B8E872FAD05CC00085CDE /* EdVentureTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = EdVentureTests;
+			sourceTree = "<group>";
+		};
 		037BA73F2F7B8FB10087C670 /* EdVenture */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -98,6 +112,13 @@
 			files = (
 				03199A5A2FACC5D3002E940A /* SwiftUI.framework in Frameworks */,
 				03199A582FACC5D3002E940A /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		033B8E832FAD05CC00085CDE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -122,9 +143,11 @@
 		037BA7342F7B8FB10087C670 = {
 			isa = PBXGroup;
 			children = (
+				033B8EAB2FAD0CBE00085CDE /* EdVenture.xctestplan */,
 				03199A712FACC5ED002E940A /* EdVentureWidgetExtensionExtension.entitlements */,
 				037BA73F2F7B8FB10087C670 /* EdVenture */,
 				03199A5B2FACC5D3002E940A /* EdVentureWidgetExtension */,
+				033B8E872FAD05CC00085CDE /* EdVentureTests */,
 				037BA76C2F7BA3960087C670 /* Frameworks */,
 				037BA73E2F7B8FB10087C670 /* Products */,
 				A1B2C3D42FACC5D3002E940A /* LessonCooldownAttributes.swift */,
@@ -136,6 +159,7 @@
 			children = (
 				037BA73D2F7B8FB10087C670 /* EdVenture.app */,
 				03199A562FACC5D3002E940A /* EdVentureWidgetExtensionExtension.appex */,
+				033B8E862FAD05CC00085CDE /* EdVentureTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -173,6 +197,29 @@
 			productName = EdVentureWidgetExtensionExtension;
 			productReference = 03199A562FACC5D3002E940A /* EdVentureWidgetExtensionExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
+		};
+		033B8E852FAD05CC00085CDE /* EdVentureTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 033B8E8C2FAD05CC00085CDE /* Build configuration list for PBXNativeTarget "EdVentureTests" */;
+			buildPhases = (
+				033B8E822FAD05CC00085CDE /* Sources */,
+				033B8E832FAD05CC00085CDE /* Frameworks */,
+				033B8E842FAD05CC00085CDE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				033B8E8B2FAD05CC00085CDE /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				033B8E872FAD05CC00085CDE /* EdVentureTests */,
+			);
+			name = EdVentureTests;
+			packageProductDependencies = (
+			);
+			productName = EdVentureTests;
+			productReference = 033B8E862FAD05CC00085CDE /* EdVentureTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		037BA73C2F7B8FB10087C670 /* EdVenture */ = {
 			isa = PBXNativeTarget;
@@ -221,6 +268,10 @@
 					03199A552FACC5D3002E940A = {
 						CreatedOnToolsVersion = 26.2;
 					};
+					033B8E852FAD05CC00085CDE = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = 037BA73C2F7B8FB10087C670;
+					};
 					037BA73C2F7B8FB10087C670 = {
 						CreatedOnToolsVersion = 26.2;
 					};
@@ -246,12 +297,20 @@
 			targets = (
 				037BA73C2F7B8FB10087C670 /* EdVenture */,
 				03199A552FACC5D3002E940A /* EdVentureWidgetExtensionExtension */,
+				033B8E852FAD05CC00085CDE /* EdVentureTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		03199A542FACC5D3002E940A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		033B8E842FAD05CC00085CDE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -276,6 +335,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		033B8E822FAD05CC00085CDE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		037BA7392F7B8FB10087C670 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -291,6 +357,11 @@
 			isa = PBXTargetDependency;
 			target = 03199A552FACC5D3002E940A /* EdVentureWidgetExtensionExtension */;
 			targetProxy = 03199A692FACC5D5002E940A /* PBXContainerItemProxy */;
+		};
+		033B8E8B2FAD05CC00085CDE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 037BA73C2F7B8FB10087C670 /* EdVenture */;
+			targetProxy = 033B8E8A2FAD05CC00085CDE /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -354,6 +425,46 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		033B8E8D2FAD05CC00085CDE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = EdVentureTests.EdVentureTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EdVenture.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/EdVenture";
+			};
+			name = Debug;
+		};
+		033B8E8E2FAD05CC00085CDE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = EdVentureTests.EdVentureTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EdVenture.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/EdVenture";
 			};
 			name = Release;
 		};
@@ -558,6 +669,15 @@
 			buildConfigurations = (
 				03199A6D2FACC5D5002E940A /* Debug */,
 				03199A6E2FACC5D5002E940A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		033B8E8C2FAD05CC00085CDE /* Build configuration list for PBXNativeTarget "EdVentureTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				033B8E8D2FAD05CC00085CDE /* Debug */,
+				033B8E8E2FAD05CC00085CDE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
