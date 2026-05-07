@@ -4,6 +4,15 @@ import FirebaseFirestore
 import FirebaseAuth
 import Combine
 
+struct ActiveCooldownLesson: Identifiable {
+    let id: String
+    let title: String
+    let icon: String
+    let colorHex: String
+    let unlockAt: Date
+    let secondsRemaining: Int
+}
+
 /// Service to manage lesson cooldown live activities for lock screen + dynamic island
 @MainActor
 final class LessonCooldownActivityService: ObservableObject {
@@ -50,24 +59,16 @@ final class LessonCooldownActivityService: ObservableObject {
         }
         
         let secondsRemaining = max(0, Int(unlockAt.timeIntervalSinceNow))
-        let progressPercent = 1.0 - (Double(secondsRemaining) / (24.0 * 60.0 * 60.0))
-        
         let attributes = LessonCooldownActivityAttributes(
-            lessonId: lessonId,
-            lessonTitle: lessonTitle,
-            icon: icon,
-            colorHex: colorHex
+            lessonName: lessonTitle,
+            lessonIcon: icon,
+            lessonColorHex: colorHex,
+            unlockTime: unlockAt
         )
         
         let contentState = LessonCooldownActivityAttributes.ContentState(
-            lessonName: lessonTitle,
-            lessonIcon: icon,
-            lessonColor: colorHex,
-            hoursRemaining: secondsRemaining / 3600,
-            minutesRemaining: (secondsRemaining % 3600) / 60,
-            secondsRemaining: secondsRemaining % 60,
-            unlockAt: unlockAt,
-            progressPercent: max(0, progressPercent)
+            secondsRemaining: secondsRemaining,
+            unlockTime: unlockAt
         )
         
         do {
@@ -117,17 +118,9 @@ final class LessonCooldownActivityService: ObservableObject {
             return
         }
         
-        let progressPercent = 1.0 - (Double(secondsRemaining) / (24.0 * 60.0 * 60.0))
-        
         let contentState = LessonCooldownActivityAttributes.ContentState(
-            lessonName: activity.attributes.lessonTitle,
-            lessonIcon: activity.attributes.icon,
-            lessonColor: activity.attributes.colorHex,
-            hoursRemaining: secondsRemaining / 3600,
-            minutesRemaining: (secondsRemaining % 3600) / 60,
-            secondsRemaining: secondsRemaining % 60,
-            unlockAt: unlockAt,
-            progressPercent: max(0, progressPercent)
+            secondsRemaining: secondsRemaining,
+            unlockTime: unlockAt
         )
         
         Task {

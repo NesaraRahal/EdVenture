@@ -5,20 +5,37 @@ import ActivityKit
 struct LessonCooldownLiveActivityView: View {
     let state: LessonCooldownActivityAttributes.ContentState
     let attributes: LessonCooldownActivityAttributes
+
+    private var hoursRemaining: Int {
+        max(0, state.secondsRemaining / 3600)
+    }
+
+    private var minutesRemaining: Int {
+        max(0, (state.secondsRemaining % 3600) / 60)
+    }
+
+    private var secondsPartRemaining: Int {
+        max(0, state.secondsRemaining % 60)
+    }
+
+    private var progressPercent: Double {
+        let totalSeconds = 24.0 * 60.0 * 60.0
+        return min(max(1.0 - (Double(state.secondsRemaining) / totalSeconds), 0), 1)
+    }
     
     var body: some View {
         HStack(spacing: 12) {
             // Icon
-            Image(systemName: state.lessonIcon)
+            Image(systemName: attributes.lessonIcon)
                 .font(.system(size: 18, weight: .bold))
-                .foregroundColor(Color(hex: state.lessonColor))
+                .foregroundColor(Color(evHex: attributes.lessonColorHex))
                 .frame(width: 32, height: 32)
-                .background(Color(hex: state.lessonColor).opacity(0.15))
+                .background(Color(evHex: attributes.lessonColorHex).opacity(0.15))
                 .clipShape(Circle())
             
             // Content
             VStack(alignment: .leading, spacing: 2) {
-                Text(state.lessonName)
+                Text(attributes.lessonName)
                     .font(.system(size: 14, weight: .semibold, design: .rounded))
                     .foregroundColor(.white)
                     .lineLimit(1)
@@ -27,14 +44,14 @@ struct LessonCooldownLiveActivityView: View {
                 HStack(spacing: 4) {
                     Image(systemName: "hourglass.bottomhalf.fill")
                         .font(.system(size: 10))
-                        .foregroundColor(Color(hex: state.lessonColor))
+                        .foregroundColor(Color(evHex: attributes.lessonColorHex))
                     
-                    if state.hoursRemaining > 0 {
-                        Text("\(state.hoursRemaining)h \(state.minutesRemaining)m")
+                    if hoursRemaining > 0 {
+                        Text("\(hoursRemaining)h \(minutesRemaining)m")
                             .font(.system(size: 12, weight: .medium, design: .monospaced))
                             .foregroundColor(.white.opacity(0.7))
                     } else {
-                        Text("\(state.minutesRemaining)m \(state.secondsRemaining)s")
+                        Text("\(minutesRemaining)m \(secondsPartRemaining)s")
                             .font(.system(size: 12, weight: .medium, design: .monospaced))
                             .foregroundColor(.white.opacity(0.7))
                     }
@@ -49,20 +66,20 @@ struct LessonCooldownLiveActivityView: View {
                     .fill(
                         LinearGradient(
                             colors: [
-                                Color(hex: state.lessonColor).opacity(0.7),
-                                Color(hex: state.lessonColor).opacity(0.3)
+                                Color(evHex: attributes.lessonColorHex).opacity(0.7),
+                                Color(evHex: attributes.lessonColorHex).opacity(0.3)
                             ],
                             startPoint: .top,
                             endPoint: .bottom
                         )
                     )
-                    .frame(width: 3, height: CGFloat(state.progressPercent * 40))
+                    .frame(width: 3, height: CGFloat(progressPercent * 40))
                 
                 Spacer()
                 
                 Capsule()
                     .fill(Color.white.opacity(0.1))
-                    .frame(width: 3, height: CGFloat((1 - state.progressPercent) * 40))
+                    .frame(width: 3, height: CGFloat((1 - progressPercent) * 40))
             }
             .frame(height: 40)
         }
@@ -73,7 +90,7 @@ struct LessonCooldownLiveActivityView: View {
                 .fill(Color.white.opacity(0.06))
                 .overlay(
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .stroke(Color(hex: state.lessonColor).opacity(0.2), lineWidth: 0.5)
+                        .stroke(Color(evHex: attributes.lessonColorHex).opacity(0.2), lineWidth: 0.5)
                 )
         )
     }
@@ -83,25 +100,33 @@ struct LessonCooldownLiveActivityView: View {
 struct LessonCooldownCompactView: View {
     let state: LessonCooldownActivityAttributes.ContentState
     let attributes: LessonCooldownActivityAttributes
+
+    private var hoursRemaining: Int {
+        max(0, state.secondsRemaining / 3600)
+    }
+
+    private var minutesRemaining: Int {
+        max(0, (state.secondsRemaining % 3600) / 60)
+    }
     
     var body: some View {
         HStack(spacing: 8) {
-            Image(systemName: state.lessonIcon)
+            Image(systemName: attributes.lessonIcon)
                 .font(.system(size: 12, weight: .semibold))
-                .foregroundColor(Color(hex: state.lessonColor))
+                .foregroundColor(Color(evHex: attributes.lessonColorHex))
             
             VStack(alignment: .leading, spacing: 1) {
-                Text(state.lessonName)
+                Text(attributes.lessonName)
                     .font(.system(size: 11, weight: .semibold, design: .rounded))
                     .foregroundColor(.white)
                     .lineLimit(1)
                 
-                if state.hoursRemaining > 0 {
-                    Text("\(state.hoursRemaining)h \(state.minutesRemaining)m")
+                if hoursRemaining > 0 {
+                    Text("\(hoursRemaining)h \(minutesRemaining)m")
                         .font(.system(size: 10, weight: .medium, design: .monospaced))
                         .foregroundColor(.white.opacity(0.6))
                 } else {
-                    Text("\(state.minutesRemaining)m")
+                    Text("\(minutesRemaining)m")
                         .font(.system(size: 10, weight: .medium, design: .monospaced))
                         .foregroundColor(.white.opacity(0.6))
                 }
@@ -115,21 +140,15 @@ struct LessonCooldownCompactView: View {
 #if DEBUG
 struct LessonCooldownLiveActivityView_Previews: PreviewProvider {
     static let attributes = LessonCooldownActivityAttributes(
-        lessonId: "astronomy",
-        lessonTitle: "Astronomy",
-        icon: "star.fill",
-        colorHex: "0EB060"
+        lessonName: "Astronomy",
+        lessonIcon: "star.fill",
+        lessonColorHex: "0EB060",
+        unlockTime: Date().addingTimeInterval(24 * 60 * 60)
     )
     
     static let contentState = LessonCooldownActivityAttributes.ContentState(
-        lessonName: "Astronomy",
-        lessonIcon: "star.fill",
-        lessonColor: "0EB060",
-        hoursRemaining: 23,
-        minutesRemaining: 45,
         secondsRemaining: 30,
-        unlockAt: Date().addingTimeInterval(24 * 60 * 60),
-        progressPercent: 0.02
+        unlockTime: Date().addingTimeInterval(24 * 60 * 60)
     )
     
     static var previews: some View {
@@ -140,7 +159,19 @@ struct LessonCooldownLiveActivityView_Previews: PreviewProvider {
             LessonCooldownCompactView(state: contentState, attributes: attributes)
                 .previewDisplayName("Dynamic Island Compact")
         }
-        .background(Color(hex: "0A0F0D"))
+        .background(Color(evHex: "0A0F0D"))
     }
 }
 #endif
+
+private extension Color {
+    init(evHex: String) {
+        let cleaned = evHex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: cleaned).scanHexInt64(&int)
+        let r = Double((int >> 16) & 0xFF) / 255
+        let g = Double((int >> 8) & 0xFF) / 255
+        let b = Double(int & 0xFF) / 255
+        self.init(red: r, green: g, blue: b)
+    }
+}
