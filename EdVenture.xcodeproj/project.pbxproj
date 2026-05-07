@@ -18,6 +18,8 @@
 		03A855D82F861BCB00D0ABA2 /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 03A855D72F861BCB00D0ABA2 /* FirebaseRemoteConfig */; };
 		03B1E5A32F9ABC1200ABCD01 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 03B1E5A22F9ABC1200ABCD01 /* GoogleSignIn */; };
 		58D91D7E2FB4000200ABC001 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 58D91D7D2FB4000200ABC001 /* FirebaseStorage */; };
+		A1B2C3D52FACC5D3002E940A /* LessonCooldownAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D42FACC5D3002E940A /* LessonCooldownAttributes.swift */; };
+		A1B2C3D62FACC5D3002E940A /* LessonCooldownAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D42FACC5D3002E940A /* LessonCooldownAttributes.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +52,7 @@
 		03199A592FACC5D3002E940A /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		03199A712FACC5ED002E940A /* EdVentureWidgetExtensionExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EdVentureWidgetExtensionExtension.entitlements; sourceTree = "<group>"; };
 		037BA73D2F7B8FB10087C670 /* EdVenture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EdVenture.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1B2C3D42FACC5D3002E940A /* LessonCooldownAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LessonCooldownAttributes.swift; path = EdVenture/Shared/LessonCooldownAttributes.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -124,6 +127,7 @@
 				03199A5B2FACC5D3002E940A /* EdVentureWidgetExtension */,
 				037BA76C2F7BA3960087C670 /* Frameworks */,
 				037BA73E2F7B8FB10087C670 /* Products */,
+				A1B2C3D42FACC5D3002E940A /* LessonCooldownAttributes.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -268,6 +272,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1B2C3D52FACC5D3002E940A /* LessonCooldownAttributes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -275,6 +280,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1B2C3D62FACC5D3002E940A /* LessonCooldownAttributes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
