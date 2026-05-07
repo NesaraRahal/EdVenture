@@ -80,21 +80,7 @@ struct SupportView: View {
 
     private var topBar: some View {
         HStack {
-            Button {
-                onBack?()
-            } label: {
-                HStack(spacing: 8) {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 14, weight: .semibold))
-                    Text("Back")
-                        .font(.system(size: 15, weight: .semibold, design: .rounded))
-                }
-                .foregroundColor(.white)
-                .frame(height: 44)
-                .padding(.horizontal, 14)
-                .background(Color.white.opacity(0.1))
-                .clipShape(Capsule())
-            }
+            EVBackButton(title: "Back", action: { onBack?() }, compactTitleSize: 15)
 
             Spacer()
         }

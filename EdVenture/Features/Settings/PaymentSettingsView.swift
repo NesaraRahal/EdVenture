@@ -14,6 +14,7 @@ struct PaymentSettingsView: View {
     @State private var successMessage: String?
     @State private var hasCard = false
     @State private var savedCardLast4 = ""
+    @State private var savedCardBrand = "creditcard"
     @State private var showRemoveAlert = false
 
     var onBack: (() -> Void)?
@@ -24,6 +25,20 @@ struct PaymentSettingsView: View {
         let formatter = DateFormatter()
         formatter.dateFormat = "MM/yy"
         return formatter.string(from: expiryDate)
+    }
+
+    private var expiryDateDisplayText: String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter.string(from: expiryDate)
+    }
+
+    private func parsedExpiryDate(from value: String) -> Date? {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "MM/yy"
+        return formatter.date(from: value)
     }
 
     private var cardBrand: String {
@@ -39,26 +54,16 @@ struct PaymentSettingsView: View {
             Color(hex: "0A0F0D").ignoresSafeArea()
 
             VStack(spacing: 0) {
-                // Header with close button
-                HStack {
-                    Text(hasCard ? "Payment Method" : "Add a new method")
-                        .font(.system(size: 24, weight: .bold, design: .rounded))
-                        .foregroundColor(.white)
+                // Header with back button, matching the app's other settings screens
+                HStack(spacing: 14) {
+                    EVBackButton(title: "Back", action: { onBack?() })
+
+                    Text("Payment & Billing")
+                        .font(.system(size: 17, weight: .semibold, design: .rounded))
+                        .foregroundColor(.white.opacity(0.9))
+                        .lineLimit(1)
 
                     Spacer()
-
-                    HStack(spacing: 6) {
-                        Image(systemName: "creditcard")
-                            .foregroundColor(.white.opacity(0.3))
-                            .font(.system(size: 16, weight: .semibold))
-                    }
-
-                    Button(action: { onBack?() }) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(.white)
-                            .frame(width: 40, height: 40)
-                    }
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 20)
@@ -76,7 +81,7 @@ struct PaymentSettingsView: View {
                                     .tracking(0.3)
                                 
                                 HStack {
-                                    Image(systemName: cardBrand)
+                                    Image(systemName: savedCardBrand)
                                         .font(.system(size: 24, weight: .semibold))
                                         .foregroundColor(Color(hex: "0EB060"))
                                     
@@ -181,7 +186,7 @@ struct PaymentSettingsView: View {
                                         .tracking(0.3)
                                     Button(action: { showDatePicker = true }) {
                                         HStack {
-                                            Text(expiryDateFormatted)
+                                            Text(expiryDateDisplayText)
                                                 .font(.system(size: 15, weight: .medium, design: .rounded))
                                                 .foregroundColor(.white)
                                             Spacer()
@@ -223,8 +228,10 @@ struct PaymentSettingsView: View {
                                         displayedComponents: [.date]
                                     )
                                     .datePickerStyle(.graphical)
+                                    .labelsHidden()
+                                    .tint(Color(hex: "0EB060"))
+                                    .foregroundColor(.white)
                                     .padding(20)
-                                    .background(Color(hex: "0A0F0D"))
 
                                     Button(action: { showDatePicker = false }) {
                                         Text("Done")
@@ -235,11 +242,15 @@ struct PaymentSettingsView: View {
                                             .background(Color(hex: "0EB060"))
                                             .cornerRadius(14)
                                     }
-                                    .padding(20)
+                                    .padding(.horizontal, 20)
+                                    .padding(.bottom, 20)
 
-                                    Spacer()
+                                    Spacer(minLength: 0)
                                 }
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 .background(Color(hex: "0A0F0D").ignoresSafeArea())
+                                .preferredColorScheme(.dark)
+                                .presentationDetents([.large])
                             }
 
                             // Description
@@ -280,7 +291,7 @@ struct PaymentSettingsView: View {
                             }
 
                             // Save button
-                            Button(action: buyPro) {
+                            Button(action: saveCardDetails) {
                                 if isLoading {
                                     ProgressView()
                                         .progressViewStyle(CircularProgressViewStyle(tint: Color(hex: "0A0F0D")))
@@ -317,9 +328,9 @@ struct PaymentSettingsView: View {
         }
     }
 
-    private func buyPro() {
+    private func saveCardDetails() {
         guard let user = Auth.auth().currentUser else {
-            errorMessage = "Please sign in to purchase."
+            errorMessage = "Please sign in to manage payment."
             return
         }
         guard !cardNumber.trimmingCharacters(in: .whitespaces).isEmpty,
@@ -336,22 +347,19 @@ struct PaymentSettingsView: View {
             do {
                 let last4 = String(cardNumber.filter { $0.isNumber }.suffix(4))
                 let docRef = db.collection("users").document(user.uid)
-                
-                // Store card info and Pro status
+
                 try await docRef.setData([
-                    "isPro": true,
-                    "proPurchasedAt": Timestamp(date: Date()),
                     "cardLast4": last4,
                     "cardBrand": cardBrand,
                     "cardholderName": nameOnCard,
-                    "cardNumber": cardNumber,
                     "cardExpiry": expiryDateFormatted
                 ], merge: true)
 
                 await MainActor.run {
-                    successMessage = "Purchase successful — thank you!"
+                    successMessage = "Payment method saved successfully."
                     isLoading = false
                     savedCardLast4 = last4
+                    savedCardBrand = cardBrand
                     hasCard = true
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                         onBack?()
@@ -378,7 +386,18 @@ struct PaymentSettingsView: View {
                    let last4 = data["cardLast4"] as? String,
                    !last4.isEmpty {
                     await MainActor.run {
+                        if let holder = data["cardholderName"] as? String, !holder.isEmpty {
+                            nameOnCard = holder
+                        }
+
+                        if let expiry = data["cardExpiry"] as? String,
+                           let parsed = parsedExpiryDate(from: expiry) {
+                            expiryDate = parsed
+                        }
+
+                        cardNumber = last4
                         savedCardLast4 = last4
+                        savedCardBrand = (data["cardBrand"] as? String) ?? "creditcard"
                         hasCard = true
                     }
                 }
@@ -399,12 +418,12 @@ struct PaymentSettingsView: View {
                     "cardLast4": FieldValue.delete(),
                     "cardBrand": FieldValue.delete(),
                     "cardholderName": FieldValue.delete(),
-                    "cardNumber": FieldValue.delete(),
                     "cardExpiry": FieldValue.delete()
                 ], merge: true)
                 
                 await MainActor.run {
                     savedCardLast4 = ""
+                    savedCardBrand = "creditcard"
                     hasCard = false
                     isLoading = false
                     clearForm()

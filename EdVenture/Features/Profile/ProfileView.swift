@@ -5,9 +5,16 @@ struct ProfileView: View {
     @AppStorage("security.biometricsEnabled") private var biometricsEnabled = false
     @AppStorage("security.requireForProfileChanges") private var requireForProfileChanges = false
     @State private var showingBiometricError = false
+    @State private var showPaymentRequiredAlert = false
+    @State private var showActivationResultAlert = false
+    @State private var showCancelProConfirm = false
+    @State private var activationResultMessage = ""
+    @State private var isActivatingPro = false
+    private let proPriceLabel = "USD 4.99 / month"
 
     var onInsights: (() -> Void)?
     var onEditProfile: (() -> Void)?
+    var onOpenPayment: (() -> Void)?
     var onBack: (() -> Void)?
 
 
@@ -44,6 +51,10 @@ struct ProfileView: View {
                         .padding(.top, 22)
                         .padding(.horizontal, 20)
 
+                    proMembershipSection
+                        .padding(.top, 24)
+                        .padding(.horizontal, 20)
+
                     statsGrid
                         .padding(.top, 28)
                         .padding(.horizontal, 20)
@@ -76,26 +87,48 @@ struct ProfileView: View {
         } message: {
             Text("Face ID / Touch ID verification failed. Please try again.")
         }
+        .alert("Payment Method Required", isPresented: $showPaymentRequiredAlert) {
+            Button("Add Payment Method") {
+                onOpenPayment?()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Please add a payment method first in Payment & Billing before activating Pro.")
+        }
+        .alert("Pro Membership", isPresented: $showActivationResultAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(activationResultMessage)
+        }
+        .confirmationDialog(
+            "Cancel Pro Membership",
+            isPresented: $showCancelProConfirm,
+            titleVisibility: .visible
+        ) {
+            Button("Cancel Pro", role: .destructive) {
+                Task {
+                    let result = await vm.cancelProMembership()
+                    switch result {
+                    case .success(let message):
+                        activationResultMessage = message
+                        showActivationResultAlert = true
+                    case .missingPaymentMethod:
+                        break
+                    case .failure(let message):
+                        activationResultMessage = message
+                        showActivationResultAlert = true
+                    }
+                }
+            }
+            Button("Keep Pro", role: .cancel) {}
+        } message: {
+            Text("This will turn off your Pro status in Firebase and return the account to the free plan.")
+        }
     }
 
     private var topBar: some View {
         HStack {
-            Button {
-                onBack?()
-            } label: {
-                HStack(spacing: 7) {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 15, weight: .semibold))
-                    Text("Back")
-                        .font(.system(size: 16, weight: .semibold, design: .rounded))
-                }
-                .foregroundColor(.white)
-                .padding(.horizontal, 18)
-                .frame(height: 44)
-                .background(Color.white.opacity(0.18))
-                .clipShape(Capsule())
-            }
-            .frame(minWidth: 44, minHeight: 44)
+            EVBackButton(title: "Back", action: { onBack?() })
 
             Spacer()
 
@@ -248,6 +281,110 @@ struct ProfileView: View {
         }
         .padding(16)
         .background(statCardBackground)
+    }
+
+    private var proMembershipSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("Pro Membership")
+                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                    .foregroundColor(.white)
+
+                Spacer()
+
+                Text(vm.profile.isPro ? "ACTIVE" : "INACTIVE")
+                    .font(.system(size: 11, weight: .bold, design: .rounded))
+                    .foregroundColor(vm.profile.isPro ? Color(hex: "7EF5A8") : .white.opacity(0.55))
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background((vm.profile.isPro ? Color(hex: "7EF5A8") : Color.white).opacity(0.12))
+                    .clipShape(Capsule())
+            }
+
+            Text("Plan: \(proPriceLabel)")
+                .font(.system(size: 14, weight: .semibold, design: .rounded))
+                .foregroundColor(Color(hex: "0EB060"))
+
+            if vm.profile.isPro, let purchasedAt = vm.profile.proPurchasedAt {
+                Text("Activated on \(formatDate(purchasedAt))")
+                    .font(.system(size: 13, design: .rounded))
+                    .foregroundColor(.white.opacity(0.6))
+            } else {
+                Text("Activate Pro to remove cooldown restrictions and unlock premium access.")
+                    .font(.system(size: 13, design: .rounded))
+                    .foregroundColor(.white.opacity(0.6))
+            }
+
+            HStack(spacing: 10) {
+                Button {
+                    Task {
+                        isActivatingPro = true
+                        let result = await vm.activateProMembership(priceLabel: proPriceLabel)
+                        isActivatingPro = false
+
+                        switch result {
+                        case .success(let message):
+                            activationResultMessage = message
+                            showActivationResultAlert = true
+                        case .missingPaymentMethod:
+                            showPaymentRequiredAlert = true
+                        case .failure(let message):
+                            activationResultMessage = message
+                            showActivationResultAlert = true
+                        }
+                    }
+                } label: {
+                    HStack(spacing: 8) {
+                        if isActivatingPro {
+                            ProgressView()
+                                .tint(Color(hex: "0A0F0D"))
+                        }
+                        Text(vm.profile.isPro ? "Pro Active" : "Activate Pro")
+                            .font(.system(size: 15, weight: .semibold, design: .rounded))
+                    }
+                    .foregroundColor(Color(hex: "0A0F0D"))
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 46)
+                    .background(vm.profile.isPro ? Color.white.opacity(0.4) : Color(hex: "0EB060"))
+                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                }
+                .disabled(isActivatingPro || vm.profile.isPro)
+
+                if vm.profile.isPro {
+                    Button {
+                        showCancelProConfirm = true
+                    } label: {
+                        Text("Cancel Pro")
+                            .font(.system(size: 15, weight: .semibold, design: .rounded))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 46)
+                            .background(Color.white.opacity(0.1))
+                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    }
+                } else {
+                    Button {
+                        onOpenPayment?()
+                    } label: {
+                        Text("Manage Payment")
+                            .font(.system(size: 15, weight: .semibold, design: .rounded))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 46)
+                            .background(Color.white.opacity(0.1))
+                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    }
+                }
+            }
+        }
+        .padding(16)
+        .background(statCardBackground)
+    }
+
+    private func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return formatter.string(from: date)
     }
 
     private var statsGrid: some View {

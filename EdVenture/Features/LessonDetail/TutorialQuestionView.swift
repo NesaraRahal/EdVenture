@@ -64,23 +64,7 @@ struct TutorialQuestionView: View {
 
     private var topBar: some View {
         HStack {
-            Button {
-                onBack?()
-                dismiss()
-            } label: {
-                HStack(spacing: 8) {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 15, weight: .semibold))
-                    Text("Back")
-                        .font(.system(size: 16, weight: .semibold, design: .rounded))
-                }
-                .foregroundColor(.white.opacity(0.9))
-                .padding(.horizontal, 18)
-                .frame(height: 44)
-                .background(Color.white.opacity(0.1))
-                .clipShape(Capsule())
-            }
-            .frame(minWidth: 44, minHeight: 44)
+            EVBackButton(title: "Back", action: { onBack?(); dismiss() }, compactTitleSize: 16)
 
             Spacer()
 

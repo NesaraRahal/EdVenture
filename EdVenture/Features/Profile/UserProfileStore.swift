@@ -192,6 +192,12 @@ struct ProfileRecentActivity: Identifiable {
     let colorHex: String
 }
 
+enum ProActivationResult {
+    case success(String)
+    case missingPaymentMethod
+    case failure(String)
+}
+
 @MainActor
 final class UserProfileViewModel: ObservableObject {
     @Published var profile: UserProfile = .empty
@@ -270,6 +276,64 @@ final class UserProfileViewModel: ObservableObject {
         
         // Calculate stats from quiz attempts
         await calculateStats(userId: user.uid)
+    }
+
+    func activateProMembership(priceLabel: String = "USD 4.99 / month") async -> ProActivationResult {
+        guard let user = Auth.auth().currentUser else {
+            return .failure("User is not signed in.")
+        }
+
+        do {
+            let docRef = db.collection("users").document(user.uid)
+            let snapshot = try await docRef.getDocument()
+            let data = snapshot.data() ?? [:]
+
+            if profile.isPro || (data["isPro"] as? Bool ?? false) {
+                return .success("Pro is already active on your account.")
+            }
+
+            let hasSavedCard = ((data["cardLast4"] as? String) ?? "").isEmpty == false
+            guard hasSavedCard else {
+                return .missingPaymentMethod
+            }
+
+            try await docRef.setData([
+                "isPro": true,
+                "proPurchasedAt": Timestamp(date: Date()),
+                "proPriceLabel": priceLabel,
+                "updatedAt": Timestamp(date: Date())
+            ], merge: true)
+
+            profile.isPro = true
+            profile.proPurchasedAt = Date()
+
+            return .success("Pro activated at \(priceLabel).")
+        } catch {
+            return .failure(error.localizedDescription)
+        }
+    }
+
+    func cancelProMembership() async -> ProActivationResult {
+        guard let user = Auth.auth().currentUser else {
+            return .failure("User is not signed in.")
+        }
+
+        do {
+            let docRef = db.collection("users").document(user.uid)
+            try await docRef.setData([
+                "isPro": false,
+                "proPurchasedAt": FieldValue.delete(),
+                "proPriceLabel": FieldValue.delete(),
+                "updatedAt": Timestamp(date: Date())
+            ], merge: true)
+
+            profile.isPro = false
+            profile.proPurchasedAt = nil
+
+            return .success("Pro membership cancelled successfully.")
+        } catch {
+            return .failure(error.localizedDescription)
+        }
     }
 
     func saveProfile() async {

@@ -267,6 +267,13 @@ final class HomeViewModel: ObservableObject {
                 StatItem(icon: "person.fill", label: "RANK", value: "Amateur", isHighlighted: true),
                 StatItem(icon: "star", label: "ACTIVE", value: "0 Lessons")
             ]
+            HomeWidgetSnapshotStore.updateProfile(
+                greetingName: "Learner",
+                rankText: "Amateur",
+                playTimeText: "0m",
+                activeLessonsCount: 0
+            )
+            HomeWidgetSnapshotStore.clearCooldown()
             return
         }
 
@@ -382,6 +389,7 @@ final class HomeViewModel: ObservableObject {
         } catch {
             let authName = user.displayName?.trimmingCharacters(in: .whitespacesAndNewlines)
             greetingName = firstName(from: (authName?.isEmpty == false ? authName! : "Learner"))
+            HomeWidgetSnapshotStore.updateProfile(greetingName: greetingName)
         }
     }
 
@@ -401,6 +409,14 @@ final class HomeViewModel: ObservableObject {
             StatItem(icon: "person.fill", label: "RANK", value: rankTitle, isHighlighted: true),
             StatItem(icon: "star", label: "ACTIVE", value: activeText)
         ]
+
+        HomeWidgetSnapshotStore.updateProfile(
+            greetingName: greetingName,
+            rankText: rankTitle,
+            playTimeText: playText,
+            activeLessonsCount: activeLessonsCount
+        )
+        print("[HomeView] 🔄 Published to widget: Rank=\(rankTitle), Play=\(playText), Active=\(activeLessonsCount ?? 0)")
     }
 
     private static let seededChallenges: [Challenge] = [

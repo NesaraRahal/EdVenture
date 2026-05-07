@@ -95,22 +95,7 @@ struct LessonDetailView: View {
 
     private var backButton: some View {
         HStack {
-            Button {
-                onBack?()
-            } label: {
-                HStack(spacing: 8) {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 15, weight: .semibold))
-                    Text("Back")
-                        .font(.system(size: 16, weight: .semibold, design: .rounded))
-                }
-                .foregroundColor(.white.opacity(0.95))
-                .padding(.horizontal, 20)
-                .frame(height: 44)
-                .background(Color.white.opacity(0.14))
-                .clipShape(Capsule())
-            }
-            .frame(minWidth: 44, minHeight: 44)
+            EVBackButton(title: "Back", action: { onBack?() }, compactTitleSize: 16)
 
             Spacer()
         }
@@ -346,6 +331,7 @@ final class LessonDetailViewModel: ObservableObject {
 
     private let db = Firestore.firestore()
     private let quizStore = EVQuizStore()
+    private let activityService = LessonCooldownActivityService.shared
     private var cooldownTimer: AnyCancellable?
     private var lastLoadedLessonId: String?
     private var cachedLessonTitle = "Lesson"
@@ -435,6 +421,20 @@ final class LessonDetailViewModel: ObservableObject {
 
             rebuildLessonState(now: Date())
             startCooldownTimerIfNeeded()
+            
+            // Start live activity if cooldown is active
+            if !isPro, let lastLevelCompletedAt = lastLevelCompletedAt {
+                let unlockAt = lastLevelCompletedAt.addingTimeInterval(24 * 60 * 60)
+                if Date() < unlockAt {
+                    activityService.startCooldownActivity(
+                        lessonId: lessonId,
+                        lessonTitle: cachedLessonTitle,
+                        icon: cachedIcon,
+                        colorHex: cachedColorHex,
+                        unlockAt: unlockAt
+                    )
+                }
+            }
         } catch {
             errorMessage = error.localizedDescription
             stopCooldownTimer()
@@ -492,6 +492,12 @@ final class LessonDetailViewModel: ObservableObject {
 
     private func rebuildLessonState(now: Date) {
         cooldownDisplaySeconds = isCooldownActive(now: now) ? cooldownSecondsRemaining(now: now) : nil
+        
+        // Update activity state if cooldown is active
+        if isCooldownActive(now: now), let lastLevelCompletedAt = cachedLastLevelCompletedAt {
+            let unlockAt = lastLevelCompletedAt.addingTimeInterval(24 * 60 * 60)
+            activityService.updateActivityState(forLessonId: lastLoadedLessonId ?? "", unlockAt: unlockAt)
+        }
 
         let completed = min(cachedCompletedLevels.count, cachedTotalLevels)
         let isCooldownActive = isCooldownActive(now: now)

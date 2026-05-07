@@ -35,14 +35,7 @@ struct DiscoveryQuizView: View {
             VStack(spacing: 0) {
                 // Header
                 HStack {
-                    Button(action: { dismiss() }) {
-                        HStack(spacing: 6) {
-                            Image(systemName: "chevron.left")
-                            Text("Back")
-                        }
-                        .font(.system(size: 15, weight: .semibold, design: .rounded))
-                        .foregroundColor(Color(hex: "0EB060"))
-                    }
+                    EVBackButton(title: "Back", action: { dismiss() }, compactTitleSize: 15)
                     
                     Spacer()
                     
