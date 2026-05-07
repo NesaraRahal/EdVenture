@@ -2,6 +2,7 @@ import SwiftUI
 import FirebaseAuth
 import FirebaseFirestore
 import Combine
+import ActivityKit
 
 struct LevelSummaryView: View {
     let lessonId: String
@@ -430,8 +431,29 @@ final class LevelSummaryViewModel: ObservableObject {
             // Pro users bypass cooldown
             if isPro {
                 cooldownRemainingSeconds = nil
+                // End any active cooldown activity for pro users
+                if #available(iOS 16.1, *) {
+                    await LessonCooldownActivityManager.shared.endAllCooldownActivities()
+                }
             } else {
                 cooldownRemainingSeconds = cooldownSecondsRemaining(lastLevelCompletedAt: lastLevelCompletedAt, now: Date())
+                
+                // Start ActivityKit live activity if cooldown is active
+                if let cooldownSeconds = cooldownRemainingSeconds, cooldownSeconds > 0 {
+                    let unlockTime = lastLevelCompletedAt?.addingTimeInterval(24 * 60 * 60) ?? Date()
+                    let lessonName = lessonId.replacingOccurrences(of: "_", with: " ").capitalized
+                    let lessonIcon = resolveLessonIcon(lessonId)
+                    let lessonColorHex = resolveLessonColor(lessonId)
+                    
+                    if #available(iOS 16.1, *) {
+                        await LessonCooldownActivityManager.shared.startCooldownActivity(
+                            lessonName: lessonName,
+                            lessonIcon: lessonIcon,
+                            lessonColorHex: lessonColorHex,
+                            unlockTime: unlockTime
+                        )
+                    }
+                }
             }
             startCooldownTimer(lessonId: lessonId, level: level)
 
@@ -509,6 +531,42 @@ final class LevelSummaryViewModel: ObservableObject {
         }
     }
 }
+    
+        /// Resolve the SF Symbol icon for a lesson ID
+        private func resolveLessonIcon(_ lessonId: String) -> String {
+            switch lessonId.lowercased() {
+            case "astronomy":
+                return "star.fill"
+            case "biology":
+                return "leaf.fill"
+            case "philosophy":
+                return "brain.head.profile"
+            case "mathematics":
+                return "sum"
+            case "computer_science":
+                return "laptopcomputer"
+            default:
+                return "book.fill"
+            }
+        }
+    
+        /// Resolve the hex color for a lesson ID
+        private func resolveLessonColor(_ lessonId: String) -> String {
+            switch lessonId.lowercased() {
+            case "astronomy":
+                return "9B59B6" // Purple
+            case "biology":
+                return "27AE60" // Green
+            case "philosophy":
+                return "E74C3C" // Red
+            case "mathematics":
+                return "3498DB" // Blue
+            case "computer_science":
+                return "F39C12" // Orange
+            default:
+                return "0EB060" // Default green
+            }
+        }
 
 #Preview {
     LevelSummaryView(lessonId: "astronomy", level: 1, totalLevels: 10, score: 9, totalQuestions: 10, earnedXP: 500, totalTimeSeconds: 760)
