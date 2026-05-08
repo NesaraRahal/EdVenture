@@ -102,7 +102,6 @@ struct RegisterView: View {
 
                     // ── Social buttons ────────────────────────────────
                     VStack(spacing: 12) {
-                        EVSocialButton(icon: "applelogo", title: "Continue with Apple") {}
                         EVSocialButton(icon: "g.circle",  title: "Continue with Google", isGoogle: true) {}
                     }
                     .padding(.horizontal, 24)

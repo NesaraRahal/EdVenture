@@ -40,6 +40,7 @@ class DiscoveryViewModel: ObservableObject {
     private let visionRecognizer = VisionTextRecognizer.shared
     private let geminiService = GeminiAPIService.shared
     private let db = Firestore.firestore()
+    private let historyStore = EVDiscoveryHistoryStore.shared
     
     // MARK: - Initialization
     
@@ -260,8 +261,7 @@ class DiscoveryViewModel: ObservableObject {
     // MARK: - History Management
     
     private func loadScanHistory() {
-        // TODO: Load from persistent storage (Core Data or UserDefaults)
-        // For now, keep in-memory
+        scanHistory = historyStore.loadHistory(limit: 50)
     }
     
     private func saveScanToHistory(_ content: EducationalContent) {
@@ -271,8 +271,8 @@ class DiscoveryViewModel: ObservableObject {
         if scanHistory.count > 50 {
             scanHistory.removeLast()
         }
-        
-        // TODO: Persist to Core Data or UserDefaults
+
+        historyStore.saveHistory(scanHistory, limit: 50)
     }
 
     private func saveDiscoveryQuestions(content: EducationalContent) async {
