@@ -14,6 +14,9 @@ struct ContentView: View {
     @State private var activeGlobalChallengeId: String?
     @State private var activeGlobalChallengeQuestions: [EVQuizQuestion] = []
     @State private var activeGlobalChallengeSessionId: String?
+    @State private var activeReplayQuestions: [EVQuizQuestion] = []
+    @State private var activeReplayLessonId: String?
+    @State private var activeReplayLevel: Int?
     @State private var isRecordingGlobalChallengeCompletion = false
     @State private var showTelemetryConsentPrompt = false
     @State private var isSavingTelemetryConsent = false
@@ -342,6 +345,19 @@ struct ContentView: View {
                         )
                     )
                 },
+                onReplayFailedQuestion: { question in
+                    activeReplayLessonId = lessonId
+                    activeReplayLevel = level
+                    activeReplayQuestions = [question]
+                    path.append(
+                        AppRoute.question(
+                            lessonId: lessonId,
+                            level: level,
+                            questionIndex: 0,
+                            totalLevels: totalLevels
+                        )
+                    )
+                },
                 onReviewQuestion: { questionId in
                     path.append(AppRoute.levelQuestionReview(lessonId: lessonId, questionId: questionId))
                 }
@@ -375,15 +391,26 @@ struct ContentView: View {
             )
 
         case .question(let lessonId, let level, let questionIndex, let totalLevels):
+            let replayQuestions: [EVQuizQuestion]? = {
+                guard activeReplayLessonId == lessonId, activeReplayLevel == level, !activeReplayQuestions.isEmpty else {
+                    return nil
+                }
+                return activeReplayQuestions
+            }()
+            let quizQuestionsOverride = activeGlobalChallengeQuestions.isEmpty ? replayQuestions : activeGlobalChallengeQuestions
+
             LevelQuizView(
                 lessonId: lessonId,
                 level: level,
                 questionIndex: questionIndex,
                 totalLevels: totalLevels,
                 sessionLessonId: activeGlobalChallengeSessionId,
-                questionsOverride: activeGlobalChallengeQuestions.isEmpty ? nil : activeGlobalChallengeQuestions,
+                questionsOverride: quizQuestionsOverride,
                 lessonTitleOverride: activeGlobalChallengeId.flatMap { _ in "Global Challenge" },
                 onShowSummary: { lessonId, summaryLevel, summaryTotalLevels, score, total, earnedXP, attemptSessionId, totalTimeSeconds in
+                    activeReplayQuestions = []
+                    activeReplayLessonId = nil
+                    activeReplayLevel = nil
                     path.append(
                         AppRoute.levelSummary(
                             lessonId: lessonId,
@@ -403,6 +430,9 @@ struct ContentView: View {
                         activeGlobalChallengeQuestions = []
                         activeGlobalChallengeSessionId = nil
                     }
+                    activeReplayQuestions = []
+                    activeReplayLessonId = nil
+                    activeReplayLevel = nil
                     if !path.isEmpty {
                         path.removeLast()
                     }

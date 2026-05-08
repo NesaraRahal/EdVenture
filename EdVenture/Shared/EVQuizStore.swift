@@ -143,6 +143,8 @@ struct EVQuizSessionState {
     var lockedUntil: Date?
     var retryQuestions: [EVQuizRetryQuestion]
     var retryAvailableUntil: Date?
+    var questionCooldowns: [String: Date]
+    var lockedQuestionIds: [String]
     var totalXP: Int
     var attemptedCount: Int
     var currentQuestionIndex: Int
@@ -160,6 +162,8 @@ struct EVQuizSessionState {
             lockedUntil: nil,
             retryQuestions: [],
             retryAvailableUntil: nil,
+            questionCooldowns: [:],
+            lockedQuestionIds: [],
             totalXP: 0,
             attemptedCount: 0,
             currentQuestionIndex: 0,
@@ -191,6 +195,9 @@ struct EVQuizSessionState {
             copy.retryQuestions = []
             copy.retryAvailableUntil = nil
         }
+
+        copy.questionCooldowns = copy.questionCooldowns.filter { $0.value > now }
+        copy.lockedQuestionIds = Array(copy.questionCooldowns.keys)
         return copy
     }
 
@@ -241,13 +248,29 @@ struct EVQuizSessionState {
         correctInWindow += 1
         completedQuestionIDs.append(questionId)
         unlockedCount = min(totalQuestions, attemptedCount + 1)
+        questionCooldowns.removeValue(forKey: questionId)
+        lockedQuestionIds = Array(questionCooldowns.keys)
     }
 
     mutating func applyWrongAnswer(totalQuestions: Int, now: Date = Date()) {
         attemptedCount += 1
         consecutiveWins = 0
-        lockedUntil = nil
         unlockedCount = min(max(1, attemptedCount + 1), max(totalQuestions, 1))
+    }
+
+    mutating func addQuestionCooldown(questionId: String, expiresAt: Date) {
+        questionCooldowns[questionId] = expiresAt
+        lockedQuestionIds = Array(questionCooldowns.keys)
+    }
+
+    mutating func clearQuestionCooldown(questionId: String) {
+        questionCooldowns.removeValue(forKey: questionId)
+        lockedQuestionIds = Array(questionCooldowns.keys)
+    }
+
+    func questionCooldownExpiresAt(questionId: String, now: Date = Date()) -> Date? {
+        guard let expiry = questionCooldowns[questionId], expiry > now else { return nil }
+        return expiry
     }
 
     var dictionary: [String: Any] {
@@ -262,6 +285,8 @@ struct EVQuizSessionState {
             "lockedUntil": lockedUntil.map { Timestamp(date: $0) } as Any,
             "retryQuestions": retryQuestions.map { $0.dictionary },
             "retryAvailableUntil": retryAvailableUntil.map { Timestamp(date: $0) } as Any,
+            "questionCooldowns": questionCooldowns.mapValues { Timestamp(date: $0) },
+            "lockedQuestionIds": lockedQuestionIds,
             "totalXP": totalXP,
             "attemptedCount": attemptedCount,
             "currentQuestionIndex": currentQuestionIndex,
@@ -430,6 +455,9 @@ final class EVQuizStore {
         let retryAvailableUntil = (data["retryAvailableUntil"] as? Timestamp)?.dateValue()
         let retryQuestions = (data["retryQuestions"] as? [[String: Any]] ?? [])
             .compactMap(EVQuizRetryQuestion.init)
+        let questionCooldowns = (data["questionCooldowns"] as? [String: Timestamp] ?? [:])
+            .compactMapValues { $0.dateValue() }
+        let lockedQuestionIds = data["lockedQuestionIds"] as? [String] ?? []
         let totalXP = data["totalXP"] as? Int ?? 0
         let attemptedCount = data["attemptedCount"] as? Int ?? 0
         let currentQuestionIndex = data["currentQuestionIndex"] as? Int ?? 0
@@ -446,6 +474,8 @@ final class EVQuizStore {
             lockedUntil: lockedUntil,
             retryQuestions: retryQuestions,
             retryAvailableUntil: retryAvailableUntil,
+            questionCooldowns: questionCooldowns,
+            lockedQuestionIds: lockedQuestionIds,
             totalXP: totalXP,
             attemptedCount: attemptedCount,
             currentQuestionIndex: min(max(0, currentQuestionIndex), max(storedTotalQuestions - 1, 0)),
@@ -473,7 +503,12 @@ final class EVQuizStore {
         let now = Date()
         let isCorrect = selectedIndex == question.correctIndex
         let alreadyCompleted = updatedSession.completedQuestionIDs.contains(question.id)
-        let earnedXP = isCorrect && !alreadyCompleted ? question.xpSuggested : 0
+
+        // determine if this submission is a retry attempt for this question
+        let isRetry = updatedSession.retryQuestions.contains { $0.question.id == question.id }
+
+        // award reduced XP for correct retry attempts (use xpMin), otherwise full suggested XP
+        let earnedXP = isCorrect && !alreadyCompleted ? (isRetry ? question.xpMin : question.xpSuggested) : 0
 
         updatedSession.totalQuestions = max(updatedSession.totalQuestions, totalQuestions)
 
@@ -484,13 +519,32 @@ final class EVQuizStore {
                 totalQuestions: max(totalQuestions, 1),
                 now: now
             )
+            // remove any retry entry for this question
             updatedSession.removeRetryQuestion(questionId: question.id)
+            updatedSession.clearQuestionCooldown(questionId: question.id)
         } else {
+            // mark wrong attempt
             updatedSession.applyWrongAnswer(totalQuestions: totalQuestions, now: now)
-            updatedSession.addRetryQuestion(question, questionIndex: questionIndex, now: now)
-        }
 
-        updatedSession.refreshRetryWindow(now: now)
+            // add or refresh retry entry/window for this question
+            updatedSession.addRetryQuestion(question, questionIndex: questionIndex, now: now)
+
+            // determine subscription status to decide locking behavior on repeated failures
+            let userRef = db.collection("users").document(userId)
+            let userSnapshot = try await userRef.getDocument()
+            let userData = userSnapshot.data() ?? [:]
+            let isPro = userData["isPro"] as? Bool ?? false
+            let cooldownSeconds = isPro ? 2 * 60 : 5 * 60
+
+            if isRetry {
+                // second failed attempt -> question-specific cooldown only
+                updatedSession.addQuestionCooldown(questionId: question.id, expiresAt: now.addingTimeInterval(TimeInterval(cooldownSeconds)))
+                updatedSession.removeRetryQuestion(questionId: question.id)
+            }
+
+            // start/refresh the retry window
+            updatedSession.refreshRetryWindow(now: now)
+        }
 
         updatedSession.currentQuestionIndex = max(0, questionIndex)
         let safeTimeSpent = max(0, timeSpentSeconds)

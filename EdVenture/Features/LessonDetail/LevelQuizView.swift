@@ -621,9 +621,23 @@ final class LevelQuizViewModel: ObservableObject {
 
             let loadedSession = try await store.loadSession(userId: user.uid, lessonId: sourceLessonId, level: self.currentLevel, totalQuestions: loadedQuestions.count)
             var sanitizedSession = loadedSession
-            let retryQuestions = sessionLessonId == nil ? sanitizedSession.activeRetryQuestions.map { $0.question } : []
+            
+            // Check if session is locked (non-pro user after 2 failures)
+            if let lockedUntil = sanitizedSession.lockedUntil, lockedUntil > Date() {
+                self.lockMessage = "This category is locked. Try again in \(lockedUntil.relativeTimeDescription)."
+                self.session = sanitizedSession
+                return
+            }
+            
+            // For pro users, filter out locked questions
+            let lockedQuestionIds = Set(sanitizedSession.lockedQuestionIds)
+            let availableLoaded = loadedQuestions.filter { !lockedQuestionIds.contains($0.id) }
+            
+            let retryQuestions = sessionLessonId == nil ? sanitizedSession.activeRetryQuestions.map { $0.question }.filter { !lockedQuestionIds.contains($0.id) } : []
             if !retryQuestions.isEmpty, questionsOverride == nil {
                 loadedQuestions = retryQuestions
+            } else {
+                loadedQuestions = availableLoaded
             }
 
             questions = loadedQuestions
@@ -631,7 +645,6 @@ final class LevelQuizViewModel: ObservableObject {
 
             let completedCount = sanitizedSession.completedQuestionIDs.count
             sanitizedSession.unlockedCount = min(max(1, completedCount + 1), max(totalQuestions, 1))
-            sanitizedSession.lockedUntil = nil
             sanitizedSession.totalQuestions = totalQuestions
 
             if !retryQuestions.isEmpty, sanitizedSession.currentQuestionIndex >= loadedQuestions.count {
@@ -697,21 +710,43 @@ final class LevelQuizViewModel: ObservableObject {
                 totalLevels: totalLevels
             )
 
-            session = result.updatedSession
-            feedbackIsCorrect = result.isCorrect
-            didSubmit = true
-            showHint = false
+            self.session = result.updatedSession
+            self.feedbackIsCorrect = result.isCorrect
+            self.showHint = false
 
             if result.isCorrect {
+                // Correct answer (either first try or retry)
+                self.didSubmit = true
                 EVAccessibilitySupport.playSound(.correct)
-                feedbackMessage = "Great work. You earned \(result.earnedXP) XP."
+                self.feedbackMessage = "Great work. You earned \(result.earnedXP) XP."
             } else {
-                EVAccessibilitySupport.playSound(.wrong)
-                feedbackMessage = "Not quite. Review the hint and continue to the next question."
+                let cooldownRemaining = self.session?.questionCooldownExpiresAt(questionId: question.id, now: Date())
+                if let cooldownRemaining {
+                    self.didSubmit = true
+                    EVAccessibilitySupport.playSound(.wrong)
+                    let remainingText = cooldownRemaining.relativeTimeDescription
+                    self.feedbackMessage = "This question is on cooldown. Try again in \(remainingText). Move to the next question."
+                    self.lockMessage = "This question is on cooldown for \(remainingText)."
+                } else {
+                    let isNowRetry = self.session?.activeRetryQuestions.contains(where: { $0.question.id == question.id }) ?? false
+
+                    if isNowRetry {
+                        // allow retry: do not mark as submitted so user can answer again
+                        self.didSubmit = false
+                        self.selectedAnswerIndex = nil
+                        EVAccessibilitySupport.playSound(.wrong)
+                        self.feedbackMessage = "Not quite. You have another chance — try again to earn reduced XP."
+                    } else {
+                        // fallback behaviour
+                        self.didSubmit = true
+                        EVAccessibilitySupport.playSound(.wrong)
+                        self.feedbackMessage = "Not quite. Review the hint and continue to the next question."
+                    }
+                }
             }
 
-            if currentIndex + 1 >= questions.count {
-                prepareSummaryIfNeeded()
+            if self.currentIndex + 1 >= self.questions.count {
+                self.prepareSummaryIfNeeded()
             }
         } catch {
             errorMessage = error.localizedDescription
