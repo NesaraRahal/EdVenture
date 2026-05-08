@@ -8,15 +8,25 @@ final class NotificationsStore: ObservableObject {
 
     @Published var notifications: [EVNotification] = []
 
+    private let persistence = EVNotificationsCoreDataStore.shared
+
     private init() {
         loadNotifications()
     }
 
     private func loadNotifications() {
-        // Load from UserDefaults or Firestore
+        let storedNotifications = persistence.loadNotifications()
+        if !storedNotifications.isEmpty {
+            notifications = storedNotifications
+            return
+        }
+
+        // Migrate older UserDefaults-backed notifications into Core Data once.
         if let data = UserDefaults.standard.data(forKey: "notifications.list"),
            let decoded = try? JSONDecoder().decode([EVNotification].self, from: data) {
             notifications = decoded.sorted { $0.timestamp > $1.timestamp }
+            persistence.saveNotifications(notifications)
+            UserDefaults.standard.removeObject(forKey: "notifications.list")
         }
     }
 
@@ -51,9 +61,7 @@ final class NotificationsStore: ObservableObject {
     }
 
     private func saveNotifications() {
-        if let encoded = try? JSONEncoder().encode(notifications) {
-            UserDefaults.standard.set(encoded, forKey: "notifications.list")
-        }
+        persistence.saveNotifications(notifications)
     }
 
     func markAsRead(_ notification: EVNotification) {

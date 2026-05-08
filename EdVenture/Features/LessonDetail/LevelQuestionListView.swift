@@ -9,6 +9,7 @@ struct LevelQuestionListView: View {
     let totalLevels: Int
     var onBack: (() -> Void)?
     var onSelectQuestion: ((Int) -> Void)?
+    var onReplayFailedQuestion: ((EVQuizQuestion) -> Void)?
     var onReviewQuestion: ((String) -> Void)?
 
     @StateObject private var vm = LevelQuestionListViewModel()
@@ -48,6 +49,10 @@ struct LevelQuestionListView: View {
                     }
                 }
             }
+
+            if let lockMessage = vm.lockMessage {
+                lockOverlay(lockMessage)
+            }
         }
         .navigationBarHidden(true)
         .task(id: "\(lessonId)-\(level)") {
@@ -83,6 +88,25 @@ struct LevelQuestionListView: View {
                 .font(.system(size: 13, design: .rounded))
                 .foregroundColor(.white.opacity(0.6))
 
+            if let remaining = vm.nextCooldownText() {
+                HStack(spacing: 8) {
+                    Image(systemName: "lock.clock.fill")
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundColor(Color(hex: "F6CC2E"))
+                    Text("Question cooldown")
+                        .font(.system(size: 12, weight: .semibold, design: .rounded))
+                        .foregroundColor(.white.opacity(0.75))
+                    Spacer()
+                    Text(remaining)
+                        .font(.system(size: 14, weight: .bold, design: .rounded))
+                        .monospacedDigit()
+                        .foregroundColor(Color(hex: "F6CC2E"))
+                }
+                .padding(.horizontal, 12)
+                .frame(height: 34)
+                .background(Color(hex: "F6CC2E").opacity(0.12))
+                .clipShape(Capsule())
+            }
             HStack(spacing: 14) {
                 statChip(title: "COMPLETED", value: "\(vm.completedCount)", color: Color(hex: "0EB060"))
                 statChip(title: "PENDING", value: "\(vm.pendingCount)", color: Color(hex: "75DFFF"))
@@ -127,10 +151,75 @@ struct LevelQuestionListView: View {
                         }
                     },
                     onReplay: {
-                        onSelectQuestion?(index)
+                        if item.cooldownRemainingSeconds != nil {
+                            vm.showCurrentLockMessage(for: item.id)
+                        } else if item.status == .failed, let question = vm.questionSnapshot(for: item.id) {
+                            onReplayFailedQuestion?(question)
+                        } else {
+                            onSelectQuestion?(index)
+                        }
                     }
                 )
             }
+        }
+    }
+
+    private func lockOverlay(_ message: String) -> some View {
+        ZStack {
+            Color.black.opacity(0.5).ignoresSafeArea()
+            VStack(spacing: 12) {
+                Image(systemName: "lock.fill")
+                    .font(.system(size: 34, weight: .bold))
+                    .foregroundColor(Color(hex: "F6CC2E"))
+                Text("Question Locked")
+                    .font(.system(size: 22, weight: .bold, design: .rounded))
+                    .foregroundColor(.white)
+                Text(message)
+                    .font(.system(size: 14, design: .rounded))
+                    .foregroundColor(.white.opacity(0.72))
+                    .multilineTextAlignment(.center)
+                if let lockedQuestionId = vm.lockedQuestionId,
+                   let remaining = vm.lockRemainingText(for: lockedQuestionId) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "lock.clock.fill")
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundColor(Color(hex: "F6CC2E"))
+                        Text("Try again in")
+                            .font(.system(size: 12, weight: .semibold, design: .rounded))
+                            .foregroundColor(.white.opacity(0.78))
+                        Text(remaining)
+                            .font(.system(size: 14, weight: .bold, design: .rounded))
+                            .foregroundColor(Color(hex: "F6CC2E"))
+                            .monospacedDigit()
+                    }
+                    .padding(.horizontal, 12)
+                    .frame(height: 34)
+                    .background(Color(hex: "F6CC2E").opacity(0.12))
+                    .clipShape(Capsule())
+                }
+                Button {
+                    vm.lockMessage = nil
+                    vm.lockedQuestionId = nil
+                } label: {
+                    Text("OK")
+                        .font(.system(size: 15, weight: .semibold, design: .rounded))
+                        .foregroundColor(.black)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 48)
+                        .background(Color(hex: "0EB060"))
+                        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                }
+            }
+            .padding(20)
+            .background(
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .fill(Color(hex: "1A2420"))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 20, style: .continuous)
+                            .stroke(Color(hex: "F6CC2E").opacity(0.25), lineWidth: 1)
+                    )
+            )
+            .padding(.horizontal, 24)
         }
     }
 }
@@ -140,6 +229,7 @@ struct LevelQuestionListItem: Identifiable {
     let title: String
     let xp: Int
     let status: LevelQuestionStatus
+    var cooldownRemainingSeconds: Int?
 }
 
 enum LevelQuestionStatus {
@@ -157,6 +247,7 @@ private struct LevelQuestionRow: View {
     let onReplay: () -> Void
 
     private var accent: Color {
+        if item.cooldownRemainingSeconds != nil { return Color(hex: "F6CC2E") }
         switch item.status {
         case .completed: return Color(hex: "0EB060")
         case .inProgress: return Color(hex: "75DFFF")
@@ -166,6 +257,7 @@ private struct LevelQuestionRow: View {
     }
 
     private var statusText: String {
+        if item.cooldownRemainingSeconds != nil { return "COOLDOWN" }
         switch item.status {
         case .completed: return "COMPLETED"
         case .inProgress: return "IN PROGRESS"
@@ -175,6 +267,7 @@ private struct LevelQuestionRow: View {
     }
 
     private var statusIcon: String {
+        if item.cooldownRemainingSeconds != nil { return "lock.clock.fill" }
         switch item.status {
         case .completed: return "checkmark.circle.fill"
         case .inProgress: return "play.circle.fill"
@@ -184,6 +277,7 @@ private struct LevelQuestionRow: View {
     }
 
     private var primaryActionTitle: String {
+        if item.cooldownRemainingSeconds != nil { return "Locked" }
         switch item.status {
         case .completed:
             return "Replay"
@@ -229,7 +323,7 @@ private struct LevelQuestionRow: View {
 
                 Spacer()
 
-                Image(systemName: "play.fill")
+                Image(systemName: item.cooldownRemainingSeconds != nil ? "lock.fill" : "play.fill")
                     .font(.system(size: 12, weight: .bold))
                     .foregroundColor(Color(hex: "0A0F0D"))
                     .frame(width: 36, height: 36)
@@ -239,13 +333,25 @@ private struct LevelQuestionRow: View {
 
             HStack(spacing: 10) {
                 Button(action: onReplay) {
-                    Text(primaryActionTitle)
-                        .font(.system(size: 12, weight: .semibold, design: .rounded))
-                        .foregroundColor(Color(hex: "0A0F0D"))
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 36)
-                        .background(Color(hex: "0EB060"))
-                        .clipShape(Capsule())
+                    HStack(spacing: 6) {
+                        if let seconds = item.cooldownRemainingSeconds {
+                            Image(systemName: "lock.fill")
+                                .font(.system(size: 11, weight: .bold))
+                            Text(primaryActionTitle)
+                                .font(.system(size: 12, weight: .semibold, design: .rounded))
+                            Text(formatCooldown(seconds))
+                                .font(.system(size: 12, weight: .bold, design: .rounded))
+                                .monospacedDigit()
+                        } else {
+                            Text(primaryActionTitle)
+                                .font(.system(size: 12, weight: .semibold, design: .rounded))
+                        }
+                    }
+                    .foregroundColor(Color(hex: "0A0F0D"))
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 36)
+                    .background(item.cooldownRemainingSeconds != nil ? Color(hex: "F6CC2E") : Color(hex: "0EB060"))
+                    .clipShape(Capsule())
                 }
 
                 if item.status == .completed {
@@ -272,6 +378,12 @@ private struct LevelQuestionRow: View {
                 )
         )
     }
+
+    private func formatCooldown(_ seconds: Int) -> String {
+        let minutes = seconds / 60
+        let remainingSeconds = seconds % 60
+        return String(format: "%02d:%02d", minutes, remainingSeconds)
+    }
 }
 
 @MainActor
@@ -282,13 +394,31 @@ final class LevelQuestionListViewModel: ObservableObject {
     @Published var lessonTitle: String = "Lesson"
     @Published var completedCount: Int = 0
     @Published var pendingCount: Int = 0
+    @Published var lockMessage: String?
+    @Published var lockedQuestionId: String?
+    @Published var isProUser: Bool = false
 
     private let store = EVQuizStore()
     private let db = Firestore.firestore()
+    private var cooldownTimer: AnyCancellable?
+    private var loadedQuestionsById: [String: EVQuizQuestion] = [:]
+    private var retryQuestionsById: [String: EVQuizQuestion] = [:]
+    private var questionCooldowns: [String: Date] = [:]
+    private var currentTime: Date = Date()
+
+    deinit {
+        cooldownTimer?.cancel()
+    }
 
     func load(lessonId: String, level: Int) async {
         isLoading = true
         errorMessage = nil
+        lockMessage = nil
+        lockedQuestionId = nil
+        loadedQuestionsById = [:]
+        retryQuestionsById = [:]
+        questionCooldowns = [:]
+        stopCooldownTimer()
         defer { isLoading = false }
 
         do {
@@ -296,6 +426,10 @@ final class LevelQuestionListViewModel: ObservableObject {
                 errorMessage = "Please sign in to view questions."
                 return
             }
+
+            let userDoc = try await db.collection("users").document(uid).getDocument()
+            let userData = userDoc.data() ?? [:]
+            isProUser = userData["isPro"] as? Bool ?? false
 
             let lessonDoc = try await db.collection("lessons").document(lessonId).getDocument()
             if let data = lessonDoc.data() {
@@ -313,17 +447,29 @@ final class LevelQuestionListViewModel: ObservableObject {
                 pendingCount = 0
                 return
             }
+
+            let session = try await store.loadSession(userId: uid, lessonId: lessonId, level: level, totalQuestions: questions.count)
+            loadedQuestionsById = Dictionary(uniqueKeysWithValues: questions.map { ($0.id, $0) })
+            retryQuestionsById = Dictionary(uniqueKeysWithValues: session.retryQuestions.map { ($0.question.id, $0.question) })
+            questionCooldowns = session.questionCooldowns.filter { $0.value > Date() }
+            currentTime = Date()
+            startCooldownTimerIfNeeded()
+
             let progress = await loadQuestionProgress(lessonId: lessonId)
 
             var completed = 0
             var failedCount = 0
             let mapped = questions.enumerated().map { _, question in
+                let cooldown = questionCooldowns[question.id]
+                let remaining = cooldown.map { max(0, Int(ceil($0.timeIntervalSince(currentTime)))) }
                 let status: LevelQuestionStatus
                 if progress.completed.contains(question.id) {
                     status = .completed
                     completed += 1
+                } else if remaining != nil {
+                    status = .failed
+                    failedCount += 1
                 } else if progress.attempted.contains(question.id) {
-                    // attempted but not completed -> failed (eligible for replay)
                     status = .failed
                     failedCount += 1
                 } else {
@@ -334,7 +480,8 @@ final class LevelQuestionListViewModel: ObservableObject {
                     id: question.id,
                     title: stripPromptPrefix(question.prompt),
                     xp: question.xpSuggested,
-                    status: status
+                    status: status,
+                    cooldownRemainingSeconds: remaining
                 )
             }
 
@@ -343,6 +490,56 @@ final class LevelQuestionListViewModel: ObservableObject {
             pendingCount = max(mapped.count - completed - failedCount, 0)
         } catch {
             errorMessage = error.localizedDescription
+        }
+    }
+
+    func showCurrentLockMessage(for questionId: String) {
+        lockedQuestionId = questionId
+        lockMessage = "This question is on cooldown."
+    }
+
+    func nextCooldownText() -> String? {
+        guard let expiry = questionCooldowns.values.min(), expiry > currentTime else { return nil }
+        return formatCooldown(max(0, Int(ceil(expiry.timeIntervalSince(currentTime)))))
+    }
+
+    func lockRemainingText(for questionId: String?) -> String? {
+        guard let questionId, let expiry = questionCooldowns[questionId], expiry > currentTime else { return nil }
+        return formatCooldown(max(0, Int(ceil(expiry.timeIntervalSince(currentTime)))))
+    }
+
+    func questionSnapshot(for questionId: String) -> EVQuizQuestion? {
+        retryQuestionsById[questionId] ?? loadedQuestionsById[questionId]
+    }
+
+    private func startCooldownTimerIfNeeded() {
+        cooldownTimer?.cancel()
+
+        guard !questionCooldowns.isEmpty else { return }
+
+        cooldownTimer = Timer.publish(every: 1.0, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] now in
+                self?.tickCooldowns(now: now)
+            }
+    }
+
+    private func stopCooldownTimer() {
+        cooldownTimer?.cancel()
+        cooldownTimer = nil
+    }
+
+    private func tickCooldowns(now: Date) {
+        currentTime = now
+        questionCooldowns = questionCooldowns.filter { $0.value > now }
+        if questionCooldowns.isEmpty {
+            lockedQuestionId = nil
+            stopCooldownTimer()
+        }
+        items = items.map { item in
+            var updated = item
+            updated.cooldownRemainingSeconds = questionCooldowns[item.id].map { max(0, Int(ceil($0.timeIntervalSince(now)))) }
+            return updated
         }
     }
 
@@ -394,6 +591,12 @@ final class LevelQuestionListViewModel: ObservableObject {
         } catch {
             return ([], [])
         }
+    }
+
+    private func formatCooldown(_ seconds: Int) -> String {
+        let minutes = seconds / 60
+        let remainingSeconds = seconds % 60
+        return String(format: "%02d:%02d", minutes, remainingSeconds)
     }
 }
 

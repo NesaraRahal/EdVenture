@@ -309,3 +309,15 @@ final class EVNotificationService {
         return "\(Id.dailyGoalReminderPrefix).\(formatter.string(from: Date()))"
     }
 }
+
+// MARK: - Test helpers
+extension EVNotificationService {
+    func test_todayDailyGoalReminderId(for date: Date = Date()) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.dateFormat = "yyyy-MM-dd"
+        return "ev.notifications.dailygoal.reminder.\(formatter.string(from: date))"
+    }
+}
+

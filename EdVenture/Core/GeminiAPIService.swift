@@ -386,6 +386,25 @@ class GeminiAPIService: ObservableObject {
     }
 }
 
+// Test helpers: expose certain private helpers to unit tests by staying in the same file.
+extension GeminiAPIService {
+    func test_parseEducationalContent(_ jsonText: String, extractedText: String) throws -> EducationalContent {
+        try parseEducationalContent(jsonText, extractedText: extractedText)
+    }
+
+    func test_resolveCategory(_ raw: String?) -> String {
+        resolveCategory(raw)
+    }
+
+    func test_isRetryableStatus(_ statusCode: Int) -> Bool {
+        isRetryableStatus(statusCode)
+    }
+
+    func test_buildRequest(prompt: String) -> GeminiRequest {
+        buildRequest(with: prompt)
+    }
+}
+
 // MARK: - Helper Structures for Parsing
 
 struct GeminiContentDict: Codable {

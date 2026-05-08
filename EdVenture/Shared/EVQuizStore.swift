@@ -2,7 +2,7 @@ import Foundation
 import FirebaseAuth
 import FirebaseFirestore
 
-struct EVQuizQuestion: Identifiable, Hashable {
+struct EVQuizQuestion: Identifiable, Codable, Hashable {
     let id: String
     let lessonId: String
     let level: Int
@@ -103,7 +103,7 @@ struct EVQuizQuestion: Identifiable, Hashable {
     }
 }
 
-struct EVQuizRetryQuestion: Hashable {
+struct EVQuizRetryQuestion: Codable, Hashable {
     let questionIndex: Int
     let question: EVQuizQuestion
 
@@ -132,7 +132,7 @@ struct EVQuizRetryQuestion: Hashable {
     }
 }
 
-struct EVQuizSessionState {
+struct EVQuizSessionState: Codable {
     let lessonId: String
     let level: Int
     var totalQuestions: Int
@@ -143,6 +143,8 @@ struct EVQuizSessionState {
     var lockedUntil: Date?
     var retryQuestions: [EVQuizRetryQuestion]
     var retryAvailableUntil: Date?
+    var questionCooldowns: [String: Date]
+    var lockedQuestionIds: [String]
     var totalXP: Int
     var attemptedCount: Int
     var currentQuestionIndex: Int
@@ -160,6 +162,8 @@ struct EVQuizSessionState {
             lockedUntil: nil,
             retryQuestions: [],
             retryAvailableUntil: nil,
+            questionCooldowns: [:],
+            lockedQuestionIds: [],
             totalXP: 0,
             attemptedCount: 0,
             currentQuestionIndex: 0,
@@ -191,6 +195,9 @@ struct EVQuizSessionState {
             copy.retryQuestions = []
             copy.retryAvailableUntil = nil
         }
+
+        copy.questionCooldowns = copy.questionCooldowns.filter { $0.value > now }
+        copy.lockedQuestionIds = Array(copy.questionCooldowns.keys)
         return copy
     }
 
@@ -241,13 +248,29 @@ struct EVQuizSessionState {
         correctInWindow += 1
         completedQuestionIDs.append(questionId)
         unlockedCount = min(totalQuestions, attemptedCount + 1)
+        questionCooldowns.removeValue(forKey: questionId)
+        lockedQuestionIds = Array(questionCooldowns.keys)
     }
 
     mutating func applyWrongAnswer(totalQuestions: Int, now: Date = Date()) {
         attemptedCount += 1
         consecutiveWins = 0
-        lockedUntil = nil
         unlockedCount = min(max(1, attemptedCount + 1), max(totalQuestions, 1))
+    }
+
+    mutating func addQuestionCooldown(questionId: String, expiresAt: Date) {
+        questionCooldowns[questionId] = expiresAt
+        lockedQuestionIds = Array(questionCooldowns.keys)
+    }
+
+    mutating func clearQuestionCooldown(questionId: String) {
+        questionCooldowns.removeValue(forKey: questionId)
+        lockedQuestionIds = Array(questionCooldowns.keys)
+    }
+
+    func questionCooldownExpiresAt(questionId: String, now: Date = Date()) -> Date? {
+        guard let expiry = questionCooldowns[questionId], expiry > now else { return nil }
+        return expiry
     }
 
     var dictionary: [String: Any] {
@@ -262,6 +285,8 @@ struct EVQuizSessionState {
             "lockedUntil": lockedUntil.map { Timestamp(date: $0) } as Any,
             "retryQuestions": retryQuestions.map { $0.dictionary },
             "retryAvailableUntil": retryAvailableUntil.map { Timestamp(date: $0) } as Any,
+            "questionCooldowns": questionCooldowns.mapValues { Timestamp(date: $0) },
+            "lockedQuestionIds": lockedQuestionIds,
             "totalXP": totalXP,
             "attemptedCount": attemptedCount,
             "currentQuestionIndex": currentQuestionIndex,
@@ -281,6 +306,7 @@ struct EVQuizRoundResult {
 
 final class EVQuizStore {
     private let db = Firestore.firestore()
+    private let sessionCache = EVQuizSessionCacheStore.shared
 
     func loadLevelQuestionSet(userId: String,
                               lessonId: String,
@@ -401,51 +427,85 @@ final class EVQuizStore {
         return (level, order)
     }
 
+    // Test helpers
+    func test_parseLevelOrder(from questionId: String) -> (level: Int, order: Int)? {
+        parseLevelOrder(from: questionId)
+    }
+
+    func test_sessionDocumentId(lessonId: String, level: Int) -> String { sessionDocumentId(lessonId: lessonId, level: level) }
+
+    func test_dayKey(_ date: Date) -> String { dayKey(date) }
+
+    func test_shuffledByDifficulty(_ questions: [EVQuizQuestion]) -> [EVQuizQuestion] { questions.shuffledByDifficulty() }
+
     func loadSession(userId: String, lessonId: String, level: Int, totalQuestions: Int) async throws -> EVQuizSessionState {
+        let cachedSession = sessionCache.loadSession(userId: userId, lessonId: lessonId, level: level)
         let ref = db.collection("users").document(userId)
             .collection("quizSessions").document(sessionDocumentId(lessonId: lessonId, level: level))
-        let snapshot = try await ref.getDocument()
+        do {
+            let snapshot = try await ref.getDocument()
 
-        guard let data = snapshot.data() else {
+            guard let data = snapshot.data() else {
+                return cachedSession?.withLoadedWindow() ?? EVQuizSessionState.initial(lessonId: lessonId, level: level, totalQuestions: totalQuestions)
+            }
+
+            let storedTotalQuestions = data["totalQuestions"] as? Int ?? totalQuestions
+            let unlockedCount = data["unlockedCount"] as? Int ?? max(totalQuestions, 1)
+            let consecutiveWins = data["consecutiveWins"] as? Int ?? 0
+            let correctInWindow = data["correctInWindow"] as? Int ?? 0
+            let windowStartsAt = (data["windowStartsAt"] as? Timestamp)?.dateValue() ?? Date()
+            let lockedUntil = (data["lockedUntil"] as? Timestamp)?.dateValue()
+            let retryAvailableUntil = (data["retryAvailableUntil"] as? Timestamp)?.dateValue()
+            let retryQuestions = (data["retryQuestions"] as? [[String: Any]] ?? [])
+                .compactMap(EVQuizRetryQuestion.init)
+            let questionCooldowns = (data["questionCooldowns"] as? [String: Timestamp] ?? [:])
+                .compactMapValues { $0.dateValue() }
+            let lockedQuestionIds = data["lockedQuestionIds"] as? [String] ?? []
+            let totalXP = data["totalXP"] as? Int ?? 0
+            let attemptedCount = data["attemptedCount"] as? Int ?? 0
+            let currentQuestionIndex = data["currentQuestionIndex"] as? Int ?? 0
+            let completedQuestionIDs = data["completedQuestionIDs"] as? [String] ?? []
+
+            let session = EVQuizSessionState(
+                lessonId: lessonId,
+                level: level,
+                totalQuestions: max(storedTotalQuestions, 1),
+                unlockedCount: min(storedTotalQuestions, max(1, unlockedCount)),
+                consecutiveWins: consecutiveWins,
+                correctInWindow: correctInWindow,
+                windowStartsAt: windowStartsAt,
+                lockedUntil: lockedUntil,
+                retryQuestions: retryQuestions,
+                retryAvailableUntil: retryAvailableUntil,
+                questionCooldowns: questionCooldowns,
+                lockedQuestionIds: lockedQuestionIds,
+                totalXP: totalXP,
+                attemptedCount: attemptedCount,
+                currentQuestionIndex: min(max(0, currentQuestionIndex), max(storedTotalQuestions - 1, 0)),
+                completedQuestionIDs: completedQuestionIDs
+            ).withLoadedWindow()
+
+            sessionCache.saveSession(userId: userId, session: session)
+            return session
+        } catch {
+            if let cachedSession {
+                return cachedSession.withLoadedWindow()
+            }
+
             return EVQuizSessionState.initial(lessonId: lessonId, level: level, totalQuestions: totalQuestions)
         }
-
-        let storedTotalQuestions = data["totalQuestions"] as? Int ?? totalQuestions
-        let unlockedCount = data["unlockedCount"] as? Int ?? max(totalQuestions, 1)
-        let consecutiveWins = data["consecutiveWins"] as? Int ?? 0
-        let correctInWindow = data["correctInWindow"] as? Int ?? 0
-        let windowStartsAt = (data["windowStartsAt"] as? Timestamp)?.dateValue() ?? Date()
-        let lockedUntil = (data["lockedUntil"] as? Timestamp)?.dateValue()
-        let retryAvailableUntil = (data["retryAvailableUntil"] as? Timestamp)?.dateValue()
-        let retryQuestions = (data["retryQuestions"] as? [[String: Any]] ?? [])
-            .compactMap(EVQuizRetryQuestion.init)
-        let totalXP = data["totalXP"] as? Int ?? 0
-        let attemptedCount = data["attemptedCount"] as? Int ?? 0
-        let currentQuestionIndex = data["currentQuestionIndex"] as? Int ?? 0
-        let completedQuestionIDs = data["completedQuestionIDs"] as? [String] ?? []
-
-        return EVQuizSessionState(
-            lessonId: lessonId,
-            level: level,
-            totalQuestions: max(storedTotalQuestions, 1),
-            unlockedCount: min(storedTotalQuestions, max(1, unlockedCount)),
-            consecutiveWins: consecutiveWins,
-            correctInWindow: correctInWindow,
-            windowStartsAt: windowStartsAt,
-            lockedUntil: lockedUntil,
-            retryQuestions: retryQuestions,
-            retryAvailableUntil: retryAvailableUntil,
-            totalXP: totalXP,
-            attemptedCount: attemptedCount,
-            currentQuestionIndex: min(max(0, currentQuestionIndex), max(storedTotalQuestions - 1, 0)),
-            completedQuestionIDs: completedQuestionIDs
-        ).withLoadedWindow()
     }
 
     func persistSession(userId: String, session: EVQuizSessionState) async throws {
-        try await db.collection("users").document(userId)
-            .collection("quizSessions").document(sessionDocumentId(lessonId: session.lessonId, level: session.level))
-            .setData(session.dictionary, merge: true)
+        do {
+            try await db.collection("users").document(userId)
+                .collection("quizSessions").document(sessionDocumentId(lessonId: session.lessonId, level: session.level))
+                .setData(session.dictionary, merge: true)
+            sessionCache.saveSession(userId: userId, session: session)
+        } catch {
+            sessionCache.saveSession(userId: userId, session: session)
+            throw error
+        }
     }
 
     func submitRound(userId: String,
@@ -462,7 +522,12 @@ final class EVQuizStore {
         let now = Date()
         let isCorrect = selectedIndex == question.correctIndex
         let alreadyCompleted = updatedSession.completedQuestionIDs.contains(question.id)
-        let earnedXP = isCorrect && !alreadyCompleted ? question.xpSuggested : 0
+
+        // determine if this submission is a retry attempt for this question
+        let isRetry = updatedSession.retryQuestions.contains { $0.question.id == question.id }
+
+        // award reduced XP for correct retry attempts (use xpMin), otherwise full suggested XP
+        let earnedXP = isCorrect && !alreadyCompleted ? (isRetry ? question.xpMin : question.xpSuggested) : 0
 
         updatedSession.totalQuestions = max(updatedSession.totalQuestions, totalQuestions)
 
@@ -473,13 +538,32 @@ final class EVQuizStore {
                 totalQuestions: max(totalQuestions, 1),
                 now: now
             )
+            // remove any retry entry for this question
             updatedSession.removeRetryQuestion(questionId: question.id)
+            updatedSession.clearQuestionCooldown(questionId: question.id)
         } else {
+            // mark wrong attempt
             updatedSession.applyWrongAnswer(totalQuestions: totalQuestions, now: now)
-            updatedSession.addRetryQuestion(question, questionIndex: questionIndex, now: now)
-        }
 
-        updatedSession.refreshRetryWindow(now: now)
+            // add or refresh retry entry/window for this question
+            updatedSession.addRetryQuestion(question, questionIndex: questionIndex, now: now)
+
+            // determine subscription status to decide locking behavior on repeated failures
+            let userRef = db.collection("users").document(userId)
+            let userSnapshot = try await userRef.getDocument()
+            let userData = userSnapshot.data() ?? [:]
+            let isPro = userData["isPro"] as? Bool ?? false
+            let cooldownSeconds = isPro ? 2 * 60 : 5 * 60
+
+            if isRetry {
+                // second failed attempt -> question-specific cooldown only
+                updatedSession.addQuestionCooldown(questionId: question.id, expiresAt: now.addingTimeInterval(TimeInterval(cooldownSeconds)))
+                updatedSession.removeRetryQuestion(questionId: question.id)
+            }
+
+            // start/refresh the retry window
+            updatedSession.refreshRetryWindow(now: now)
+        }
 
         updatedSession.currentQuestionIndex = max(0, questionIndex)
         let safeTimeSpent = max(0, timeSpentSeconds)
@@ -600,6 +684,8 @@ final class EVQuizStore {
             "updatedAt": Timestamp(date: now)
         ], forDocument: leaderboardRef, merge: true)
         try await batch.commit()
+
+        sessionCache.saveSession(userId: userId, session: updatedSession)
 
         if didReachDailyGoalNow {
             await EVNotificationService.shared.sendDailyGoalCompletedNotification(goalMinutes: dailyGoalMinutes)

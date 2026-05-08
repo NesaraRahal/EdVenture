@@ -1,0 +1,48 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project EdVenture.xcodeproj -scheme EdVenture -configuration Debug -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 14"
+
+Build settings from command line:
+    SDKROOT = iphonesimulator26.2
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  GTMSessionFetcher: https://github.com/google/gtm-session-fetcher.git @ 3.5.0
+  GoogleSignIn: https://github.com/google/GoogleSignIn-iOS.git @ 8.0.0
+  Promises: https://github.com/google/promises.git @ 2.4.0
+  AppAuth: https://github.com/openid/AppAuth-iOS.git @ 1.7.6
+  GoogleAppMeasurement: https://github.com/google/GoogleAppMeasurement.git @ 12.13.0
+  GoogleAdsOnDeviceConversion: https://github.com/googleads/google-ads-on-device-conversion-ios-sdk @ 3.5.0
+  GoogleUtilities: https://github.com/google/GoogleUtilities.git @ 8.1.0
+  Firebase: https://github.com/firebase/firebase-ios-sdk @ 12.13.0
+  leveldb: https://github.com/firebase/leveldb.git @ 1.22.5
+  AppCheck: https://github.com/google/app-check.git @ 11.2.0
+  GTMAppAuth: https://github.com/google/GTMAppAuth.git @ 4.1.1
+  gRPC: https://github.com/google/grpc-binary.git @ 1.69.1
+  abseil: https://github.com/google/abseil-cpp-binary.git @ 1.2024072200.0
+  nanopb: https://github.com/firebase/nanopb.git @ 2.30910.0
+  InteropForGoogle: https://github.com/google/interop-ios-for-google-sdks.git @ 101.0.0
+  GoogleDataTransport: https://github.com/google/GoogleDataTransport.git @ 10.1.0
+
+2026-05-08 11:01:15.143 xcodebuild[84882:1116301] Writing error result bundle to /var/folders/6t/s258sj2x68x3qm93xpk62q_w0000gy/T/ResultBundle_2026-08-05_11-01-0015.xcresult
+xcodebuild: error: Unable to find a device matching the provided destination specifier:
+		{ platform:iOS Simulator, OS:latest, name:iPhone 14 }
+
+	The requested device could not be found because no available devices matched the request.
+
+	Available destinations for the "EdVenture" scheme:
+		{ platform:macOS, arch:arm64, variant:Designed for [iPad,iPhone], id:00008122-001509340A00001C, name:My Mac }
+		{ platform:iOS, id:dvtdevice-DVTiPhonePlaceholder-iphoneos:placeholder, name:Any iOS Device }
+		{ platform:iOS Simulator, id:dvtdevice-DVTiOSDeviceSimulatorPlaceholder-iphonesimulator:placeholder, name:Any iOS Simulator Device }
+		{ platform:iOS Simulator, arch:arm64, id:7678A8F1-AF0A-466C-9A10-12B7D2EB1A12, OS:26.2, name:iPad (A16) }
+		{ platform:iOS Simulator, arch:arm64, id:1EF45199-52B7-4EC7-80AB-EEDA6ABAB682, OS:26.2, name:iPad Air 11-inch (M3) }
+		{ platform:iOS Simulator, arch:arm64, id:22B0FD42-D412-4CEA-8F85-B0809C4F7DAB, OS:26.2, name:iPad Air 13-inch (M3) }
+		{ platform:iOS Simulator, arch:arm64, id:84EB8EAC-7A68-4F9E-A584-65F198362157, OS:26.2, name:iPad Pro 11-inch (M5) }
+		{ platform:iOS Simulator, arch:arm64, id:97E4716F-E2E9-433E-9733-27BAC9B505B0, OS:26.2, name:iPad Pro 13-inch (M5) }
+		{ platform:iOS Simulator, arch:arm64, id:4A884089-5BE4-46A7-84F4-4B9814A02BD2, OS:26.2, name:iPad mini (A17 Pro) }
+		{ platform:iOS Simulator, arch:arm64, id:F845309D-3498-4FFC-B8C6-CD935DD6EBEC, OS:26.2, name:iPhone 16e }
+		{ platform:iOS Simulator, arch:arm64, id:08FFE372-C0D6-4494-8BC1-5DCEE0FDF2DA, OS:26.2, name:iPhone 17 }
+		{ platform:iOS Simulator, arch:arm64, id:11889144-7307-4B93-89BE-421659318BF0, OS:26.2, name:iPhone 17 Pro }
+		{ platform:iOS Simulator, arch:arm64, id:214C3126-0E23-46E1-9348-2A739EABA6B1, OS:26.2, name:iPhone 17 Pro Max }
+		{ platform:iOS Simulator, arch:arm64, id:963D43FE-75AE-4C98-93D7-7CA8638751B4, OS:26.2, name:iPhone Air }

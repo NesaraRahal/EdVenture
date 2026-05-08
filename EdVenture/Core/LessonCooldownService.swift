@@ -31,6 +31,18 @@ struct LessonCooldownStatus {
     }
 }
 
+// MARK: - Test helpers
+extension LessonCooldownService {
+    func test_cooldownSecondsRemaining(expiresAt: Date?, now: Date) -> Int? {
+        cooldownSecondsRemaining(expiresAt: expiresAt, now: now)
+    }
+
+    func test_resolveLessonName(_ id: String) -> String { resolveLessonName(id) }
+    func test_resolveLessonIcon(_ id: String) -> String { resolveLessonIcon(id) }
+    func test_resolveLessonColor(_ id: String) -> String { resolveLessonColor(id) }
+}
+
+
 /// Service for tracking and querying cooldown status across all lessons
 @MainActor
 class LessonCooldownService: NSObject, ObservableObject {

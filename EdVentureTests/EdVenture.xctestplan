@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "5FBF303C-E3D5-4AF3-86F3-EEA7706CB318",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:EdVenture.xcodeproj",
+        "identifier" : "033B8E852FAD05CC00085CDE",
+        "name" : "EdVentureTests"
+      }
+    }
+  ],
+  "version" : 1
+}
