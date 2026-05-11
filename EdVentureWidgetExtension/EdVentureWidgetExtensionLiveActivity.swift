@@ -9,72 +9,69 @@ import ActivityKit
 import WidgetKit
 import SwiftUI
 
-struct EdVentureWidgetExtensionAttributes: ActivityAttributes {
-    public struct ContentState: Codable, Hashable {
-        // Dynamic stateful properties about your activity go here!
-        var emoji: String
-    }
-
-    // Fixed non-changing properties about your activity go here!
-    var name: String
-}
-
 struct EdVentureWidgetExtensionLiveActivity: Widget {
     var body: some WidgetConfiguration {
-        ActivityConfiguration(for: EdVentureWidgetExtensionAttributes.self) { context in
-            // Lock screen/banner UI goes here
-            VStack {
-                Text("Hello \(context.state.emoji)")
-            }
-            .activityBackgroundTint(Color.cyan)
-            .activitySystemActionForegroundColor(Color.black)
-
+        ActivityConfiguration(for: LessonCooldownActivityAttributes.self) { context in
+            LessonCooldownLiveActivityView(
+                state: context.state,
+                attributes: context.attributes
+            )
+            .activityBackgroundTint(Color.black.opacity(0.9))
+            .activitySystemActionForegroundColor(.white)
         } dynamicIsland: { context in
             DynamicIsland {
-                // Expanded UI goes here.  Compose the expanded UI through
-                // various regions, like leading/trailing/center/bottom
                 DynamicIslandExpandedRegion(.leading) {
-                    Text("Leading")
+                    Image(systemName: context.attributes.lessonIcon)
+                        .foregroundColor(Color(evHex: context.attributes.lessonColorHex))
                 }
                 DynamicIslandExpandedRegion(.trailing) {
-                    Text("Trailing")
+                    Text(context.state.unlockTime, style: .timer)
+                        .font(.system(size: 14, weight: .semibold, design: .monospaced))
+                        .foregroundColor(.white)
                 }
                 DynamicIslandExpandedRegion(.bottom) {
-                    Text("Bottom \(context.state.emoji)")
-                    // more content
+                    LessonCooldownCompactView(
+                        state: context.state,
+                        attributes: context.attributes
+                    )
                 }
             } compactLeading: {
-                Text("L")
+                Image(systemName: context.attributes.lessonIcon)
+                    .foregroundColor(Color(evHex: context.attributes.lessonColorHex))
             } compactTrailing: {
-                Text("T \(context.state.emoji)")
+                Text(context.state.unlockTime, style: .timer)
+                    .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                    .foregroundColor(.white)
             } minimal: {
-                Text(context.state.emoji)
+                Image(systemName: "hourglass")
             }
-            .widgetURL(URL(string: "http://www.apple.com"))
-            .keylineTint(Color.red)
+            .keylineTint(Color(evHex: context.attributes.lessonColorHex))
         }
     }
 }
 
-extension EdVentureWidgetExtensionAttributes {
-    fileprivate static var preview: EdVentureWidgetExtensionAttributes {
-        EdVentureWidgetExtensionAttributes(name: "World")
-    }
-}
-
-extension EdVentureWidgetExtensionAttributes.ContentState {
-    fileprivate static var smiley: EdVentureWidgetExtensionAttributes.ContentState {
-        EdVentureWidgetExtensionAttributes.ContentState(emoji: "😀")
-     }
-     
-     fileprivate static var starEyes: EdVentureWidgetExtensionAttributes.ContentState {
-         EdVentureWidgetExtensionAttributes.ContentState(emoji: "🤩")
-     }
-}
-
-#Preview("Notification", as: .content, using: EdVentureWidgetExtensionAttributes.preview) {
-   EdVentureWidgetExtensionLiveActivity()
+#Preview("Notification", as: .content, using: LessonCooldownActivityAttributes(
+    lessonName: "Astronomy",
+    lessonIcon: "star.fill",
+    lessonColorHex: "0EB060",
+    unlockTime: Date().addingTimeInterval(24 * 60 * 60)
+)) {
+    EdVentureWidgetExtensionLiveActivity()
 } contentStates: {
-    EdVentureWidgetExtensionAttributes.ContentState.smiley
-    EdVentureWidgetExtensionAttributes.ContentState.starEyes
+    LessonCooldownActivityAttributes.ContentState(
+        secondsRemaining: 60 * 60 * 4 + 31,
+        unlockTime: Date().addingTimeInterval(60 * 60 * 4 + 31)
+    )
+}
+
+private extension Color {
+    init(evHex: String) {
+        let cleaned = evHex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: cleaned).scanHexInt64(&int)
+        let r = Double((int >> 16) & 0xFF) / 255
+        let g = Double((int >> 8) & 0xFF) / 255
+        let b = Double(int & 0xFF) / 255
+        self.init(red: r, green: g, blue: b)
+    }
 }

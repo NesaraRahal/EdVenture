@@ -3,24 +3,19 @@ import Foundation
 
 /// ActivityKit attributes and state for displaying lesson cooldown timers
 /// on lock screen and dynamic island
+@available(iOS 16.1, *)
 struct LessonCooldownActivityAttributes: ActivityAttributes {
-    /// Static content that doesn't change during the activity
+    /// Dynamic stateful properties about your activity go here
     public struct ContentState: Codable, Hashable {
-        let lessonName: String
-        let lessonIcon: String
-        let lessonColor: String
-        let hoursRemaining: Int
-        let minutesRemaining: Int
         let secondsRemaining: Int
-        let unlockAt: Date
-        let progressPercent: Double
+        let unlockTime: Date
     }
 
-    // Static attributes (doesn't change)
-    let lessonId: String
-    let lessonTitle: String
-    let icon: String
-    let colorHex: String
+    // Fixed non-changing properties about your activity go here
+    let lessonName: String
+    let lessonIcon: String
+    let lessonColorHex: String
+    let unlockTime: Date
 }
 
 /// Model for tracking active cooldown lessons

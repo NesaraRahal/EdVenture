@@ -24,73 +24,47 @@ struct LessonCooldownLiveActivityView: View {
     }
     
     var body: some View {
-        HStack(spacing: 12) {
-            // Icon
-            Image(systemName: attributes.lessonIcon)
-                .font(.system(size: 18, weight: .bold))
-                .foregroundColor(Color(evHex: attributes.lessonColorHex))
-                .frame(width: 32, height: 32)
-                .background(Color(evHex: attributes.lessonColorHex).opacity(0.15))
-                .clipShape(Circle())
-            
-            // Content
-            VStack(alignment: .leading, spacing: 2) {
-                Text(attributes.lessonName)
-                    .font(.system(size: 14, weight: .semibold, design: .rounded))
-                    .foregroundColor(.white)
-                    .lineLimit(1)
-                
-                // Time remaining
-                HStack(spacing: 4) {
-                    Image(systemName: "hourglass.bottomhalf.fill")
-                        .font(.system(size: 10))
-                        .foregroundColor(Color(evHex: attributes.lessonColorHex))
-                    
-                    if hoursRemaining > 0 {
-                        Text("\(hoursRemaining)h \(minutesRemaining)m")
-                            .font(.system(size: 12, weight: .medium, design: .monospaced))
-                            .foregroundColor(.white.opacity(0.7))
-                    } else {
-                        Text("\(minutesRemaining)m \(secondsPartRemaining)s")
-                            .font(.system(size: 12, weight: .medium, design: .monospaced))
-                            .foregroundColor(.white.opacity(0.7))
-                    }
+        VStack(spacing: 12) {
+            VStack(spacing: 4) {
+                Text("Next Level Cooldown")
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .foregroundColor(.white.opacity(0.6))
+                    .tracking(0.5)
+
+                Text(state.unlockTime, style: .timer)
+                    .font(.system(size: 36, weight: .bold, design: .monospaced))
+                    .foregroundColor(Color(evHex: attributes.lessonColorHex))
+                    .monospacedDigit()
+            }
+
+            VStack(spacing: 6) {
+                ZStack(alignment: .leading) {
+                    Capsule()
+                        .fill(Color.white.opacity(0.12))
+                        .frame(height: 6)
+                    Capsule()
+                        .fill(Color(evHex: attributes.lessonColorHex))
+                        .frame(width: max(0, progressPercent) * 260, height: 6)
+                }
+
+                HStack {
+                    Text("Time elapsed")
+                        .font(.system(size: 11, weight: .medium, design: .rounded))
+                        .foregroundColor(.white.opacity(0.45))
+                    Spacer()
+                    Text(String(format: "%.0f%%", progressPercent * 100))
+                        .font(.system(size: 11, weight: .medium, design: .rounded))
+                        .foregroundColor(.white.opacity(0.45))
                 }
             }
-            
-            Spacer()
-            
-            // Progress bar (vertical)
-            VStack(spacing: 0) {
-                Capsule()
-                    .fill(
-                        LinearGradient(
-                            colors: [
-                                Color(evHex: attributes.lessonColorHex).opacity(0.7),
-                                Color(evHex: attributes.lessonColorHex).opacity(0.3)
-                            ],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                    )
-                    .frame(width: 3, height: CGFloat(progressPercent * 40))
-                
-                Spacer()
-                
-                Capsule()
-                    .fill(Color.white.opacity(0.1))
-                    .frame(width: 3, height: CGFloat((1 - progressPercent) * 40))
-            }
-            .frame(height: 40)
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
+        .padding(16)
         .background(
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(Color.white.opacity(0.06))
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(Color(evHex: attributes.lessonColorHex).opacity(0.1))
                 .overlay(
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .stroke(Color(evHex: attributes.lessonColorHex).opacity(0.2), lineWidth: 0.5)
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .stroke(Color(evHex: attributes.lessonColorHex).opacity(0.25), lineWidth: 0.6)
                 )
         )
     }
@@ -110,27 +84,15 @@ struct LessonCooldownCompactView: View {
     }
     
     var body: some View {
-        HStack(spacing: 8) {
-            Image(systemName: attributes.lessonIcon)
+        HStack(spacing: 6) {
+            Image(systemName: "hourglass")
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundColor(Color(evHex: attributes.lessonColorHex))
-            
-            VStack(alignment: .leading, spacing: 1) {
-                Text(attributes.lessonName)
-                    .font(.system(size: 11, weight: .semibold, design: .rounded))
-                    .foregroundColor(.white)
-                    .lineLimit(1)
-                
-                if hoursRemaining > 0 {
-                    Text("\(hoursRemaining)h \(minutesRemaining)m")
-                        .font(.system(size: 10, weight: .medium, design: .monospaced))
-                        .foregroundColor(.white.opacity(0.6))
-                } else {
-                    Text("\(minutesRemaining)m")
-                        .font(.system(size: 10, weight: .medium, design: .monospaced))
-                        .foregroundColor(.white.opacity(0.6))
-                }
-            }
+
+            Text(state.unlockTime, style: .timer)
+                .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                .foregroundColor(.white)
+                .monospacedDigit()
         }
         .padding(.horizontal, 8)
         .padding(.vertical, 6)
